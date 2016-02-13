@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Get2Gether</string>
+    <string name="title_activity_map_explore">MapExplore</string>
+    <string name="action_settings">Settings</string>
 </resources>
