@@ -2,6 +2,7 @@ package comp380.get2gether;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -157,4 +158,5 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             //CHECK TO MAKE SURE
 
     }
+
 }
