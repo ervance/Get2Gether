@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -164,16 +165,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     //----------------------------------------------------------------------------------
     //Code to drop pin Need to give Pin attributes to hold info from "FormAcitivity"
 
-    public void buttonOnClick(View v){
-        Button completeForm =(Button) v;
+    //create a constructor to use variables from form
+    //a bundle is used to retreive extras passed by intents to another activity
+    Bundle forms = getIntent().getExtras();
 
-      //Create an Intent in order to pass info to "MapsAcitivity"
-        Intent changetoForm = new Intent(MapsActivity.this, FormActivity.class);
+    MarkerOptions marker = new MarkerOptions()
+            .title(forms.getString("eName"));
 
 
-        //Create Identifier for variable types in this .java file
-        //Make an arraylist instead of putExtra
-        //Start other Activity (MapsActivity)
-        startActivity(changetoForm);
-    }
 }
