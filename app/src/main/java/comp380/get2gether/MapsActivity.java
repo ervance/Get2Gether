@@ -11,12 +11,15 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
@@ -27,26 +30,50 @@ import java.util.ArrayList;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
+
     /******Map fields******/
     private GoogleMap mMap;
+    MapView mMapView;   //This allows us to use a different layout
     private ArrayList<LatLng> coordinateList = new ArrayList<>();  //collects coordinates
     private int listSize;  //size of coordinateList
     private LocationManager locManager;
     private LatLng currentLocale;
     private OnMapReadyCallback callback;
-
     /****End Map fields****/
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_maps);
+        setContentView(R.layout.activity_mapview);
+
+
+        mMapView = (MapView) findViewById(R.id.map);
+        mMapView.onCreate(savedInstanceState);
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-    }
 
+        /****Data Fields For Marker****/
+        Bundle forms = getIntent().getExtras();
+
+        //Toast is a pop up message on screen could be useful later...right now not important.
+        Toast toast = new Toast(getApplicationContext());
+        toast.setGravity(Gravity.TOP| Gravity.LEFT, 0, 0);
+        toast.makeText(MapsActivity.this, forms.getString("eName"), toast.LENGTH_SHORT).show();
+        //----------------------------------------------------------------------------------------
+
+        MarkerOptions marker = new MarkerOptions()
+                .title(forms.getString("eName"))
+                .draggable(true)
+                .position(currentLocale);
+        /****End Data Fields for Marker****/
+        mMap.addMarker(marker);
+    }
 
     /**
      * Manipulates the map once available.
@@ -162,15 +189,33 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
-    //----------------------------------------------------------------------------------
-    //Code to drop pin Need to give Pin attributes to hold info from "FormAcitivity"
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mMapView.onDestroy();
+    }
 
-    //create a constructor to use variables from form
-    //a bundle is used to retreive extras passed by intents to another activity
-    Bundle forms = getIntent().getExtras();
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mMapView.onPause();
+    }
 
-    MarkerOptions marker = new MarkerOptions()
-            .title(forms.getString("eName"));
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        mMapView.onLowMemory();
+    }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        mMapView.onSaveInstanceState(outState);
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mMapView.onResume();
+    }
 }
