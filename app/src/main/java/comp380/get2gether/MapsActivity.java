@@ -38,10 +38,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private LocationManager locManager;
     private LatLng currentLocale;
     private OnMapReadyCallback callback;
+
     /****End Map fields****/
-
-
-
+    LatLng northRidge = new LatLng(34.2417, -118.5283);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,22 +51,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-
-        /****Data Fields For Marker****/
-        Bundle forms = getIntent().getExtras();
-
-        //Toast is a pop up message on screen could be useful later...right now not important.
-        Toast toast = new Toast(getApplicationContext());
-        toast.setGravity(Gravity.TOP| Gravity.LEFT, 0, 0);
-        toast.makeText(MapsActivity.this, forms.getString("eName"), toast.LENGTH_SHORT).show();
-        //----------------------------------------------------------------------------------------
-
-        MarkerOptions marker = new MarkerOptions()
-                .title(forms.getString("eName"))
-                .draggable(true)
-                .position(currentLocale);
-//        /****End Data Fields for Marker****/
-        mMap.addMarker(marker);
     }
 
     /**
@@ -103,9 +86,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         /*Consider putting the following code into a method to streamline the marker placing
         and make it more reuseable
         */
-        LatLng northRidge = new LatLng(34.2417, -118.5283);
-        mMap.addMarker(new MarkerOptions().position(northRidge).title("This is our test marker\nClass Comp380"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(northRidge));
+
 
         //Get an updtated location
         locManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -134,6 +115,28 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //May or may not need to use the OnMapReadyCallback here
         //Turns out it was causing a problem so I took it out
 
+        /****This Arraylist Holds the FormActivity Variables****/
+        ArrayList<String> forms = (ArrayList<String>) getIntent().getSerializableExtra("formVar");
+
+        //If forms == null that means we have not returned from FormActivity
+        if (forms != null) {
+            //Toast is a pop up message on screen could be useful later...right now not important.
+            Toast toast = new Toast(getApplicationContext());
+            toast.setGravity(Gravity.TOP | Gravity.LEFT, 0, 0);
+            toast.makeText(MapsActivity.this, forms.get(0), toast.LENGTH_SHORT).show();
+            //-------------------------------------------------------------------------------------
+
+            MarkerOptions marker = new MarkerOptions()
+                    .title(forms.get(0))
+                    .draggable(true)
+                    .position(currentLocale);
+
+            if(currentLocale!=null) {
+                mMap.addMarker(marker);
+            }else{
+                toast.makeText(MapsActivity.this, "No Current Location.", toast.LENGTH_SHORT).show();
+            }
+        }//end if
 
     }
 

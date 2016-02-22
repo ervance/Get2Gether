@@ -37,7 +37,7 @@
             android:label="@string/title_activity_maps"
             android:screenOrientation="portrait">
 
-            <!-- Lock into portrait position -->
+            <!--The Intent-filter controls what activity launches first -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -48,8 +48,6 @@
             android:name=".FormActivity"
             android:label="@string/title_activity_form"
             android:theme="@style/AppTheme.NoActionBar">
-
-
 
         </activity>
     </application>
