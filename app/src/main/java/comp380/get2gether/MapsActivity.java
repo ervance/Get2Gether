@@ -126,6 +126,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             toast.makeText(MapsActivity.this, forms.get(0), toast.LENGTH_SHORT).show();
             //-------------------------------------------------------------------------------------
 
+            //This is the marker that is being used to store the data from the form
             MarkerOptions marker = new MarkerOptions()
                     .title(forms.get(0))
                     .draggable(true)
