@@ -33,7 +33,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     /******Map fields******/
     private GoogleMap mMap;
-    MapView mMapView;   //This allows us to use a different layout
     private ArrayList<LatLng> coordinateList = new ArrayList<>();  //collects coordinates
     private int listSize;  //size of coordinateList
     private LocationManager locManager;
@@ -47,11 +46,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_mapview);
-
-
-        mMapView = (MapView) findViewById(R.id.map);
-        mMapView.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_maps);
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -71,7 +66,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .title(forms.getString("eName"))
                 .draggable(true)
                 .position(currentLocale);
-        /****End Data Fields for Marker****/
+//        /****End Data Fields for Marker****/
         mMap.addMarker(marker);
     }
 
@@ -189,33 +184,4 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mMapView.onDestroy();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        mMapView.onPause();
-    }
-
-    @Override
-    public void onLowMemory() {
-        super.onLowMemory();
-        mMapView.onLowMemory();
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        mMapView.onSaveInstanceState(outState);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        mMapView.onResume();
-    }
 }
