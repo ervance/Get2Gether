@@ -117,6 +117,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         /****This Arraylist Holds the FormActivity Variables****/
         ArrayList<String> forms = (ArrayList<String>) getIntent().getSerializableExtra("formVar");
+        //currently .get(0) is Event Name
+        //currently .get(1) is Event Type
+        //currently .get(2) is Event Time
 
         //If forms == null that means we have not returned from FormActivity
         if (forms != null) {
