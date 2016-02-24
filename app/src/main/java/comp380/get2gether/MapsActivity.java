@@ -147,7 +147,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                     //If form is not null then populate the info window
                     if(forms != null) {
-                        tvEname.setText(marker.getTitle());
+                        tvEname.setText(forms.get(0));
                         tvEType.setText(forms.get(1));
                         tvETime.setText(forms.get(2));
                     }
