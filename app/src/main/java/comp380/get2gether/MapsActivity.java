@@ -2,6 +2,7 @@ package comp380.get2gether;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -10,18 +11,26 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+
 
     /******Map fields******/
     private GoogleMap mMap;
@@ -32,17 +41,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private OnMapReadyCallback callback;
 
     /****End Map fields****/
+    LatLng northRidge = new LatLng(34.2417, -118.5283);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
     }
-
 
     /**
      * Manipulates the map once available.
@@ -77,9 +87,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         /*Consider putting the following code into a method to streamline the marker placing
         and make it more reuseable
         */
-        LatLng northRidge = new LatLng(34.2417, -118.5283);
-        mMap.addMarker(new MarkerOptions().position(northRidge).title("This is our test marker\nClass Comp380"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(northRidge));
+
 
         //Get an updtated location
         locManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -93,9 +101,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             double longitude = location.getLongitude();
             //create the location
             currentLocale = new LatLng(latitude,longitude);
-            //add marker and move camera
-            mMap.addMarker(new MarkerOptions().position(currentLocale).title("Current Location"));
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(currentLocale));
         }//end if
 //        else
 //        {
@@ -108,6 +113,70 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //May or may not need to use the OnMapReadyCallback here
         //Turns out it was causing a problem so I took it out
 
+        /****This Arraylist Holds the FormActivity Variables****/
+        final ArrayList<String> forms = (ArrayList<String>) getIntent().getSerializableExtra("formVar");
+        //currently forms.get(0) is Event Name
+        //currently forms.get(1) is Event Type
+        //currently forms.get(2) is Event Time
+
+        //This section of code works on adding custom info window.--------------------------------
+        if(mMap != null){
+            //setinfoWindowAdapter is what we use to override Androids default popup window
+            mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+
+
+                @Override
+                public View getInfoWindow(Marker marker) {
+                    return null;
+                }
+
+                //This section of code locates the contents of our custom_info_window.xml
+                //It is going to use that layout to structure our window
+                @Override
+                public View getInfoContents(Marker marker) {
+                    View v = getLayoutInflater().inflate(R.layout.custom_info_window, null);
+                    //This pulls the info from our form and populates the info window
+                    TextView tvEname = (TextView) v.findViewById(R.id.eName);
+                    TextView tvEType = (TextView) v.findViewById(R.id.eType);
+                    TextView tvETime = (TextView) v.findViewById(R.id.eTime);
+                    TextView tvOther = (TextView) v.findViewById(R.id.otherStuff);
+
+                    //this locates the position of the marker in order to put the bubble in the
+                    //correct location
+                    LatLng ll = marker.getPosition();
+
+                    //If form is not null then populate the info window
+                    if(forms != null) {
+                        tvEname.setText(forms.get(0));
+                        tvEType.setText(forms.get(1));
+                        tvETime.setText(forms.get(2));
+                    }
+                    return v;
+                }
+            });
+        }//end if (and end custom info window section----------------------------------------------
+
+        //If forms == null that means we have not returned from FormActivity
+        if (forms != null) {
+            //Toast is a pop up message on screen could be useful later...right now not important.
+            Toast toast = new Toast(getApplicationContext());
+            toast.setGravity(Gravity.TOP | Gravity.LEFT, 0, 0);
+            toast.makeText(MapsActivity.this, forms.get(0), toast.LENGTH_SHORT).show();
+            //-------------------------------------------------------------------------------------
+
+            //This is the marker that is being used to store the data from the form
+            MarkerOptions marker = new MarkerOptions()
+                    .draggable(true)
+                    .position(currentLocale);
+
+            if(currentLocale!=null) {
+                //add marker and move camera to current location
+                mMap.addMarker(marker);
+                mMap.moveCamera(CameraUpdateFactory.newLatLng(currentLocale));
+            }else{
+                toast.makeText(MapsActivity.this, "No Current Location.", toast.LENGTH_SHORT).show();
+            }
+        }//end if
 
     }
 
@@ -157,4 +226,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             //CHECK TO MAKE SURE
 
     }
+
 }
+
