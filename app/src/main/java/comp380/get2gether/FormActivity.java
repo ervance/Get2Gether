@@ -18,6 +18,10 @@ public class FormActivity extends AppCompatActivity {
     private EditText chosenEventType; //Holds eventLocation ""
     private EditText chosenEventTime;  //holds the eventTime ""
 
+    //lat lng test vars
+    private EditText latitude;
+    private EditText longitude;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,15 +43,25 @@ public class FormActivity extends AppCompatActivity {
                 chosenEventType = (EditText) findViewById(R.id.eventType);
                 chosenEventTime = (EditText) findViewById(R.id.eventTime);
 
+                //Get lat and long
+                latitude = (EditText) findViewById(R.id.getLat);
+                longitude = (EditText) findViewById(R.id.getLong);
+
                 String eName = chosenEventName.getText().toString();
                 String eType = chosenEventType.getText().toString();
                 String eTime = chosenEventTime.getText().toString();
+
+                //lat lngs to pass
+                String lats = latitude.getText().toString();
+                String longs = longitude.getText().toString();
 
                 //Built Arraylist to store variables from Form
                 ArrayList<String> formVariables = new ArrayList<>();
                 formVariables.add(eName);
                 formVariables.add(eType);
                 formVariables.add(eTime);
+                formVariables.add(lats);
+                formVariables.add(longs);
 
                 //Toast is a pop up message on screen could be useful later...right now not important.
                  //Toast toast = new Toast(getApplicationContext());
