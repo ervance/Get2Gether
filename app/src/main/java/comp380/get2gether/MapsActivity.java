@@ -124,7 +124,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             //setinfoWindowAdapter is what we use to override Androids default popup window
             mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
 
-
                 @Override
                 public View getInfoWindow(Marker marker) {
                     return null;
