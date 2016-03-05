@@ -12,6 +12,9 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
+    //delete this line it is uselss
+    int y =4;
+
     private GoogleMap mMap;
 
     @Override
