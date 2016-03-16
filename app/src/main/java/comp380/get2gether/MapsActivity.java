@@ -25,8 +25,14 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.parse.FindCallback;
+import com.parse.Parse;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
@@ -45,6 +51,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
@@ -143,6 +150,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     //this locates the position of the marker in order to put the bubble in the
                     //correct location
                     LatLng ll = marker.getPosition();
+
+                    //Make a parse query to get the data
+                    ParseQuery<ParseObject> query = ParseQuery.getQuery("InputForm");
+
+                    query.whereEqualTo("name", forms.get(0));
+                    query.findInBackground(new FindCallback<ParseObject>() {
+                        @Override
+                        public void done(List<ParseObject> formData, ParseException e) {
+                            if (e==null)
+                                for(int i = 0; i< formData.size(); i++)
+                                Log.e("name", "Retrieved" + formData.get(i) + " formData");
+                            else
+                                Log.e("name", "Error: " + e.getMessage());
+                        }
+                    });
 
                     //If form is not null then populate the info window
                     if(forms != null) {
