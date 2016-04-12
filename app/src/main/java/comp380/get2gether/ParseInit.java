@@ -11,7 +11,6 @@ public class ParseInit extends Application{
     public void onCreate() {
        super.onCreate();
        //connect to the database
-      // Parse.initialize(this, "get2gether", "123456");
        Parse.initialize(new Parse.Configuration.Builder(this)
                .applicationId("get2gether")
                .server("http://159.203.253.5:6380/parse/")

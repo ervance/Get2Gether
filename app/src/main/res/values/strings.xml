@@ -5,4 +5,5 @@
     <string name="title_activity_maps">Get2Gether</string>
     <string name="title_activity_form">FormActivity</string>
     <string name="application_id">comp380.get2gether</string>
+    <string name="event_save">Save Event</string>
 </resources>

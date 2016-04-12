@@ -10,10 +10,15 @@ import android.location.LocationManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ListAdapter;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,7 +40,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener, AdapterView.OnItemClickListener {
 
 
     /******Map fields******/
@@ -45,20 +50,65 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private LocationManager locManager;
     private LatLng currentLocale;
     private OnMapReadyCallback callback;
-
     /****End Map fields****/
     LatLng northRidge = new LatLng(34.2417, -118.5283);
+
+    /****Drawer*****/
+    private DrawerLayout drawerLayout;
+    private RelativeLayout mDrawer;
+    private ListView listView;
+    private DrawerAdapter adapter;
+    private List<String> drawerString;
+    /***End Drawer***/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_maps);
+        setContentView(R.layout.drawer);//this was activity_maps
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        /****Set up drawer for slider from left side***********/
+        mDrawer = (RelativeLayout) findViewById(R.id.relative_drawer);
+        DrawerLayout.LayoutParams params = (android.support.v4.widget.DrawerLayout.LayoutParams) mDrawer.getLayoutParams();
+        params.width = (int) (getResources().getDisplayMetrics().widthPixels * 0.5); //set width of drawer
+        //create the listener for drawer
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawerLayout.setDrawerListener(new DrawerLayout.DrawerListener(){
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+                //what happens on slide
+            }
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                //what happens when opend
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+
+            }
+
+            @Override
+            public void onDrawerStateChanged(int newState) {
+
+            }
+        }); //end drawer listener
+
+        //create drawerString
+        drawerString = new ArrayList<>();
+        // will need to populate the list with something meaningful to what we want on our drawer
+        drawerString.add("Test Holder");
+        listView = (ListView) drawerLayout.findViewById(R.id.drawer_list); //in drawer.xml
+        listView.setOnItemClickListener(this);
+        adapter = new DrawerAdapter(MapsActivity.this, drawerString);
+        listView.setAdapter(adapter);
+
     }
 
     /**
@@ -199,7 +249,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         }//end if
 
-    }
+        mMap.setOnInfoWindowClickListener(this);
+
+    }//end onMapReady
 
     //Location listener
     //collect lat lngs and put into list
@@ -248,5 +300,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
+
+    //Listener to start the view the event
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+        Intent intent = new Intent(MapsActivity.this, ViewEvent.class);
+        //ToDo: add the identifier of the event in order to query the data in the ViewEvent
+        startActivity(intent);
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+        //ToDo: this is where you handle what happens when the item in the drawer is clicked
+        Toast.makeText(this, "Click Successful", Toast.LENGTH_SHORT).show();
+        //going to use the northridge location as a tester
+        mMap.addMarker(new MarkerOptions()
+                    .position(northRidge)
+        );//end adding marker
+
+    }
 }
 
