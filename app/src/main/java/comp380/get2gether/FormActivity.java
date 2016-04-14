@@ -2,6 +2,7 @@ package comp380.get2gether;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
@@ -12,7 +13,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-public class FormActivity extends AppCompatActivity {
+public class FormActivity extends FragmentActivity {
 
     private EditText chosenEventName; //holds the event name from the eventName text box
     private EditText chosenEventType; //Holds eventLocation ""
@@ -26,8 +27,10 @@ public class FormActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_form);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        //setSupportActionBar(toolbar);
+
+
 
         //Ties the completeForm button to the variable submitButton
         Button submitButton =(Button) findViewById(R.id.completeForm);
@@ -40,7 +43,7 @@ public class FormActivity extends AppCompatActivity {
 
                 //On button press, store text from the 3 fields
                 chosenEventName = (EditText) findViewById(R.id.eventName);
-                chosenEventType = (EditText) findViewById(R.id.eventType);
+                //chosenEventType = (EditText) findViewById(R.id.eventType);
                 chosenEventTime = (EditText) findViewById(R.id.eventTime);
 
                 //Get lat and long
@@ -48,7 +51,10 @@ public class FormActivity extends AppCompatActivity {
                 longitude = (EditText) findViewById(R.id.getLong);
 
                 String eName = chosenEventName.getText().toString();
-                String eType = chosenEventType.getText().toString();
+                //changed to choice box
+                //String eType = chosenEventType.getText().toString();
+                String eType =getIntent().getStringExtra("eventChoice");
+                //Changed to choice box
                 String eTime = chosenEventTime.getText().toString();
 
                 //lat lngs to pass
@@ -81,5 +87,10 @@ public class FormActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
+
+    public void selectEventType(View v){
+        ChoiceList choiceBox = new ChoiceList();
+        choiceBox.show(getSupportFragmentManager(),"choiceBox");
     }
 }
