@@ -49,17 +49,23 @@
 
         <activity
             android:name=".FormActivity"
-            android:label="@string/title_activity_form"
+            android:label="FormScreen"
             android:theme="@style/AppTheme.NoActionBar">
+            </activity>
 
             <!-- The Intent-filter controls what activity launches first -->
+        <!--SpalshActivity starts first-->
+        <activity android:name=".SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ViewEvent"></activity>
+
+        <activity android:name=".ViewEvent">
+
+        </activity>
     </application>
 
 </manifest>
