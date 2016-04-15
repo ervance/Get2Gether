@@ -58,7 +58,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private RelativeLayout mDrawer;
     private ListView listView;
     private DrawerAdapter adapter;
-    private List<String> drawerString;
+    private List<NavigationIcon> drawerString;
+    final private String[] NAVIGATION = {"Create Event","My Events", "Filter", "Friends", "QR Codr", "Settings"};
     /***End Drawer***/
 
     @Override
@@ -102,8 +103,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         //create drawerString
         drawerString = new ArrayList<>();
+        NavigationIcon n = new NavigationIcon();
         // will need to populate the list with something meaningful to what we want on our drawer
-        drawerString.add("Test Holder");
+        for(int i = 0; i < NAVIGATION.length; i++){
+            n.title = NAVIGATION[i];
+            drawerString.add(n);
+        }
         listView = (ListView) drawerLayout.findViewById(R.id.drawer_list); //in drawer.xml
         listView.setOnItemClickListener(this);
         adapter = new DrawerAdapter(MapsActivity.this, drawerString);

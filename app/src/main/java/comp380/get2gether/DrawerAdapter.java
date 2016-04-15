@@ -15,13 +15,13 @@ import java.util.List;
 /**
  * Created by Eric on 4/9/2016.
  */
-public class DrawerAdapter extends ArrayAdapter<String> {
+public class DrawerAdapter extends ArrayAdapter<NavigationIcon> {
     //class to populate and create drawer
 
     private final Context context;
-    private final List<String> drawerString;
+    private final List<NavigationIcon> drawerString;
 
-    public DrawerAdapter(Context context, List<String> drawerString) {
+    public DrawerAdapter(Context context, List<NavigationIcon> drawerString) {
         super(context, 0, drawerString);
         this.context = context;
         this.drawerString = drawerString;
@@ -62,7 +62,7 @@ public class DrawerAdapter extends ArrayAdapter<String> {
 //        }
 //        //end log
         holder.img.setImageResource(R.drawable.holderpic);
-        holder.title.setText("ACTIVITY HOLDER");
+        holder.title.setText(drawerString.get(position).title);
         return view;
     }//end getView
 
