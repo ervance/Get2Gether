@@ -13,7 +13,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 
-public class ChoiceTime extends DialogFragment
+public class CreateActivityEventTimeScrollList extends DialogFragment
 {
     //Here is the list of events, if you need to add an event type or remove one make sure
     // to adjust the switch statement below accordingly.

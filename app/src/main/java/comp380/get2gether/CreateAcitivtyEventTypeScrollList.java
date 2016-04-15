@@ -14,7 +14,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.widget.Toast;
 
-public class ChoiceList extends DialogFragment
+public class CreateAcitivtyEventTypeScrollList extends DialogFragment
 {
     //Here is the list of events, if you need to add an event type or remove one make sure
     // to adjust the switch statement below accordingly.

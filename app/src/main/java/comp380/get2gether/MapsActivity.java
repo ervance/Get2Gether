@@ -170,7 +170,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //May or may not need to use the OnMapReadyCallback here
         //Turns out it was causing a problem so I took it out
 
-        /****This Arraylist Holds the FormActivity Variables****/
+        /****This Arraylist Holds the CreateActivity Variables****/
         final ArrayList<String> forms = (ArrayList<String>) getIntent().getSerializableExtra("formVar");
         //currently forms.get(0) is Event Name
         //currently forms.get(1) is Event Type
@@ -227,7 +227,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             });
         }//end if (and end custom info window section----------------------------------------------
 
-        //If forms == null that means we have not returned from FormActivity
+        //If forms == null that means we have not returned from CreateActivity
         if (forms != null) {
             //Toast is a pop up message on screen could be useful later...right now not important.
             Toast toast = new Toast(getApplicationContext());

@@ -3,21 +3,15 @@ package comp380.get2gether;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
-import com.parse.Parse;
-import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
 
 import java.util.ArrayList;
 
-public class FormActivity extends FragmentActivity {
+public class CreateActivity extends FragmentActivity {
 
     private EditText chosenEventName; //holds the event name from the eventName text box
     private EditText chosenEventType; //Holds eventLocation ""
@@ -45,7 +39,7 @@ public class FormActivity extends FragmentActivity {
                 //On button press, store text from the 3 fields
                 chosenEventName = (EditText) findViewById(R.id.eventName);
                 //chosenEventType = (EditText) findViewById(R.id.eventType);
-                chosenEventTime = (EditText) findViewById(R.id.eventTime);
+                //chosenEventTime = (EditText) findViewById(R.id.eventTime);
 
 
                 String eName = chosenEventName.getText().toString();
@@ -62,21 +56,22 @@ public class FormActivity extends FragmentActivity {
                 formVariables.add(eType);
                 formVariables.add(eTime);
 
+                /* unblock this when ready for parse server
                 //Add it to parse test
                 ParseObject inputForm = new ParseObject("InputForm");
                 inputForm.put("name", eName);
                 inputForm.put("type", eType);
                 inputForm.put("time", eTime);
                 inputForm.saveInBackground();
-
+                */
                 //Toast is a pop up message on screen could be useful later...right now not important.
                  //Toast toast = new Toast(getApplicationContext());
                  //toast.setGravity(Gravity.TOP| Gravity.LEFT, 0, 0);
-                 //toast.makeText(FormActivity.this, chosenEventName.getText(), toast.LENGTH_SHORT).show();
+                 //toast.makeText(CreateActivity.this, chosenEventName.getText(), toast.LENGTH_SHORT).show();
                 //----------------------------------------------------------------------------------------
 
                 //Create an Intent in order to pass info to "MapsAcitivity"
-                Intent intent = new Intent(FormActivity.this, MapsActivity.class);
+                Intent intent = new Intent(CreateActivity.this, MapsActivity.class);
 
 
                 //Create Identifier for variable types in this .java file
@@ -94,12 +89,12 @@ public class FormActivity extends FragmentActivity {
 
     //These  methods are the buttons for event type and time
     public void selectEventType(View v){
-        ChoiceList choiceBox = new ChoiceList();
+        CreateAcitivtyEventTypeScrollList choiceBox = new CreateAcitivtyEventTypeScrollList();
         choiceBox.show(getSupportFragmentManager(), "choiceBox");
     }
 
     public void selectEventTime(View v){
-        ChoiceTime timeBox = new ChoiceTime();
+        CreateActivityEventTimeScrollList timeBox = new CreateActivityEventTimeScrollList();
         timeBox.show(getSupportFragmentManager(),"timeBox");
     }
 }
