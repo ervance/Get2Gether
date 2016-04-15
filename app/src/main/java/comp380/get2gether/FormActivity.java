@@ -4,19 +4,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-import java.util.List;
 
-import com.parse.ParseException;
+import com.parse.Parse;
+import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
-import com.parse.ParseQuery;
-import com.parse.FindCallback;
-import com.parse.SaveCallback;
 
 import java.util.ArrayList;
 
@@ -46,7 +42,6 @@ public class FormActivity extends AppCompatActivity {
             //This is for for the submit button on the form page
             public void onClick(View v) {
 
-                final ParseObject testObject = new ParseObject("TestObject");
 
                 //On button press, store text from the 3 fields
                 chosenEventName = (EditText) findViewById(R.id.eventName);
@@ -65,38 +60,20 @@ public class FormActivity extends AppCompatActivity {
                 String lats = latitude.getText().toString();
                 String longs = longitude.getText().toString();
 
-                //put in database
-                storeData(testObject, eName, eType, eTime);
-
                 //Built Arraylist to store variables from Form
-                final ArrayList<String> formVariables = new ArrayList<>();
+                ArrayList<String> formVariables = new ArrayList<>();
                 formVariables.add(eName);
                 formVariables.add(eType);
                 formVariables.add(eTime);
                 formVariables.add(lats);
                 formVariables.add(longs);
 
-                /*ParseQuery<ParseObject> queryP = ParseQuery.getQuery("TestObject");
-                queryP.whereEqualTo("Student", nameStudent);
-                queryP.findInBackground(new FindCallback<ParseObject>() {
-                    @Override
-                    public void done(List<ParseObject> dataList, ParseException e) {
-                        ArrayList<String> courses = null;
-                        if (e == null) {
-                            courses = new ArrayList<String>();
-                            for (ParseObject course : dataList) {
-                                String eName = course.getString("eName");
-                                String eType = course.getString("eType");
-                                String eTime = course.getString("eTime");
-                                formVariables.add(eName);
-                                formVariables.add(eType);
-                                formVariables.add(eTime);
-                            }
-                        } else {
-                            Log.d("Post retrieval", "Error: " + e.getMessage());
-                        }
-                    }
-                });*/
+                //Add it to parse test
+                ParseObject inputForm = new ParseObject("InputForm");
+                inputForm.put("name", eName);
+                inputForm.put("type", eType);
+                inputForm.put("time", eTime);
+                inputForm.saveInBackground();
 
                 //Toast is a pop up message on screen could be useful later...right now not important.
                  //Toast toast = new Toast(getApplicationContext());
@@ -110,27 +87,11 @@ public class FormActivity extends AppCompatActivity {
 
                 //Create Identifier for variable types in this .java file
                 //Make an arraylist instead of putExtra
+                //Testing parse so I am commenting this out.
                 intent.putExtra("formVar", formVariables);
 
                 //Start other Activity (MapsActivity) with pin
                 startActivity(intent);
-            }
-        });
-
-    }
-    private void storeData(ParseObject testObject, String eName, String eType, String eTime){
-        testObject.put("eName", "testName");
-        testObject.put("eType", "testType");
-        testObject.put("eTime", "testTime");
-        //testObject.put("lats", lats);
-        //testObject.put("longs", longs);
-        testObject.saveInBackground(new SaveCallback() {
-            public void done(ParseException e) {
-                if (e == null) {
-                    Log.d("parse", "success!");
-                } else {
-                    Log.d("parse", "someone goofed"+e);
-                }
             }
         });
     }
