@@ -11,6 +11,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -316,9 +317,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Toast.makeText(this, "Click Successful", Toast.LENGTH_SHORT).show();
         //going to use the northridge location as a tester
         mMap.addMarker(new MarkerOptions()
-                    .position(northRidge)
+                        .position(northRidge)
         );//end adding marker
 
     }
+
 }
 
