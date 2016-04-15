@@ -38,7 +38,7 @@
         <activity
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
 
         <!-- Connecting the app to Parse -->
         <meta-data
@@ -50,11 +50,10 @@
         <activity
             android:name=".FormActivity"
             android:label="FormScreen"
-            android:theme="@style/AppTheme.NoActionBar">
-            </activity>
+            android:theme="@style/AppTheme.NoActionBar" />
 
-            <!-- The Intent-filter controls what activity launches first -->
-        <!--SpalshActivity starts first-->
+        <!-- The Intent-filter controls what activity launches first -->
+        <!-- SpalshActivity starts first -->
         <activity android:name=".SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -62,10 +61,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity android:name=".ViewEvent">
-
-        </activity>
+        <activity android:name=".ViewEvent" />
+        <activity android:name=".LoginActivity"
+            android:windowSoftInputMode="stateHidden"></activity>
+        <activity android:name=".MyEventsActivity" />
+        <activity android:name=".FriendsActivity" />
+        <activity android:name=".SettingsActivity"></activity>
     </application>
 
 </manifest>

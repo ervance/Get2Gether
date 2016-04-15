@@ -60,6 +60,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private DrawerAdapter adapter;
     private List<NavigationIcon> drawerString;
     final private String[] NAVIGATION = {"Create Event","My Events", "Filter", "Friends", "QR Code", "Settings"};
+    final private int[] IMG = {R.drawable.holderpic,R.drawable.holderpic,R.drawable.holderpic,R.drawable.holderpic,R.drawable.holderpic,R.drawable.holderpic};
     /***End Drawer***/
 
     @Override
@@ -103,10 +104,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         //create drawerString
         drawerString = new ArrayList<>();
-        NavigationIcon n = new NavigationIcon();
         // will need to populate the list with something meaningful to what we want on our drawer
+        //this creates the drawer
         for(int i = 0; i < NAVIGATION.length; i++){
+            //Note: had this problem before, it was just changing the same objects
+            //attributes so the whole drawer was the same info
+            NavigationIcon n = new NavigationIcon();
             n.title = NAVIGATION[i];
+            n.imgId = IMG[i];
             drawerString.add(n);
         }
         listView = (ListView) drawerLayout.findViewById(R.id.drawer_list); //in drawer.xml
@@ -332,22 +337,24 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Intent intent;
         switch (activity){
             case 0:
-                intent = new Intent(MapsActivity.this, MyEventsActivity.class);
+                intent = new Intent(MapsActivity.this, FormActivity.class);
                 break;
             case 1:
-                intent = new Intent(MapsActivity.this, FilterActivity.class);
+                intent = new Intent(MapsActivity.this, MyEventsActivity.class);
                 break;
             case 2:
+                //Todo: change to filter
                 intent = new Intent(MapsActivity.this, FormActivity.class);
                 break;
             case 3:
-                intent = new Intent(MapsActivity.this, FormActivity.class);
+                intent = new Intent(MapsActivity.this, FriendsActivity.class);
                 break;
             case 4:
+                //ToDo: add QR here
                 intent = new Intent(MapsActivity.this, FormActivity.class);
                 break;
             case 5:
-                intent = new Intent(MapsActivity.this, FormActivity.class);
+                intent = new Intent(MapsActivity.this, SettingsActivity.class);
                 break;
             default:
                 intent = new Intent(MapsActivity.this, MapsActivity.class);

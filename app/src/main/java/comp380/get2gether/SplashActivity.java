@@ -31,7 +31,7 @@ public class SplashActivity extends Activity {
             public void onAnimationEnd(Animation animation) {
                 logo.startAnimation(fade);
                 finish();
-                Intent i = new Intent(getBaseContext(), FormActivity.class);
+                Intent i = new Intent(getBaseContext(), LoginActivity.class);
                 startActivity(i);
             }
 

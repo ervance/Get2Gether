@@ -61,7 +61,7 @@ public class DrawerAdapter extends ArrayAdapter<NavigationIcon> {
 //            Log.e("MENU", "" + alMarkers.get(position).title + " " + alMarkers.get(position).imgId);
 //        }
 //        //end log
-        holder.img.setImageResource(R.drawable.holderpic);
+        holder.img.setImageResource(drawerString.get(position).imgId);
         holder.title.setText(drawerString.get(position).title);
         return view;
     }//end getView
