@@ -7,16 +7,14 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
-import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -24,14 +22,12 @@ import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.parse.FindCallback;
-import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -104,6 +100,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         drawerString = new ArrayList<>();
         // will need to populate the list with something meaningful to what we want on our drawer
         drawerString.add("Test Holder");
+
         listView = (ListView) drawerLayout.findViewById(R.id.drawer_list); //in drawer.xml
         listView.setOnItemClickListener(this);
         adapter = new DrawerAdapter(MapsActivity.this, drawerString);
