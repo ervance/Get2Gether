@@ -37,7 +37,7 @@ public class DrawerAdapter extends ArrayAdapter<NavigationIcon> {
 //        return alMarkers.size();
 //    }
 
-    //@Override
+    @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
         View view = convertView;
