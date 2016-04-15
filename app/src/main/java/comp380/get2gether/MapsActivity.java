@@ -59,7 +59,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private ListView listView;
     private DrawerAdapter adapter;
     private List<NavigationIcon> drawerString;
-    final private String[] NAVIGATION = {"Create Event","My Events", "Filter", "Friends", "QR Codr", "Settings"};
+    final private String[] NAVIGATION = {"Create Event","My Events", "Filter", "Friends", "QR Code", "Settings"};
     /***End Drawer***/
 
     @Override
@@ -320,10 +320,43 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //ToDo: this is where you handle what happens when the item in the drawer is clicked
         Toast.makeText(this, "Click Successful", Toast.LENGTH_SHORT).show();
         //going to use the northridge location as a tester
-        mMap.addMarker(new MarkerOptions()
-                    .position(northRidge)
-        );//end adding marker
+        Intent intent = switchActivity(position);
+        startActivity(intent);
 
     }
+
+    private Intent switchActivity(int activity){
+        //0: create 1: my event 2: filter 3: friends 4: QR 5: settings
+        //defualts to back to map activity for now until figure out a better
+        //solution
+        Intent intent;
+        switch (activity){
+            case 0:
+                intent = new Intent(MapsActivity.this, MyEventsActivity.class);
+                break;
+            case 1:
+                intent = new Intent(MapsActivity.this, FilterActivity.class);
+                break;
+            case 2:
+                intent = new Intent(MapsActivity.this, FormActivity.class);
+                break;
+            case 3:
+                intent = new Intent(MapsActivity.this, FormActivity.class);
+                break;
+            case 4:
+                intent = new Intent(MapsActivity.this, FormActivity.class);
+                break;
+            case 5:
+                intent = new Intent(MapsActivity.this, FormActivity.class);
+                break;
+            default:
+                intent = new Intent(MapsActivity.this, MapsActivity.class);
+                break;
+        }
+        return intent;
+    }
+
+
+
 }
 
