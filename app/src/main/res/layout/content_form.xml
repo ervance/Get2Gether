@@ -37,44 +37,28 @@
         android:layout_alignEnd="@+id/completeForm"
         android:text="Event Name" />
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="time"
-        android:ems="10"
-        android:id="@+id/eventTime"
-        android:layout_marginTop="100dp"
-        android:text="Event Time"
-        android:layout_below="@+id/eventName"
-        android:layout_alignParentStart="true" />
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/getLat"
-        android:layout_below="@+id/eventTime"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="45dp"
-        android:layout_toStartOf="@+id/completeForm" />
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/getLong"
-        android:layout_below="@+id/getLat"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="31dp"
-        android:layout_alignEnd="@+id/getLat" />
-
     <Button
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Choose Event Type"
         android:id="@+id/button"
+        android:layout_marginTop="56dp"
+        android:onClick="selectEventType"
+        android:layout_below="@+id/button1"
+        android:layout_alignParentStart="true" />
+
+
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Choose Event Time"
+        android:id="@+id/button1"
+        android:onClick="selectEventTime"
+        android:layout_marginTop="41dp"
         android:layout_below="@+id/eventName"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="33dp"
-        android:onClick="selectEventType"/>
+        android:layout_alignParentStart="true" />
 
 </RelativeLayout>

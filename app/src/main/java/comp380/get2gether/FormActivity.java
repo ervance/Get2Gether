@@ -23,10 +23,6 @@ public class FormActivity extends FragmentActivity {
     private EditText chosenEventType; //Holds eventLocation ""
     private EditText chosenEventTime;  //holds the eventTime ""
 
-    //lat lng test vars
-    private EditText latitude;
-    private EditText longitude;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,28 +47,20 @@ public class FormActivity extends FragmentActivity {
                 //chosenEventType = (EditText) findViewById(R.id.eventType);
                 chosenEventTime = (EditText) findViewById(R.id.eventTime);
 
-                //Get lat and long
-                latitude = (EditText) findViewById(R.id.getLat);
-                longitude = (EditText) findViewById(R.id.getLong);
 
                 String eName = chosenEventName.getText().toString();
                 //changed to choice box
                 //String eType = chosenEventType.getText().toString();
                 String eType =getIntent().getStringExtra("eventChoice");
                 //Changed to choice box
-                String eTime = chosenEventTime.getText().toString();
+                String eTime =getIntent().getStringExtra("timeChoice");
 
-                //lat lngs to pass
-                String lats = latitude.getText().toString();
-                String longs = longitude.getText().toString();
 
                 //Built Arraylist to store variables from Form
                 ArrayList<String> formVariables = new ArrayList<>();
                 formVariables.add(eName);
                 formVariables.add(eType);
                 formVariables.add(eTime);
-                formVariables.add(lats);
-                formVariables.add(longs);
 
                 //Add it to parse test
                 ParseObject inputForm = new ParseObject("InputForm");
@@ -102,8 +90,16 @@ public class FormActivity extends FragmentActivity {
         });
     }
 
+
+
+    //These  methods are the buttons for event type and time
     public void selectEventType(View v){
         ChoiceList choiceBox = new ChoiceList();
-        choiceBox.show(getSupportFragmentManager(),"choiceBox");
+        choiceBox.show(getSupportFragmentManager(), "choiceBox");
+    }
+
+    public void selectEventTime(View v){
+        ChoiceTime timeBox = new ChoiceTime();
+        timeBox.show(getSupportFragmentManager(),"timeBox");
     }
 }
