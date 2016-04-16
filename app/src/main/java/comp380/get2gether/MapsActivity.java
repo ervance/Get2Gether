@@ -338,21 +338,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Intent intent;
         switch (activity){
             case 0:
-                intent = new Intent(MapsActivity.this, FormActivity.class);
+                intent = new Intent(MapsActivity.this, CreateActivity.class);
                 break;
             case 1:
                 intent = new Intent(MapsActivity.this, MyEventsActivity.class);
                 break;
             case 2:
                 //Todo: change to filter
-                intent = new Intent(MapsActivity.this, FormActivity.class);
+                intent = new Intent(MapsActivity.this, CreateActivity.class);
                 break;
             case 3:
                 intent = new Intent(MapsActivity.this, FriendsActivity.class);
                 break;
             case 4:
                 //ToDo: add QR here
-                intent = new Intent(MapsActivity.this, FormActivity.class);
+                intent = new Intent(MapsActivity.this, CreateActivity.class);
                 break;
             case 5:
                 intent = new Intent(MapsActivity.this, SettingsActivity.class);

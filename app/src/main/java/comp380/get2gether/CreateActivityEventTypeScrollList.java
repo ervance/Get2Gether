@@ -65,8 +65,8 @@ public class CreateActivityEventTypeScrollList extends DialogFragment
             //Inside this method is where you will pass the selection to the variable in the other
             //form
             public void onClick(DialogInterface dialog, int which) {
-                Intent intent = new Intent();
-                intent.putExtra("eventChoice", selection);
+                Intent eventTypeChoice = new Intent();
+                eventTypeChoice.putExtra("eventChoice", selection);
             }
         });
         return builder.create();

@@ -30,6 +30,8 @@ public class CreateActivity extends FragmentActivity {
         Button submitButton =(Button) findViewById(R.id.completeForm);
 
         //Create an onClickListener to save user input to variables and open MapActivity
+        //Once the "Subtmit" button has been pressed save the event name "eName"
+        //Save the event type "eType", and save the event time "eTime"
         submitButton.setOnClickListener(new View.OnClickListener() {
 
             //This is for for the submit button on the form page
