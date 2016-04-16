@@ -12,4 +12,16 @@
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_incorrect_password">This password is incorrect</string>
     <!-- end Login-->
+
+    <!-- Array for Event Type static Spinner-->
+        <string-array name="brew_array">
+            <item>Select Event Type</item>
+            <item>Sports</item>
+            <item>Food</item>
+            <item>Social</item>
+            <item>Relax</item>
+            <item>Other</item>
+        </string-array>
+    <!-- End Array for Event Type -->
+
 </resources>
