@@ -3,6 +3,7 @@ package comp380.get2gether;
 import 	android.app.Notification.Builder;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.location.Location;
 import android.location.LocationManager;
 import android.location.LocationListener;
@@ -15,6 +16,8 @@ import com.google.android.gms.games.internal.constants.NotificationChannel;
 import com.google.android.gms.maps.model.LatLng;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -48,6 +51,10 @@ public class NotificationActivity extends AppCompatActivity {
         //pass ArrayAdapter into ListView
         ListView listView = (ListView) findViewById(R.id.lvItems);
         listView.setAdapter(itemsAdapter);
+
+        //condition needed
+       // Intent intent = new Intent(NotificationActivity.this, MapsActivity.class);
+       // startActivity(intent);
 
     }
 

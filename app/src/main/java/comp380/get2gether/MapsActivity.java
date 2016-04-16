@@ -360,10 +360,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         return intent;
     }
 
-    public void notif(View view) {
-        Intent intent = new Intent(MapsActivity.this, NotificationActivity.class);
-        startActivity(intent);
-    }
+   // public void notif(View view) {
+   //     Intent intent = new Intent(MapsActivity.this, NotificationActivity.class);
+  //      startActivity(intent);
+   // }
 
 
 
