@@ -3,11 +3,11 @@ package comp380.get2gether;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-
-import com.parse.ParseObject;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -67,7 +67,7 @@ public class CreateActivity extends FragmentActivity {
                 //Toast is a pop up message on screen could be useful later...right now not important.
                  //Toast toast = new Toast(getApplicationContext());
                  //toast.setGravity(Gravity.TOP| Gravity.LEFT, 0, 0);
-                 //toast.makeText(CreateActivity.this, chosenEventName.getText(), toast.LENGTH_SHORT).show();
+                 //toast.makeText(CreateActivity.this, eTime, toast.LENGTH_SHORT).show();
                 //----------------------------------------------------------------------------------------
 
                 //Create an Intent in order to pass info to "MapsAcitivity"
@@ -89,7 +89,7 @@ public class CreateActivity extends FragmentActivity {
 
     //These  methods are the buttons for event type and time
     public void selectEventType(View v){
-        CreateAcitivtyEventTypeScrollList choiceBox = new CreateAcitivtyEventTypeScrollList();
+        CreateActivityEventTypeScrollList choiceBox = new CreateActivityEventTypeScrollList();
         choiceBox.show(getSupportFragmentManager(), "choiceBox");
     }
 
