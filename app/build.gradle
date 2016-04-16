@@ -27,4 +27,14 @@ dependencies {
     compile 'com.google.android.gms:play-services:8.4.0'
     compile 'com.parse.bolts:bolts-android:1.+'
     compile 'com.parse:parse-android:1.+'
+
+    // Added for zxing DO NOT DELETE NEXT 3 files and repositories! needed for QR
+    compile 'com.google.zxing:core:3.2.1'
+    compile 'com.embarkmobile:zxing-android-minimal:2.0.0@aar'
+    compile 'com.embarkmobile:zxing-android-integration:2.0.0@aar'
+
+
+}
+repositories { mavenCentral()
+    maven { url "https://raw.github.com/embarkmobile/zxing-android-minimal/mvn-repo/maven-repository/" }
 }
