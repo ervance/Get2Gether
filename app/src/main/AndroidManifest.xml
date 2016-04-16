@@ -15,6 +15,11 @@
     <!-- Needed for Parse -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
+    <!--NEED for QR-->
+    <uses-sdk android:minSdkVersion="15" />
+    <uses-permission android:name="android.permission.WRITE_INTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <application
         android:name=".ParseInit"
         android:allowBackup="true"
@@ -43,12 +48,12 @@
         <!-- Connecting the app to Parse -->
         <meta-data
             android:name="comp380.get2gether"
-            android:value="get2gether" />
+            android:value="KickIt" />
 
         <!-- end parse connection -->
 
         <activity
-            android:name=".FormActivity"
+            android:name=".CreateActivity"
             android:label="FormScreen"
             android:theme="@style/AppTheme.NoActionBar" />
 
@@ -66,6 +71,7 @@
             android:windowSoftInputMode="stateHidden"></activity>
         <activity android:name=".MyEventsActivity" />
         <activity android:name=".FriendsActivity" />
+        <activity android:name=".QRGenerator" />
         <activity android:name=".SettingsActivity"></activity>
     </application>
 

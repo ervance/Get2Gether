@@ -12,7 +12,6 @@
         android:layout_height="wrap_content"
         android:maxWidth="42dp"
         android:maxHeight="42dp"
-
         android:scaleType="fitCenter"
         android:adjustViewBounds="true"
         android:layout_marginLeft="5dp"

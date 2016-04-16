@@ -7,16 +7,14 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
-import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -24,14 +22,12 @@ import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.parse.FindCallback;
-import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -338,21 +334,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Intent intent;
         switch (activity){
             case 0:
-                intent = new Intent(MapsActivity.this, FormActivity.class);
+                intent = new Intent(MapsActivity.this, CreateActivity.class);
                 break;
             case 1:
                 intent = new Intent(MapsActivity.this, MyEventsActivity.class);
                 break;
             case 2:
                 //Todo: change to filter
-                intent = new Intent(MapsActivity.this, FormActivity.class);
+                intent = new Intent(MapsActivity.this, CreateActivity.class);
                 break;
             case 3:
-                intent = new Intent(MapsActivity.this, FriendsActivity.class);
+                intent = new Intent(MapsActivity.this, CreateActivity.class);
                 break;
             case 4:
                 //ToDo: add QR here
-                intent = new Intent(MapsActivity.this, FormActivity.class);
+                intent = new Intent(MapsActivity.this, QRGenerator.class);
                 break;
             case 5:
                 intent = new Intent(MapsActivity.this, SettingsActivity.class);
