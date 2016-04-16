@@ -3,10 +3,14 @@ package comp380.get2gether;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -21,8 +25,47 @@ public class CreateActivity extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_form);
-        //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        //setSupportActionBar(toolbar);
+
+
+        //---------------------------------------------------------------------------------------
+        final Spinner staticSpinner = (Spinner) findViewById(R.id.static_spinner);
+
+        // Create an ArrayAdapter using the string array and a default spinner
+        ArrayAdapter<CharSequence> staticAdapter = ArrayAdapter
+                .createFromResource(this, R.array.brew_array,
+                        android.R.layout.simple_spinner_item);
+
+        // Specify the layout to use when the list of choices appears
+        staticAdapter
+                .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        // Apply the adapter to the spinner
+        staticSpinner.setAdapter(staticAdapter);
+
+        final Spinner dynamicSpinner = (Spinner) findViewById(R.id.dynamic_spinner);
+
+        String[] items = new String[] {"Select a Time", "1:00 am","2:00 am","3:00 am","4:00 am","5:00 am","6:00 am",
+                "7:00 am","8:00 am","9:00 am","10:00 am","11:00 am","12:00 pm","1:00 pm","2:00 pm","3:00 pm","4:00 pm","5:00 pm","6:00 pm",
+                "7:00 pm","8:00 pm","9:00 pm","10:00 pm","11:00 pm","12:00 am"};
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_item, items);
+
+        dynamicSpinner.setAdapter(adapter);
+
+        dynamicSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view,
+                                       int position, long id) {
+                Log.v("item", (String) parent.getItemAtPosition(position));
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // TODO Auto-generated method stub
+            }
+        });
+        //---------------------------------------------------------------------------------------
 
 
 
@@ -40,16 +83,9 @@ public class CreateActivity extends FragmentActivity {
 
                 //On button press, store text from the 3 fields
                 chosenEventName = (EditText) findViewById(R.id.eventName);
-                //chosenEventType = (EditText) findViewById(R.id.eventType);
-                //chosenEventTime = (EditText) findViewById(R.id.eventTime);
-
-
                 String eName = chosenEventName.getText().toString();
-                //changed to choice box
-                //String eType = chosenEventType.getText().toString();
-                String eType =getIntent().getStringExtra("eventChoice");
-                //Changed to choice box
-                String eTime =getIntent().getStringExtra("timeChoice");
+                String eType = staticSpinner.getSelectedItem().toString();
+                String eTime =dynamicSpinner.getSelectedItem().toString();
 
 
                 //Built Arraylist to store variables from Form
@@ -85,18 +121,5 @@ public class CreateActivity extends FragmentActivity {
                 startActivity(intent);
             }
         });
-    }
-
-
-
-    //These  methods are the buttons for event type and time
-    public void selectEventType(View v){
-        CreateActivityEventTypeScrollList choiceBox = new CreateActivityEventTypeScrollList();
-        choiceBox.show(getSupportFragmentManager(), "choiceBox");
-    }
-
-    public void selectEventTime(View v){
-        CreateActivityEventTimeScrollList timeBox = new CreateActivityEventTimeScrollList();
-        timeBox.show(getSupportFragmentManager(),"timeBox");
     }
 }
