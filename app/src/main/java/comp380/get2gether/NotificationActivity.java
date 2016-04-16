@@ -38,7 +38,7 @@ public class NotificationActivity extends AppCompatActivity {
         LatLng northRidge = new LatLng(34.2417, -118.5283);
 
         //populate arraylist
-        ArrayList<String> notif = new ArrayList<String>();
+        ArrayList<String> notif;
         notif = getNotif();
 
         //prepare for ListView
