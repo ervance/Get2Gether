@@ -6,4 +6,10 @@
     <string name="title_activity_form">FormActivity</string>
     <string name="application_id">comp380.get2gether</string>
     <string name="event_save">Save Event</string>
+    <!-- LoginForm Strings-->
+    <string name="error_field_required">This field is required</string>
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <!-- end Login-->
 </resources>

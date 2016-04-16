@@ -58,7 +58,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private RelativeLayout mDrawer;
     private ListView listView;
     private DrawerAdapter adapter;
-    private List<String> drawerString;
+    private List<NavigationIcon> drawerString;
+    final private String[] NAVIGATION = {"Create Event","My Events", "Filter", "Friends", "QR Code", "Settings"};
+    final private int[] IMG = {R.drawable.holderpic,R.drawable.holderpic,R.drawable.holderpic,R.drawable.holderpic,R.drawable.holderpic,R.drawable.holderpic};
     /***End Drawer***/
 
     @Override
@@ -66,6 +68,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.drawer);//this was activity_maps
+        //the drawer layout has the link to the map fragment that is why it works!
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -103,7 +106,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //create drawerString
         drawerString = new ArrayList<>();
         // will need to populate the list with something meaningful to what we want on our drawer
-        drawerString.add("Test Holder");
+        //this creates the drawer
+        for(int i = 0; i < NAVIGATION.length; i++){
+            //Note: had this problem before, it was just changing the same objects
+            //attributes so the whole drawer was the same info
+            NavigationIcon n = new NavigationIcon();
+            n.title = NAVIGATION[i];
+            n.imgId = IMG[i];
+            drawerString.add(n);
+        }
         listView = (ListView) drawerLayout.findViewById(R.id.drawer_list); //in drawer.xml
         listView.setOnItemClickListener(this);
         adapter = new DrawerAdapter(MapsActivity.this, drawerString);
@@ -315,10 +326,45 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //ToDo: this is where you handle what happens when the item in the drawer is clicked
         Toast.makeText(this, "Click Successful", Toast.LENGTH_SHORT).show();
         //going to use the northridge location as a tester
-        mMap.addMarker(new MarkerOptions()
-                    .position(northRidge)
-        );//end adding marker
+        Intent intent = switchActivity(position);
+        startActivity(intent);
 
     }
+
+    private Intent switchActivity(int activity){
+        //0: create 1: my event 2: filter 3: friends 4: QR 5: settings
+        //defualts to back to map activity for now until figure out a better
+        //solution
+        Intent intent;
+        switch (activity){
+            case 0:
+                intent = new Intent(MapsActivity.this, FormActivity.class);
+                break;
+            case 1:
+                intent = new Intent(MapsActivity.this, MyEventsActivity.class);
+                break;
+            case 2:
+                //Todo: change to filter
+                intent = new Intent(MapsActivity.this, FormActivity.class);
+                break;
+            case 3:
+                intent = new Intent(MapsActivity.this, FriendsActivity.class);
+                break;
+            case 4:
+                //ToDo: add QR here
+                intent = new Intent(MapsActivity.this, FormActivity.class);
+                break;
+            case 5:
+                intent = new Intent(MapsActivity.this, SettingsActivity.class);
+                break;
+            default:
+                intent = new Intent(MapsActivity.this, MapsActivity.class);
+                break;
+        }
+        return intent;
+    }
+
+
+
 }
 
