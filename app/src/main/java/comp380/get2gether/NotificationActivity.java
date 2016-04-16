@@ -15,6 +15,8 @@ import com.google.android.gms.games.internal.constants.NotificationChannel;
 import com.google.android.gms.maps.model.LatLng;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 public class NotificationActivity extends AppCompatActivity {
     private ArrayList<String> notify = new ArrayList<>();
@@ -38,6 +40,14 @@ public class NotificationActivity extends AppCompatActivity {
         //populate arraylist
         ArrayList<String> notif = new ArrayList<String>();
         notif = getNotif();
+
+        //prepare for ListView
+        ArrayAdapter<String> itemsAdapter =
+                new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, notif);
+
+        //pass ArrayAdapter into ListView
+        ListView listView = (ListView) findViewById(R.id.lvItems);
+        listView.setAdapter(itemsAdapter);
 
     }
 
