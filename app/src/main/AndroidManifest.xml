@@ -53,6 +53,10 @@
             android:theme="@style/AppTheme.NoActionBar">
             </activity>
 
+        <activity
+            android:name=".NotificationActivity"
+            android:screenOrientation="portrait"></activity>
+
             <!-- The Intent-filter controls what activity launches first -->
         <!--SpalshActivity starts first-->
         <activity android:name=".SplashActivity">
