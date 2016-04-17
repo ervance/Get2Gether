@@ -57,14 +57,9 @@ public class CreateActivity extends FragmentActivity implements GoogleApiClient.
 
     /******Map fields******/
     private GoogleMap mMap;
-    private ArrayList<LatLng> coordinateList = new ArrayList<>();  //collects coordinates
-    private int listSize;  //size of coordinateList
     private LocationManager locManager;
-    private LatLng currentLocale;
-    private OnMapReadyCallback callback;
     private GoogleApiClient mLocationClient;
     private com.google.android.gms.location.LocationListener mListener;
-    LatLng northRidge = new LatLng(34.2417, -118.5283);
     /****End Map fields****/
 
 
@@ -73,9 +68,11 @@ public class CreateActivity extends FragmentActivity implements GoogleApiClient.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_form);
 
-        //---------------------------------------------------------------------------------------
+        //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        //This code handles the map checking and initialization
+
        //if statement checks to see if we are connected to the map.
-        //if we are go to Northridge first as current loc.
+        //if we are, go to Northridge first as current loc.
         if (servicesOK()) {
             if (initMap()) {
                 gotoLocation(34.2417, -118.5283, 15);
@@ -87,16 +84,10 @@ public class CreateActivity extends FragmentActivity implements GoogleApiClient.
                         .build();
 
                 mLocationClient.connect();
-
-//                mMap.setMyLocationEnabled(true);
             } else {
                 Toast.makeText(this, "Map not connected!", Toast.LENGTH_SHORT).show();
             }
-
         }//end checking to see if map is working
-
-
-
             //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
             //---------------------------------------------------------------------------------------
@@ -138,9 +129,7 @@ public class CreateActivity extends FragmentActivity implements GoogleApiClient.
                     // TODO Auto-generated method stub
                 }
             });
-            //---------------------------------------------------------------------------------------
-
-
+            //-------------------------END SPINNER SECTION-------------------------------------------
             //Ties the completeForm button to the variable submitButton
             Button submitButton = (Button) findViewById(R.id.completeForm);
 
@@ -151,8 +140,6 @@ public class CreateActivity extends FragmentActivity implements GoogleApiClient.
 
                 //This is for for the submit button on the form page
                 public void onClick(View v) {
-
-
                     //On button press, store text from the 3 fields
                     chosenEventName = (EditText) findViewById(R.id.eventName);
                     String eName = chosenEventName.getText().toString();
@@ -174,10 +161,6 @@ public class CreateActivity extends FragmentActivity implements GoogleApiClient.
                 inputForm.put("time", eTime);
                 inputForm.saveInBackground();
                 */
-                    //Toast is a pop up message on screen could be useful later...right now not important.
-                    //Toast toast = new Toast(getApplicationContext());
-                    //toast.setGravity(Gravity.TOP| Gravity.LEFT, 0, 0);
-                    //toast.makeText(CreateActivity.this, eTime, toast.LENGTH_SHORT).show();
                     //----------------------------------------------------------------------------------------
 
                     //Create an Intent in order to pass info to "MapsAcitivity"
