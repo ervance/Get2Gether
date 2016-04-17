@@ -1,6 +1,8 @@
 package comp380.get2gether;
 
 import android.Manifest;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -8,6 +10,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.DrawerLayout;
@@ -19,6 +22,11 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.text.SimpleDateFormat;
+import java.util.Timer;
+import java.util.TimerTask;
+
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -33,6 +41,7 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 
@@ -58,6 +67,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     final private String[] NAVIGATION = {"Create Event","My Events", "Filter", "Friends", "QR Code", "Settings"};
     final private int[] IMG = {R.drawable.holderpic,R.drawable.holderpic,R.drawable.holderpic,R.drawable.holderpic,R.drawable.holderpic,R.drawable.holderpic};
     /***End Drawer***/
+
+    Timer timer;
+    TimerTask timerTask;
+    final Handler handler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,7 +129,49 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         adapter = new DrawerAdapter(MapsActivity.this, drawerString);
         listView.setAdapter(adapter);
 
+}
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //onResume we start our timer so it can start when the app comes from the background
+        startTimer();
     }
+    //TODO: find way to execute a task repeatedly and save old values
+    //run notifications service in background->currently every 5 secs
+    public void startTimer() {
+        //set a new Timer
+        timer = new Timer();
+        //initialize the TimerTask's job
+        initializeTimerTask();
+        //schedule the timer, after the first 5000ms the TimerTask will run every 10000ms
+        timer.schedule(timerTask, 5000, 10000); //
+    }
+    public void initializeTimerTask() {
+        timerTask = new TimerTask() {
+            public void run() {
+                //use a handler to run a toast that shows when new item added for user in database for notification
+                handler.post(new Runnable() {
+                    public void run() {
+                        //comparing static number with random number between 1 and 10
+                        int oldSize = 5;
+                        int newSize = (int )(Math.random() * 10 + 1);
+                        if(oldSize < newSize) {
+                            Calendar calendar = Calendar.getInstance();
+                            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd:MMMM:yyyy HH:mm:ss a");
+                            final String strDate = simpleDateFormat.format(calendar.getTime()) + "new notification!";
+                            //show the toast
+                            int duration = Toast.LENGTH_SHORT;
+                            Toast toast = Toast.makeText(getApplicationContext(), strDate, duration);
+                            toast.show();
+                        }
+                    }
+                });
+            }
+        };
+
+    }
+
+
 
     /**
      * Manipulates the map once available.
@@ -360,10 +415,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         return intent;
     }
 
-   /* public void notif(View view) {
+    public void notif(View view) {
         Intent intent = new Intent(MapsActivity.this, NotificationActivity.class);
         startActivity(intent);
-    }*/
+    }
 
 
 

@@ -13,7 +13,6 @@
         android:id="@+id/notif_list_view"
         android:layout_centerHorizontal="true"
         android:layout_alignParentTop="true"
-        android:backgroundTint="@color/colorPrimary"
-        />
+        android:backgroundTint="@color/colorPrimary" />
 
 </RelativeLayout>
