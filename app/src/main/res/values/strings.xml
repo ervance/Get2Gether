@@ -20,8 +20,10 @@
         <string-array name="brew_array">
             <item>Select Event Type</item>
             <item>Sports</item>
+            <item>Drinks</item>
             <item>Food</item>
             <item>Social</item>
+            <item>Gaming</item>
             <item>Relax</item>
             <item>Other</item>
         </string-array>

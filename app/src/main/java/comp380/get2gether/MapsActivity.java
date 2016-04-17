@@ -15,11 +15,16 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -36,7 +41,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener, AdapterView.OnItemClickListener {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener, AdapterView.OnItemClickListener{
 
 
     /******Map fields******/
@@ -46,6 +51,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private LocationManager locManager;
     private LatLng currentLocale;
     private OnMapReadyCallback callback;
+    private GoogleApiClient mLocationClient;
+    private com.google.android.gms.location.LocationListener mListener;
     /****End Map fields****/
     LatLng northRidge = new LatLng(34.2417, -118.5283);
 
@@ -115,7 +122,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         listView.setOnItemClickListener(this);
         adapter = new DrawerAdapter(MapsActivity.this, drawerString);
         listView.setAdapter(adapter);
-
     }
 
     /**
@@ -231,7 +237,32 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         tvEname.setText(forms.get(0));
                         tvEType.setText(forms.get(1));
                         tvETime.setText(forms.get(2));
-                    }
+
+                        //Changes the image displayed based on the category chosen
+                        if(forms.get(2).equals("Sports")){
+                            ImageView img= (ImageView) findViewById(R.id.image);
+                            img.setImageResource(R.drawable.sports);
+                        }else if(forms.get(2).equals("Gaming")){
+                            ImageView img= (ImageView) findViewById(R.id.image);
+                            img.setImageResource(R.drawable.gaming);
+                        }else if(forms.get(2).equals("Food")){
+                            ImageView img= (ImageView) findViewById(R.id.image);
+                            img.setImageResource(R.drawable.food);
+                        }else if(forms.get(2).equals("Relax")){
+                            ImageView img= (ImageView) findViewById(R.id.image);
+                            img.setImageResource(R.drawable.relax);
+                        }else if(forms.get(2).equals("Drinks")){
+                            ImageView img= (ImageView) findViewById(R.id.image);
+                            img.setImageResource(R.drawable.drinks);
+                        }else if(forms.get(2).equals("Other")){
+                            ImageView img= (ImageView) findViewById(R.id.image);
+                            img.setImageResource(R.drawable.other);
+                        }else{
+                            ImageView img= (ImageView) findViewById(R.id.image);
+                            img.setImageResource(R.drawable.holderpic);
+                        }
+                    }//end Change picture section
+
                     return v;
                 }
             });
@@ -258,7 +289,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             if(currentLocale!=null) {
                 //add marker and move camera to current location
                 mMap.addMarker(marker);
-                mMap.moveCamera(CameraUpdateFactory.newLatLng(currentLocale));
+                gotoLocation(currentLocale.latitude, currentLocale.longitude,20);
             }else{
                 toast.makeText(MapsActivity.this, "No Current Location.", toast.LENGTH_SHORT).show();
             }
@@ -368,7 +399,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         return intent;
     }
 
-
-
+    //This method updates the maps current location
+    // Pass in a lat, lng, and zoom distance and it will move the camera to the desired location
+    private void gotoLocation(double lat, double lng, float zoom) {
+        LatLng latLng = new LatLng(lat, lng);
+        currentLocale = latLng;
+        CameraUpdate update = CameraUpdateFactory.newLatLngZoom(latLng, zoom);
+        mMap.moveCamera(update);
+    }
 }
 

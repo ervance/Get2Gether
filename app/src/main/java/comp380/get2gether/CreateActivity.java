@@ -312,6 +312,8 @@ public class CreateActivity extends FragmentActivity implements GoogleApiClient.
 
     }
 
+    //This method is to save battery, when the app is paused (sent to the background)
+    //it stops trying to update the map. If we need to add more battery saving things in, do it here
     @Override
     protected void onPause(){
         super.onPause();
