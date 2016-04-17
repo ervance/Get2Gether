@@ -1,8 +1,6 @@
 package comp380.get2gether;
 
 import android.Manifest;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -26,10 +24,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.text.SimpleDateFormat;
 import java.util.Timer;
 import java.util.TimerTask;
-
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -134,55 +130,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         adapter = new DrawerAdapter(MapsActivity.this, drawerString);
         listView.setAdapter(adapter);
 
+        startTimer(); //notifications
+
 }
-    @Override
-    protected void onResume() {
-        super.onResume();
-        //onResume we start our timer so it can start when the app comes from the background
-        startTimer();
-    }
-    //TODO: find way to execute a task repeatedly and save old values
-    //run notifications service in background->currently every 5 secs
-    public void startTimer() {
-        //set a new Timer
-        timer = new Timer();
-        //initialize the TimerTask's job
-        initializeTimerTask();
-        //schedule the timer, after the first 5000ms the TimerTask will run every 10000ms
-        timer.schedule(timerTask, 5000, 10000); //
-    }
-    public void initializeTimerTask() {
-        timerTask = new TimerTask() {
-            public void run() {
-                //use a handler to run a toast that shows when new item added for user in database for notification
-                handler.post(new Runnable() {
-                    public void run() {
-                        //comparing static number with random number between 1 and 10
-                        int newSize = (int )(Math.random() * 10 + 1);
-                        //here we have the saved size of the old notification object of the database
-                        //and we compare with the size of the new notification object that we just queried
-                        //if the new size is bigger, we will display a toast and change the button color
-                        //the timer feature will run in the background, so even in another android activity,
-                        //users will still get a toast message and the button will be a different color when they return
-                        //to maps
-                        if(oldSize < newSize) {
-                            final String msg = "New Notification!";
-                            //show the toast
-                            int duration = Toast.LENGTH_SHORT;
-                            Toast toast = Toast.makeText(getApplicationContext(), msg, duration);
-                            toast.show();
-                            //change button color
-                            Button button = (Button) findViewById(R.id.notifs);
-                            button.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY);
-                        }
-                    }
-                });
-            }
-        };
-
-    }
-
-
 
     /**
      * Manipulates the map once available.
@@ -435,6 +385,44 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
 
-
+    //TODO: find way to save old values db
+    //running notifications service in background->currently every 5 secs
+    public void startTimer() {
+        //set a new Timer
+        timer = new Timer();
+        //initialize the TimerTask's job
+        initializeTimerTask();
+        //schedule the timer, after the first 5000ms the TimerTask will run every 10000ms
+        timer.schedule(timerTask, 5000, 10000); //
+    }
+    public void initializeTimerTask() {
+        timerTask = new TimerTask() {
+            public void run() {
+                //use a handler to run a toast that shows when new item added for user in database for notification
+                handler.post(new Runnable() {
+                    public void run() {
+                        //comparing static number with random number between 1 and 10
+                        int newSize = (int )(Math.random() * 10 + 1);
+                        //here we have the saved size of the old notification object of the database
+                        //and we compare with the size of the new notification object that we just queried
+                        //if the new size is bigger, we will display a toast and change the button color
+                        //the timer feature will run in the background, so even in another android activity,
+                        //users will still get a toast message and the button will be a different color when they return
+                        //to maps
+                        if(oldSize < newSize) {
+                            final String msg = "New Notification!";
+                            //show the toast
+                            int duration = Toast.LENGTH_SHORT;
+                            Toast toast = Toast.makeText(getApplicationContext(), msg, duration);
+                            toast.show();
+                            //change button color
+                            Button button = (Button) findViewById(R.id.notifs);
+                            button.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY);
+                        }
+                    }
+                });
+            }
+        };
+    }
 }
 
