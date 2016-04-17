@@ -159,7 +159,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         int oldSize = 5;
                         int newSize = (int )(Math.random() * 10 + 1);
                         if(oldSize < newSize) {
-                            Calendar calendar = Calendar.getInstance();
                             final String msg = " new notification!";
                             //show the toast
                             int duration = Toast.LENGTH_SHORT;
