@@ -10,7 +10,7 @@
     any changes to this that need to be applied add the code there.-->
 
     <ImageView
-        android:id="@+id/image"
+        android:id="@+id/markerImage"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:src="@drawable/holderpic"/>

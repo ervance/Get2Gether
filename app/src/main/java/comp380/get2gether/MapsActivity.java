@@ -239,26 +239,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         tvETime.setText(forms.get(2));
 
                         //Changes the image displayed based on the category chosen
-                        if(forms.get(2).equals("Sports")){
-                            ImageView img= (ImageView) findViewById(R.id.image);
+                        if(forms.get(1).equals("Sports")){
+                            ImageView img= (ImageView) findViewById(R.id.markerImage);
                             img.setImageResource(R.drawable.sports);
-                        }else if(forms.get(2).equals("Gaming")){
-                            ImageView img= (ImageView) findViewById(R.id.image);
+                        }else if(forms.get(1).equals("Gaming")){
+                            ImageView img= (ImageView) findViewById(R.id.markerImage);
                             img.setImageResource(R.drawable.gaming);
-                        }else if(forms.get(2).equals("Food")){
-                            ImageView img= (ImageView) findViewById(R.id.image);
+                        }else if(forms.get(1).equals("Food")){
+                            ImageView img= (ImageView) findViewById(R.id.markerImage);
                             img.setImageResource(R.drawable.food);
-                        }else if(forms.get(2).equals("Relax")){
-                            ImageView img= (ImageView) findViewById(R.id.image);
+                        }else if(forms.get(1).equals("Relax")){
+                            ImageView img= (ImageView) findViewById(R.id.markerImage);
                             img.setImageResource(R.drawable.relax);
-                        }else if(forms.get(2).equals("Drinks")){
-                            ImageView img= (ImageView) findViewById(R.id.image);
+                        }else if(forms.get(1).equals("Drinks")){
+                            ImageView img= (ImageView) findViewById(R.id.markerImage);
                             img.setImageResource(R.drawable.drinks);
-                        }else if(forms.get(2).equals("Other")){
-                            ImageView img= (ImageView) findViewById(R.id.image);
+                        }else if(forms.get(1).equals("Other")){
+                            ImageView img= (ImageView) findViewById(R.id.markerImage);
                             img.setImageResource(R.drawable.other);
                         }else{
-                            ImageView img= (ImageView) findViewById(R.id.image);
+                            ImageView img= (ImageView) findViewById(R.id.markerImage);
                             img.setImageResource(R.drawable.holderpic);
                         }
                     }//end Change picture section
@@ -289,7 +289,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             if(currentLocale!=null) {
                 //add marker and move camera to current location
                 mMap.addMarker(marker);
-                gotoLocation(currentLocale.latitude, currentLocale.longitude,20);
+                gotoLocation(currentLocale.latitude, currentLocale.longitude,10);
             }else{
                 toast.makeText(MapsActivity.this, "No Current Location.", toast.LENGTH_SHORT).show();
             }
