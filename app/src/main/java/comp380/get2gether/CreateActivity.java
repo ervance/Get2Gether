@@ -1,6 +1,9 @@
 package comp380.get2gether;
 
+import android.app.Dialog;
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
@@ -10,12 +13,30 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class CreateActivity extends FragmentActivity {
 
@@ -23,6 +44,7 @@ public class CreateActivity extends FragmentActivity {
     private EditText chosenEventType; //Holds eventLocation ""
     private EditText chosenEventTime;  //holds the eventTime ""
     private GoogleMap mMap;             //Map variable for map fragment
+    private static final int DIALOG_REQUEST = 9001;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +53,7 @@ public class CreateActivity extends FragmentActivity {
 
         //---------------------------------------------------------------------------------------
         //This code handles the map portion of the createActivity page
-        if(serviceOK() && initMap)
+
 
 
         //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -131,9 +153,46 @@ public class CreateActivity extends FragmentActivity {
                 startActivity(intent);
             }
         });
+    }
+    public boolean servicesOK() {
+        int result = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
 
+        if (result == ConnectionResult.SUCCESS) {
+            return true;
+        } else if (GooglePlayServicesUtil.isUserRecoverableError(result)) {
+            Dialog dialog = GooglePlayServicesUtil.getErrorDialog(result, this, DIALOG_REQUEST);
+            dialog.show();
+        } else {
+            Toast.makeText(this, getString(R.string.error_connect_to_services), Toast.LENGTH_SHORT).show();
+        }
+        return false;
+    }
 
+    private boolean initMap() {
+        if (mMap == null) {
+            SupportMapFragment mapFrag = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+            mMap = mapFrag.getMap();
+        }
 
+        if (mMap != null) {
+            mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+                @Override
+                public View getInfoWindow(Marker marker) {
+                    return null;
+                }
+
+                @Override
+                public View getInfoContents(Marker marker) {
+                    View v = getLayoutInflater().inflate(R.layout.custom_info_window, null);
+                    LatLng latLng = marker.getPosition();
+                    ImageView iv = (ImageView) v.findViewById(R.id.imageView1);
+                    return v;
+                }
+            });
+
+        }
+
+        return (mMap != null);
 
     }
 }

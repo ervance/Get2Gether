@@ -24,4 +24,7 @@
         </string-array>
     <!-- End Array for Event Type -->
 
+    <!-- Map Strings -->
+    <string name="error_connect_to_services">Can\'t connect to Google Play services</string>
+    <!--End Map String -->
 </resources>
