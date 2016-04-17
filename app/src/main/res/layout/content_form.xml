@@ -31,7 +31,10 @@
         android:layout_marginTop="28dp"
         android:layout_alignParentStart="true"
         android:layout_alignEnd="@+id/completeForm"
-        android:text="Event Name" />
+        android:hint="Enter Event Name"
+        android:inputType="text"
+        android:elegantTextHeight="false"
+        android:linksClickable="true" />
 
 
 
