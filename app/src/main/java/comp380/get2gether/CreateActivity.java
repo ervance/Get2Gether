@@ -13,6 +13,8 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.GoogleMap;
+
 import java.util.ArrayList;
 
 public class CreateActivity extends FragmentActivity {
@@ -20,14 +22,22 @@ public class CreateActivity extends FragmentActivity {
     private EditText chosenEventName; //holds the event name from the eventName text box
     private EditText chosenEventType; //Holds eventLocation ""
     private EditText chosenEventTime;  //holds the eventTime ""
+    private GoogleMap mMap;             //Map variable for map fragment
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_form);
 
+        //---------------------------------------------------------------------------------------
+        //This code handles the map portion of the createActivity page
+        if(serviceOK() && initMap)
+
+
+        //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
         //---------------------------------------------------------------------------------------
+       //This code handles the spinner on the CreateActivity page
         final Spinner staticSpinner = (Spinner) findViewById(R.id.static_spinner);
 
         // Create an ArrayAdapter using the string array and a default spinner
