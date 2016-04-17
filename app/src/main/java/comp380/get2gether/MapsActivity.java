@@ -6,6 +6,8 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -18,6 +20,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -163,6 +166,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             int duration = Toast.LENGTH_SHORT;
                             Toast toast = Toast.makeText(getApplicationContext(), strDate, duration);
                             toast.show();
+                            //change button color
+                            Button button = (Button) findViewById(R.id.notifs);
+                            button.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY);
                         }
                     }
                 });
@@ -416,6 +422,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     public void notif(View view) {
+        Button button = (Button) findViewById(R.id.notifs);
+        button.getBackground().setColorFilter(Color.BLUE, PorterDuff.Mode.MULTIPLY);
         Intent intent = new Intent(MapsActivity.this, NotificationActivity.class);
         startActivity(intent);
     }
