@@ -43,6 +43,7 @@ import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,16 +51,23 @@ import java.util.List;
 public class CreateActivity extends FragmentActivity implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
 
+
+    /******FORM FIELDS********/
     private EditText chosenEventName; //holds the event name from the eventName text box
     private EditText chosenEventType; //Holds eventLocation ""
     private EditText chosenEventTime;  //holds the eventTime ""
-    private static final int ERROR_DIALOG_REQUEST = 9001;
+    ArrayList<String> formVariables = new ArrayList<>();
+    String latStringFromMarker;
+    String lngStringFromMarker;
+    /******FORM FIELDS********/
 
     /******Map fields******/
     private GoogleMap mMap;
     private LocationManager locManager;
     private GoogleApiClient mLocationClient;
     private com.google.android.gms.location.LocationListener mListener;
+    private LatLng currentLocale;  //holds the current location throughout the activity
+    private static final int ERROR_DIALOG_REQUEST = 9001;
     /****End Map fields****/
 
 
@@ -88,6 +96,22 @@ public class CreateActivity extends FragmentActivity implements GoogleApiClient.
                 Toast.makeText(this, "Map not connected!", Toast.LENGTH_SHORT).show();
             }
         }//end checking to see if map is working
+
+        //The following code checks to see if the map marker has been moved
+        //if it has been moved it will pass the lat and lng to the map activity class
+        mMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener(){
+            @Override
+            public void onMarkerDragStart(Marker marker){
+            }
+            @Override
+            public void onMarkerDrag(Marker marker){
+            }
+            @Override
+            public void onMarkerDragEnd(Marker marker){
+                LatLng ll = marker.getPosition();
+                currentLocale = ll;
+            }
+        });
             //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
             //---------------------------------------------------------------------------------------
@@ -145,13 +169,22 @@ public class CreateActivity extends FragmentActivity implements GoogleApiClient.
                     String eName = chosenEventName.getText().toString();
                     String eType = staticSpinner.getSelectedItem().toString();
                     String eTime = dynamicSpinner.getSelectedItem().toString();
+                    //Here is your objective. Make sure that the current location is always saved
+                    //to currentLocale, once it is saved to that then come into this section
+                    //break up the currentLocale into two variables to be put into the string array
+                    //then you need to go to map activity, unpack those locations and use them for
+                    String eLat = Double.toString(currentLocale.latitude);
+                    String eLng = Double.toString(currentLocale.longitude);
+
+                    //the marker on the map.
 
 
                     //Built Arraylist to store variables from Form
-                    ArrayList<String> formVariables = new ArrayList<>();
                     formVariables.add(eName);
                     formVariables.add(eType);
                     formVariables.add(eTime);
+                    formVariables.add(eLat);
+                    formVariables.add(eLng);
 
                 /* unblock this when ready for parse server
                 //Add it to parse test
@@ -212,8 +245,25 @@ public class CreateActivity extends FragmentActivity implements GoogleApiClient.
     // Pass in a lat, lng, and zoom distance and it will move the camera to the desired location
     private void gotoLocation(double lat, double lng, float zoom) {
         LatLng latLng = new LatLng(lat, lng);
+        currentLocale = latLng;
         CameraUpdate update = CameraUpdateFactory.newLatLngZoom(latLng, zoom);
         mMap.moveCamera(update);
+    }
+
+
+    private void placeMapMarker(double lat, double lng) {
+        LatLng latLng = new LatLng(lat, lng);
+        currentLocale =latLng;
+        MarkerOptions marker = new MarkerOptions()
+                .draggable(true)
+                .position(currentLocale);
+
+        if(currentLocale!=null) {
+            //add marker and move camera to current location
+            mMap.addMarker(marker);
+        }else{
+            Toast.makeText(CreateActivity.this, "No Current Location.", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -236,7 +286,8 @@ public class CreateActivity extends FragmentActivity implements GoogleApiClient.
         mListener = new com.google.android.gms.location.LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
-                gotoLocation(location.getLatitude(), location.getLongitude(), 15);
+                gotoLocation(location.getLatitude(), location.getLongitude(), 15);  //updates the map to the current location
+                placeMapMarker(location.getLatitude(), location.getLongitude());    //places movable marker on current location
             }
         };
         //This section updates the map
@@ -249,7 +300,6 @@ public class CreateActivity extends FragmentActivity implements GoogleApiClient.
         LocationServices.FusedLocationApi.requestLocationUpdates(
                 mLocationClient, request, mListener
         );
-
     }
 
     @Override

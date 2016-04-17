@@ -182,6 +182,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //currently forms.get(0) is Event Name
         //currently forms.get(1) is Event Type
         //currently forms.get(2) is Event Time
+        //currently forms.get(3) is Event lat
+        //currently forms.get(4) is Event lng
+
 
         //This section of code works on adding custom info window.--------------------------------
         if(mMap != null){
@@ -241,6 +244,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             toast.setGravity(Gravity.TOP | Gravity.LEFT, 0, 0);
             toast.makeText(MapsActivity.this, forms.get(0), toast.LENGTH_SHORT).show();
             //-------------------------------------------------------------------------------------
+            //here is were we are going to convert the lat and ng back into a LatLng variable
+            double lat = Double.parseDouble(forms.get(3));
+            double lng = Double.parseDouble(forms.get(4));
+            LatLng newLL = new LatLng(lat,lng);
+            currentLocale = newLL;
 
             //This is the marker that is being used to store the data from the form
             MarkerOptions marker = new MarkerOptions()
