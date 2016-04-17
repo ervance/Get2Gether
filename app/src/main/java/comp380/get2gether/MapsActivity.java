@@ -160,11 +160,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         int newSize = (int )(Math.random() * 10 + 1);
                         if(oldSize < newSize) {
                             Calendar calendar = Calendar.getInstance();
-                            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd:MMMM:yyyy HH:mm:ss a");
-                            final String strDate = simpleDateFormat.format(calendar.getTime()) + "new notification!";
+                            final String msg = " new notification!";
                             //show the toast
                             int duration = Toast.LENGTH_SHORT;
-                            Toast toast = Toast.makeText(getApplicationContext(), strDate, duration);
+                            Toast toast = Toast.makeText(getApplicationContext(), msg, duration);
                             toast.show();
                             //change button color
                             Button button = (Button) findViewById(R.id.notifs);
