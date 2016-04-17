@@ -9,7 +9,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="comp380.get2gether.FormActivity"
+    tools:context=".CreateActivity"
     tools:showIn="@layout/activity_form">
 
 
@@ -17,15 +17,11 @@
     When the user chooses create, they will be taken to this form which they will need to
     complete (or go back) in order to place the pin-->
 
-    <Button
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Submit"
-        android:id="@+id/completeForm"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="60dp" />
+
+    <LinearLayout
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical">
 
     <EditText
         android:layout_width="wrap_content"
@@ -37,43 +33,43 @@
         android:layout_alignEnd="@+id/completeForm"
         android:text="Event Name" />
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/eventType"
-        android:layout_below="@+id/eventName"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="41dp"
-        android:layout_alignEnd="@+id/eventName"
-        android:text="Event Type" />
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="time"
-        android:ems="10"
-        android:id="@+id/eventTime"
-        android:layout_below="@+id/eventType"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="35dp"
-        android:text="Event Time" />
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/getLat"
-        android:layout_below="@+id/eventTime"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="45dp"
-        android:layout_toStartOf="@+id/completeForm" />
+    <!-- The following Code handles the spinner for the both event and time -->
+        <Spinner
+            android:id="@+id/dynamic_spinner"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/static_spinner"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="39dp" />
 
-    <EditText
+        <Spinner
+            android:id="@+id/static_spinner"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/eventName"
+            android:layout_alignParentEnd="true" />
+
+    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="10dp"
+        android:layout_weight="1" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/getLong"
-        android:layout_below="@+id/getLat"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="31dp"
-        android:layout_alignEnd="@+id/getLat" />
+        android:text="Submit"
+        android:id="@+id/completeForm"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="60dp"
+        android:layout_gravity="center_horizontal" />
+
+    </LinearLayout>
 
 </RelativeLayout>

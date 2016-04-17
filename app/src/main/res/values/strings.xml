@@ -1,9 +1,9 @@
 <resources>
-    <string name="app_name">Get2Gether</string>
+    <string name="app_name">KickIt</string>
     <string name="title_activity_map_explore">MapExplore</string>
     <string name="action_settings">Settings</string>
-    <string name="title_activity_maps">Get2Gether</string>
-    <string name="title_activity_form">FormActivity</string>
+    <string name="title_activity_maps">KickIt</string>
+    <string name="title_activity_form">CreateActivity</string>
     <string name="application_id">comp380.get2gether</string>
     <string name="event_save">Save Event</string>
     <!-- LoginForm Strings-->
@@ -12,4 +12,16 @@
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_incorrect_password">This password is incorrect</string>
     <!-- end Login-->
+
+    <!-- Array for Event Type static Spinner-->
+        <string-array name="brew_array">
+            <item>Select Event Type</item>
+            <item>Sports</item>
+            <item>Food</item>
+            <item>Social</item>
+            <item>Relax</item>
+            <item>Other</item>
+        </string-array>
+    <!-- End Array for Event Type -->
+
 </resources>
