@@ -13,6 +13,9 @@
     <string name="error_incorrect_password">This password is incorrect</string>
     <!-- end Login-->
 
+    <!--Scanner-->
+    <string name="scan">Scan</string>
+
     <!-- Array for Event Type static Spinner-->
         <string-array name="brew_array">
             <item>Select Event Type</item>
