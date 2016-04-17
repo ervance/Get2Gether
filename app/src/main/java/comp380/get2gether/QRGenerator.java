@@ -15,6 +15,7 @@ import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.google.zxing.client.android.Contents;
 import com.google.zxing.client.android.Intents;
+import com.google.zxing.integration.android.IntentIntegrator;
 
 public class QRGenerator extends AppCompatActivity {
 
@@ -33,10 +34,11 @@ public class QRGenerator extends AppCompatActivity {
         Intent intent = new Intent(Intents.Encode.ACTION);
 
 
-        Button button1 = (Button) findViewById(R.id.generateqrbutton);
-        button1.setOnClickListener(new View.OnClickListener() {
+        Button generateButton = (Button) findViewById(R.id.generateqrbutton);
+        generateButton.setOnClickListener(new View.OnClickListener() {
 
                                        public void onClick(View v) {
+                                           // make sure that generate qr has been presed:
                                            switch (v.getId()) {
                                                case R.id.generateqrbutton:
 
@@ -75,6 +77,21 @@ public class QRGenerator extends AppCompatActivity {
                                    }
 
         );
+        Button scanButton = (Button)findViewById(R.id.scanqrbutton);
+        scanButton.setOnClickListener(new View.OnClickListener() {
+            public void onCLick(View v) {
+                //make sure that scan button has been pressed:
+                switch (v.getId()) {
+                    case R.id.scanqrbutton:
+                        IntentIntegrator scanIntegrator = new IntentIntegrator(this);
+                        scanIntegrator.initiateScan();
+
+
+
+                }
+            }
+        });
+
 
     }
 
