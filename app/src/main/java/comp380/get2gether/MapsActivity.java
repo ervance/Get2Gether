@@ -71,9 +71,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     final private int[] IMG = {R.drawable.holderpic,R.drawable.holderpic,R.drawable.holderpic,R.drawable.holderpic,R.drawable.holderpic,R.drawable.holderpic};
     /***End Drawer***/
 
+    //for notifications
     Timer timer;
     TimerTask timerTask;
     final Handler handler = new Handler();
+    int oldSize = 5; //will use database to find old size of
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -156,10 +158,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 handler.post(new Runnable() {
                     public void run() {
                         //comparing static number with random number between 1 and 10
-                        int oldSize = 5;
                         int newSize = (int )(Math.random() * 10 + 1);
+                        //here we have the saved size of the old notification object of the database
+                        //and we compare with the size of the new notification object that we just queried
+                        //if the new size is bigger, we will display a toast and change the button color
+                        //the timer feature will run in the background, so even in another android activity,
+                        //users will still get a toast message and the button will be a different color when they return
+                        //to maps
                         if(oldSize < newSize) {
-                            final String msg = " New Notification!";
+                            final String msg = "New Notification!";
                             //show the toast
                             int duration = Toast.LENGTH_SHORT;
                             Toast toast = Toast.makeText(getApplicationContext(), msg, duration);
@@ -424,6 +431,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         button.getBackground().setColorFilter(Color.BLUE, PorterDuff.Mode.MULTIPLY);
         Intent intent = new Intent(MapsActivity.this, NotificationActivity.class);
         startActivity(intent);
+        //update oldSize with new size of current notification object in database
     }
 
 
