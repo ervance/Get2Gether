@@ -1,79 +1,59 @@
 package comp380.get2gether;
 
-import 	android.app.Notification.Builder;
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-import android.location.Location;
-import android.location.LocationManager;
-import android.location.LocationListener;
-import android.os.Bundle;
+import android.content.DialogInterface;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import android.os.Bundle;
 import android.util.Log;
-
-import com.google.android.gms.games.internal.constants.NotificationChannel;
-import com.google.android.gms.maps.model.LatLng;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class NotificationActivity extends AppCompatActivity {
-    private ArrayList<String> notify = new ArrayList<>();
-    private Context context;
-    //placeholders
-    //store data from database into here or make direct database calls
-    private ArrayList<String> notif;
-    private LatLng currentLocale;
+    private RelativeLayout mNotifs;
+    private ListView listView;
+    private NotificationAdapter nAdapter;
+    private List<Notif> nList;
 
-    //initialize notifications
+    /*TEST DATA FOR NOTIFICATIONS!!!!! REMOVE ONCE YOU GET DATABASE HOOKED TO IT*/
+    final private String[] data = {"Dino wants to be your friend", "Keith accepted your friend request", "Olga invited you to an event", "Basketball starting soon"};
+    final private int[] times = {};
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //standard
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_form);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        setContentView(R.layout.notification_activity);
 
-        //placeholder location
-        LatLng northRidge = new LatLng(34.2417, -118.5283);
+        mNotifs = (RelativeLayout) findViewById(R.id.notif_relative_layout);
 
-        //populate arraylist
-        ArrayList<String> notif;
-        notif = getNotif();
+        nList = new ArrayList<>();
 
-        //prepare for ListView
-        ArrayAdapter<String> itemsAdapter =
-                new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, notif);
+        for(int i = 0; i < data.length; i++){
+            Notif notif = new Notif();
+            notif.data = data[i];
+            notif.timeAdded = times[i];
+            nList.add(notif);
+        }
 
-        //pass ArrayAdapter into ListView
-        ListView listView = (ListView) findViewById(R.id.lvItems);
-        listView.setAdapter(itemsAdapter);
-
-        //condition needed
-       // Intent intent = new Intent(NotificationActivity.this, MapsActivity.class);
-       // startActivity(intent);
-
+        listView = (ListView) mNotifs.findViewById(R.id.notif_list_view);
+        listView.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.d("NotifClick", "NotifClickWorked Correctly on " + data[position]);
+            }
+        });
+        nAdapter = new NotificationAdapter(NotificationActivity.this, nList);
+        listView.setAdapter(nAdapter);
     }
 
-    //makes call to database and finds object that has
-    //timestamp/log of certain updates/pushes
-    public ArrayList <String> getNotif(){
-        //will pull from notification database object to here
-        ArrayList<String> list = new ArrayList<String>();
-
-        //placeholder
-        //this section will populate list with database call
-        list.add("X wants to be your friend");
-        list.add("X accepted your friend request");
-        list.add("X invited you to an event");
-        list.add("X event starting soon");
-        list.add("Y wants to be your friend");
-        list.add("Z invited you to an event");
-
-        return list;
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id){
+        Toast.makeText(this, "Click Successful", Toast.LENGTH_SHORT).show();
     }
 
 }
