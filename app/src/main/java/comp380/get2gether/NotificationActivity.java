@@ -23,7 +23,7 @@ public class NotificationActivity extends AppCompatActivity {
 
     /*TEST DATA FOR NOTIFICATIONS!!!!! REMOVE ONCE YOU GET DATABASE HOOKED TO IT*/
     final private String[] data = {"Dino wants to be your friend", "Keith accepted your friend request", "Olga invited you to an event", "Basketball starting soon"};
-    final private int[] times = {};
+    final private int [] times = {R.drawable.holderpic, R.drawable.holderpic, R.drawable.holderpic, R.drawable.holderpic};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
