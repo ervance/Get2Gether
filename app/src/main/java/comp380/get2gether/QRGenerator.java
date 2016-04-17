@@ -1,21 +1,26 @@
 package comp380.get2gether;
 
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.google.zxing.client.android.Contents;
 import com.google.zxing.client.android.Intents;
 import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 public class QRGenerator extends AppCompatActivity {
 
@@ -25,6 +30,10 @@ public class QRGenerator extends AppCompatActivity {
     private String phone = "380";
     private String email = "email@gmail.com";
     private String contact = "addalldatahere (create a method that combines all data together";
+
+    //scanner variables:
+    private TextView formatTxt, contentTxt;
+    IntentIntegrator scanIntegrator = new IntentIntegrator(this);
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -69,25 +78,26 @@ public class QRGenerator extends AppCompatActivity {
 
 
                                                    break;
-
-                                               // More buttons go here (neew to add scan? or maybe make it on a different screen?) ...
                                            }
                                        }
 
                                    }
 
         );
+        // scan button:
         Button scanButton = (Button)findViewById(R.id.scanqrbutton);
         scanButton.setOnClickListener(new View.OnClickListener() {
-            public void onCLick(View v) {
+            public void onClick(View v) {
                 //make sure that scan button has been pressed:
-                switch (v.getId()) {
-                    case R.id.scanqrbutton:
-                        IntentIntegrator scanIntegrator = new IntentIntegrator(this);
+                try {
+                    if (v.getId() == R.id.scanqrbutton) {
+
                         scanIntegrator.initiateScan();
 
 
-
+                    }
+                } catch (ActivityNotFoundException anfe) {
+                    Log.e("onCreate", "Scanner Not Found", anfe);
                 }
             }
         });
@@ -95,6 +105,22 @@ public class QRGenerator extends AppCompatActivity {
 
     }
 
+    //method to decode scanend data
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+    //retrieve scan result
+        IntentResult scanningResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
+        if (scanningResult != null) {
+            String scanContent = scanningResult.getContents();
+            contentTxt = (TextView)findViewById(R.id.scan_content);
+            contentTxt.setText("CONTENT: " + scanContent);
+        }
+        else{
+            Toast toast = Toast.makeText(getApplicationContext(),
+                    "No scan data received!", Toast.LENGTH_SHORT);
+            toast.show();
+        }
+
+    }
 }
 
 

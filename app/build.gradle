@@ -32,9 +32,6 @@ dependencies {
     compile 'com.google.zxing:core:3.2.1'
     compile 'com.embarkmobile:zxing-android-minimal:2.0.0@aar'
     compile 'com.embarkmobile:zxing-android-integration:2.0.0@aar'
-    // scannner :
-    compile "com.google.zxing.client.android"
-
 
 }
 repositories { mavenCentral()
