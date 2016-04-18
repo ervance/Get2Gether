@@ -1,9 +1,9 @@
 <resources>
-    <string name="app_name">Get2Gether</string>
+    <string name="app_name">KickIt</string>
     <string name="title_activity_map_explore">MapExplore</string>
     <string name="action_settings">Settings</string>
-    <string name="title_activity_maps">Get2Gether</string>
-    <string name="title_activity_form">FormActivity</string>
+    <string name="title_activity_maps">KickIt</string>
+    <string name="title_activity_form">CreateActivity</string>
     <string name="application_id">comp380.get2gether</string>
     <string name="event_save">Save Event</string>
     <!-- LoginForm Strings-->
@@ -16,4 +16,22 @@
     <string name="user_not_found">User Not Found. Please create an account with the Create User Button.</string>
     <string name="user_creation_error">Error Creating User</string>
     <!-- end Login-->
+
+    <!--Scanner-->
+    <string name="scan">Scan</string>
+
+    <!-- Array for Event Type static Spinner-->
+        <string-array name="brew_array">
+            <item>Select Event Type</item>
+            <item>Sports</item>
+            <item>Food</item>
+            <item>Social</item>
+            <item>Relax</item>
+            <item>Other</item>
+        </string-array>
+    <!-- End Array for Event Type -->
+
+    <!-- Map Strings -->
+    <string name="error_connect_to_services">Can\'t connect to Google Play services</string>
+    <!--End Map String -->
 </resources>
