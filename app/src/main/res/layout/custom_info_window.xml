@@ -9,7 +9,7 @@
     the java code for this is located in "MapsActivity.java". If you make
     any changes to this that need to be applied add the code there.-->
 
-    <ImageView
+    <ImageButton
         android:id="@+id/markerImage"
         android:layout_width="100dp"
         android:layout_height="100dp"

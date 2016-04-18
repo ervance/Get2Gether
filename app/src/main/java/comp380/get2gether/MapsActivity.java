@@ -190,8 +190,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //currently forms.get(2) is Event Time
         //currently forms.get(3) is Event lat
         //currently forms.get(4) is Event lng
-
-
         //This section of code works on adding custom info window.--------------------------------
         if(mMap != null){
             //setinfoWindowAdapter is what we use to override Androids default popup window
@@ -237,31 +235,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         tvEname.setText(forms.get(0));
                         tvEType.setText(forms.get(1));
                         tvETime.setText(forms.get(2));
-
-                        //Changes the image displayed based on the category chosen
-                        if(forms.get(1).equals("Sports")){
-                            ImageView img= (ImageView) findViewById(R.id.markerImage);
-                            img.setImageResource(R.drawable.sports);
-                        }else if(forms.get(1).equals("Gaming")){
-                            ImageView img= (ImageView) findViewById(R.id.markerImage);
-                            img.setImageResource(R.drawable.gaming);
-                        }else if(forms.get(1).equals("Food")){
-                            ImageView img= (ImageView) findViewById(R.id.markerImage);
-                            img.setImageResource(R.drawable.food);
-                        }else if(forms.get(1).equals("Relax")){
-                            ImageView img= (ImageView) findViewById(R.id.markerImage);
-                            img.setImageResource(R.drawable.relax);
-                        }else if(forms.get(1).equals("Drinks")){
-                            ImageView img= (ImageView) findViewById(R.id.markerImage);
-                            img.setImageResource(R.drawable.drinks);
-                        }else if(forms.get(1).equals("Other")){
-                            ImageView img= (ImageView) findViewById(R.id.markerImage);
-                            img.setImageResource(R.drawable.other);
-                        }else{
-                            ImageView img= (ImageView) findViewById(R.id.markerImage);
-                            img.setImageResource(R.drawable.holderpic);
-                        }
-                    }//end Change picture section
+                    }
 
                     return v;
                 }
@@ -274,8 +248,42 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Toast toast = new Toast(getApplicationContext());
             toast.setGravity(Gravity.TOP | Gravity.LEFT, 0, 0);
             toast.makeText(MapsActivity.this, forms.get(0), toast.LENGTH_SHORT).show();
+
+/*
+        //Changes the image displayed based on the category chosen
+        if(forms.get(1).equals("Sports")){
+            Toast.makeText(MapsActivity.this, "Sports", Toast.LENGTH_SHORT).show();
+            ImageView img= (ImageView) findViewById(R.id.markerImage);
+            img.setImageResource(R.drawable.sports);
+        }else if(forms.get(1).equals("Gaming")){
+            Toast.makeText(MapsActivity.this, "Gaming", Toast.LENGTH_SHORT).show();
+            ImageView img= (ImageView) findViewById(R.id.markerImage);
+            img.setImageResource(R.drawable.gaming);
+        }else if(forms.get(1).equals("Food")){
+            Toast.makeText(MapsActivity.this, "Food", Toast.LENGTH_SHORT).show();
+            ImageView img= (ImageView) findViewById(R.id.markerImage);
+            img.setImageResource(R.drawable.food);
+        }else if(forms.get(1).equals("Relax")){
+            Toast.makeText(MapsActivity.this, "Relax", Toast.LENGTH_SHORT).show();
+            ImageView img= (ImageView) findViewById(R.id.markerImage);
+            img.setImageResource(R.drawable.relax);
+        }else if(forms.get(1).equals("Drinks")){
+            Toast.makeText(MapsActivity.this, "Drinks", Toast.LENGTH_SHORT).show();
+            ImageView img= (ImageView) findViewById(R.id.markerImage);
+            img.setImageResource(R.drawable.drinks);
+        }else if(forms.get(1).equals("Other")){
+            Toast.makeText(MapsActivity.this, "Other", Toast.LENGTH_SHORT).show();
+            ImageView img= (ImageView) findViewById(R.id.markerImage);
+            img.setImageResource(R.drawable.other);
+        }else{
+            Toast.makeText(MapsActivity.this, "You Picked Nothing", Toast.LENGTH_SHORT).show();
+            ImageView img= (ImageView) findViewById(R.id.markerImage);
+            img.setImageResource(R.drawable.holderpic);
+        }//end Change picture section
+*/
+
             //-------------------------------------------------------------------------------------
-            //here is were we are going to convert the lat and ng back into a LatLng variable
+            //here is were we are going to convert the lat and lng back into a LatLng variable
             double lat = Double.parseDouble(forms.get(3));
             double lng = Double.parseDouble(forms.get(4));
             LatLng newLL = new LatLng(lat,lng);
@@ -283,7 +291,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             //This is the marker that is being used to store the data from the form
             MarkerOptions marker = new MarkerOptions()
-                    .draggable(true)
+                    .draggable(false)       //we don't want the marker to move once event is set
                     .position(currentLocale);
 
             if(currentLocale!=null) {

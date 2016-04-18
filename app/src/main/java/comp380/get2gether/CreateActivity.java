@@ -20,6 +20,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -155,7 +156,7 @@ public class CreateActivity extends FragmentActivity implements GoogleApiClient.
             });
             //-------------------------END SPINNER SECTION-------------------------------------------
             //Ties the completeForm button to the variable submitButton
-            Button submitButton = (Button) findViewById(R.id.completeForm);
+            final Button submitButton = (Button) findViewById(R.id.completeForm);
 
             //Create an onClickListener to save user input to variables and open MapActivity
             //Once the "Subtmit" button has been pressed save the event name "eName"
@@ -186,6 +187,31 @@ public class CreateActivity extends FragmentActivity implements GoogleApiClient.
                     formVariables.add(eLat);
                     formVariables.add(eLng);
 
+                    if(eType.equals("Sports")) {
+                        ImageButton img = (ImageButton)v;
+                        img.setBackgroundResource(R.drawable.sports);
+                    }else if (eType.equals("Drinks")){
+                        ImageButton img = (ImageButton)v;
+                        img.setBackgroundResource(R.drawable.drinks);
+                    }else if (eType.equals("Food")){
+                        ImageButton img = (ImageButton)v;
+                        img.setBackgroundResource(R.drawable.food);
+                    }else if (eType.equals("Gaming")){
+                        ImageButton img = (ImageButton)v;
+                        img.setBackgroundResource(R.drawable.gaming);
+                    }else if (eType.equals("Other")){
+                        ImageButton img = (ImageButton)v;
+                        img.setBackgroundResource(R.drawable.other);
+                    }else if (eType.equals("Relax")){
+                        ImageButton img = (ImageButton)v;
+                        img.setBackgroundResource(R.drawable.relax);
+                    }else if (eType.equals("Social")){
+                        ImageButton img = (ImageButton)v;
+                        img.setBackgroundResource(R.drawable.social);
+                    }else{
+                        ImageButton img = (ImageButton)v;
+                        img.setBackgroundResource(R.drawable.holderpic);
+                    }
                 /* unblock this when ready for parse server
                 //Add it to parse test
                 ParseObject inputForm = new ParseObject("InputForm");
@@ -203,10 +229,10 @@ public class CreateActivity extends FragmentActivity implements GoogleApiClient.
                     //Create Identifier for variable types in this .java file
                     //Make an arraylist instead of putExtra
                     //Testing parse so I am commenting this out.
-                    intent.putExtra("formVar", formVariables);
+                        intent.putExtra("formVar", formVariables);
 
                     //Start other Activity (MapsActivity) with pin
-                    startActivity(intent);
+                        startActivity(intent);
                 }
             });
         }
@@ -268,7 +294,7 @@ public class CreateActivity extends FragmentActivity implements GoogleApiClient.
 
     @Override
     public void onConnected(Bundle bundle) {
-        Toast.makeText(this, "Create An Event!", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "Create An Event!", Toast.LENGTH_SHORT).show();
 
         //checks for permissions to make sure we can use the map
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
