@@ -244,6 +244,31 @@ public class CreateActivity extends FragmentActivity implements GoogleApiClient.
         return (mMap != null);
     }
 
+    //This code gets location from address passed in search bar
+    public LatLng getLocationFromAddress(Context context,String strAddress) {
+
+        Geocoder coder = new Geocoder(context);
+        List<Address> address;
+        LatLng p1 = null;
+
+        try {
+            address = coder.getFromLocationName(strAddress, 5);
+            if (address == null) {
+                return null;
+            }
+            Address location = address.get(0);
+            location.getLatitude();
+            location.getLongitude();
+
+            p1 = new LatLng(location.getLatitude(), location.getLongitude() );
+
+        } catch (Exception ex) {
+
+            ex.printStackTrace();
+        }
+
+        return p1;
+    }
 
     //This method updates the maps current location
     // Pass in a lat, lng, and zoom distance and it will move the camera to the desired location

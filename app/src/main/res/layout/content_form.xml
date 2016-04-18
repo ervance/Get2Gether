@@ -18,17 +18,11 @@
     complete (or go back) in order to place the pin-->
 
 
-    <LinearLayout
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:orientation="vertical">
-
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/eventName"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="28dp"
         android:layout_alignParentStart="true"
         android:layout_alignEnd="@+id/completeForm"
         android:hint="Enter Event Name"
@@ -44,8 +38,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/static_spinner"
-            android:layout_alignParentEnd="true"
-            android:layout_marginTop="39dp" />
+            android:layout_alignParentEnd="true" />
 
         <Spinner
             android:id="@+id/static_spinner"
@@ -54,13 +47,39 @@
             android:layout_below="@+id/eventName"
             android:layout_alignParentEnd="true" />
 
-    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/map"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="10dp"
-        android:layout_weight="1" />
+            <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/map"
+                android:name="com.google.android.gms.maps.SupportMapFragment"
+                android:layout_width="wrap_content"
+                android:layout_height="148dp"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="0.31"
+                android:layout_above="@+id/completeForm"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/SearchButton" />
+
+            <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/Search"
+            android:hint="Search for Address"
+            android:inputType="text"
+            android:linksClickable="true"
+                android:layout_below="@+id/dynamic_spinner"
+                android:layout_alignParentStart="true" />
+
+
+            <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Search"
+            android:id="@+id/SearchButton"
+            android:layout_gravity="right"
+                android:layout_alignTop="@+id/Search"
+                android:layout_toEndOf="@+id/eventName" />
+
 
     <Button
         style="?android:attr/buttonStyleSmall"
@@ -72,7 +91,5 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="60dp"
         android:layout_gravity="center_horizontal" />
-
-    </LinearLayout>
 
 </RelativeLayout>
