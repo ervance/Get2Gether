@@ -184,7 +184,6 @@ public class LoginActivity extends AppCompatActivity {
     private void errorLoggingIn(){
         //stop the spinning
         logo.clearAnimation();
-        setContentView(R.layout.login_activity);
         mUserView.setError(getString(R.string.error_invalid_user));
         mPasswordView.setError(getString(R.string.error_incorrect_password));
         mTextView.setVisibility(View.VISIBLE);

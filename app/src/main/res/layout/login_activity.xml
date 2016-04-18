@@ -31,6 +31,8 @@
         android:inputType="textPassword"
         android:hint="password"
         android:ems="10"
+        android:singleLine="true"
+        android:imeOptions="actionDone"
         android:id="@+id/passwordLogin"
         android:layout_below="@+id/userLogin"
         android:layout_alignStart="@+id/userLogin" />
@@ -41,6 +43,8 @@
         android:ems="10"
         android:hint="User Name"
         android:id="@+id/userLogin"
+        android:singleLine="true"
+        android:imeOptions="actionNext"
         android:layout_below="@+id/loginLogo"
         android:layout_alignStart="@+id/loginLogo" />
 

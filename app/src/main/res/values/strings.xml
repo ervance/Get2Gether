@@ -21,14 +21,14 @@
     <string name="scan">Scan</string>
 
     <!-- Array for Event Type static Spinner-->
-        <string-array name="brew_array">
-            <item>Select Event Type</item>
-            <item>Sports</item>
-            <item>Food</item>
-            <item>Social</item>
-            <item>Relax</item>
-            <item>Other</item>
-        </string-array>
+    <string-array name="brew_array">
+        <item>Select Event Type</item>
+        <item>Sports</item>
+        <item>Food</item>
+        <item>Social</item>
+        <item>Relax</item>
+        <item>Other</item>
+    </string-array>
     <!-- End Array for Event Type -->
 
     <!-- Map Strings -->
