@@ -158,6 +158,28 @@ public class CreateActivity extends FragmentActivity implements GoogleApiClient.
                 }
             });
             //-------------------------END SPINNER SECTION-------------------------------------------
+
+
+       /*****************Start Searh Section***********************/
+        //button for search
+        final Button searchButton = (Button) findViewById(R.id.searchButton);
+
+        //Click listener for search
+        searchButton.setOnClickListener(new View.OnClickListener() {
+           //Once search is clicked, pull search text and find location
+            public void onClick(View v) {
+                LatLng newLoc;
+                //Save search data into variable
+                EditText searchBox = (EditText) findViewById(R.id.search);
+                String searchItem = searchBox.getText().toString();
+                //use search method below to find string (if nothing found return null)
+                newLoc= getLocationFromAddress(CreateActivity.this, searchItem);
+                gotoLocation(newLoc.latitude, newLoc.longitude, 10);
+                placeMapMarker(newLoc.latitude, newLoc.longitude);
+            }
+        });
+        /*****************End Searh Section***********************/
+
             //Ties the completeForm button to the variable submitButton
             final Button submitButton = (Button) findViewById(R.id.completeForm);
 
@@ -214,10 +236,34 @@ public class CreateActivity extends FragmentActivity implements GoogleApiClient.
                 }
             });
         }
+    //This code gets location from address passed in search bar
+    public LatLng getLocationFromAddress(Context context,String strAddress) {
 
-//------------------------------------
-    //This section is the new code added for location services on the createActivity class
-    //--------------------------------
+        Geocoder coder = new Geocoder(context);
+        List<Address> address;
+        LatLng p1 = null;
+
+        try {
+            address = coder.getFromLocationName(strAddress, 5);
+            if (address == null) {
+                return null;
+            }
+            Address location = address.get(0);
+            location.getLatitude();
+            location.getLongitude();
+
+            p1 = new LatLng(location.getLatitude(), location.getLongitude() );
+
+        } catch (Exception ex) {
+
+            ex.printStackTrace();
+        }
+
+        return p1;
+    }
+//-----------------------------------------------------------------------------------------
+    //Checks to make sure the services are available and the map is initialized
+    //------------------------------------------------------------------------------------
     public boolean servicesOK() {
         int isAvailable = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
 
@@ -244,31 +290,7 @@ public class CreateActivity extends FragmentActivity implements GoogleApiClient.
         return (mMap != null);
     }
 
-    //This code gets location from address passed in search bar
-    public LatLng getLocationFromAddress(Context context,String strAddress) {
 
-        Geocoder coder = new Geocoder(context);
-        List<Address> address;
-        LatLng p1 = null;
-
-        try {
-            address = coder.getFromLocationName(strAddress, 5);
-            if (address == null) {
-                return null;
-            }
-            Address location = address.get(0);
-            location.getLatitude();
-            location.getLongitude();
-
-            p1 = new LatLng(location.getLatitude(), location.getLongitude() );
-
-        } catch (Exception ex) {
-
-            ex.printStackTrace();
-        }
-
-        return p1;
-    }
 
     //This method updates the maps current location
     // Pass in a lat, lng, and zoom distance and it will move the camera to the desired location
