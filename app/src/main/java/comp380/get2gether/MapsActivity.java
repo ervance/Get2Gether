@@ -53,6 +53,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private OnMapReadyCallback callback;
     private GoogleApiClient mLocationClient;
     private com.google.android.gms.location.LocationListener mListener;
+    private int imageResource;
     /****End Map fields****/
     LatLng northRidge = new LatLng(34.2417, -118.5283);
 
@@ -205,6 +206,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 @Override
                 public View getInfoContents(Marker marker) {
                     View v = getLayoutInflater().inflate(R.layout.custom_info_window, null);
+
+                    /******Show Image for Info Window*********/
+                    imageResource = getResources().getIdentifier(forms.get(1), "drawable", getPackageName());
+                   ImageView iv = (ImageView) v.findViewById(R.id.markerImage);
+                    iv.setImageResource(imageResource);
+                    /******Show Image for Info Window*********/
+
                     //This pulls the info from our form and populates the info window
                     TextView tvEname = (TextView) v.findViewById(R.id.eName);
                     TextView tvEType = (TextView) v.findViewById(R.id.eType);
@@ -235,7 +243,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         tvEname.setText(forms.get(0));
                         tvEType.setText(forms.get(1));
                         tvETime.setText(forms.get(2));
+
                     }
+
 
                     return v;
                 }

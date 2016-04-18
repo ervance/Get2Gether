@@ -5,6 +5,8 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -58,8 +60,9 @@ public class CreateActivity extends FragmentActivity implements GoogleApiClient.
     private EditText chosenEventType; //Holds eventLocation ""
     private EditText chosenEventTime;  //holds the eventTime ""
     ArrayList<String> formVariables = new ArrayList<>();
-    String latStringFromMarker;
-    String lngStringFromMarker;
+    String eName;
+    String eType;
+    String eTime;
     /******FORM FIELDS********/
 
     /******Map fields******/
@@ -167,9 +170,9 @@ public class CreateActivity extends FragmentActivity implements GoogleApiClient.
                 public void onClick(View v) {
                     //On button press, store text from the 3 fields
                     chosenEventName = (EditText) findViewById(R.id.eventName);
-                    String eName = chosenEventName.getText().toString();
-                    String eType = staticSpinner.getSelectedItem().toString();
-                    String eTime = dynamicSpinner.getSelectedItem().toString();
+                    eName = chosenEventName.getText().toString();
+                    eType = staticSpinner.getSelectedItem().toString();
+                    eTime = dynamicSpinner.getSelectedItem().toString();
                     //Here is your objective. Make sure that the current location is always saved
                     //to currentLocale, once it is saved to that then come into this section
                     //break up the currentLocale into two variables to be put into the string array
@@ -187,31 +190,6 @@ public class CreateActivity extends FragmentActivity implements GoogleApiClient.
                     formVariables.add(eLat);
                     formVariables.add(eLng);
 
-                    if(eType.equals("Sports")) {
-                        ImageButton img = (ImageButton)v;
-                        img.setBackgroundResource(R.drawable.sports);
-                    }else if (eType.equals("Drinks")){
-                        ImageButton img = (ImageButton)v;
-                        img.setBackgroundResource(R.drawable.drinks);
-                    }else if (eType.equals("Food")){
-                        ImageButton img = (ImageButton)v;
-                        img.setBackgroundResource(R.drawable.food);
-                    }else if (eType.equals("Gaming")){
-                        ImageButton img = (ImageButton)v;
-                        img.setBackgroundResource(R.drawable.gaming);
-                    }else if (eType.equals("Other")){
-                        ImageButton img = (ImageButton)v;
-                        img.setBackgroundResource(R.drawable.other);
-                    }else if (eType.equals("Relax")){
-                        ImageButton img = (ImageButton)v;
-                        img.setBackgroundResource(R.drawable.relax);
-                    }else if (eType.equals("Social")){
-                        ImageButton img = (ImageButton)v;
-                        img.setBackgroundResource(R.drawable.social);
-                    }else{
-                        ImageButton img = (ImageButton)v;
-                        img.setBackgroundResource(R.drawable.holderpic);
-                    }
                 /* unblock this when ready for parse server
                 //Add it to parse test
                 ParseObject inputForm = new ParseObject("InputForm");
