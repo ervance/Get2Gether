@@ -10,10 +10,10 @@
     any changes to this that need to be applied add the code there.-->
 
     <ImageView
-        android:id="@+id/imageView1"
+        android:id="@+id/markerImage"
+        android:src="@drawable/sports"
         android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:src="@drawable/common_plus_signin_btn_icon_dark_pressed"/>
+        android:layout_height="100dp" />
 
     <LinearLayout
         android:layout_width="wrap_content"

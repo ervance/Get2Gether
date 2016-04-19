@@ -5,6 +5,8 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -20,6 +22,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -43,6 +46,7 @@ import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,16 +54,24 @@ import java.util.List;
 public class CreateActivity extends FragmentActivity implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
 
+
+    /******FORM FIELDS********/
     private EditText chosenEventName; //holds the event name from the eventName text box
     private EditText chosenEventType; //Holds eventLocation ""
     private EditText chosenEventTime;  //holds the eventTime ""
-    private static final int ERROR_DIALOG_REQUEST = 9001;
+    ArrayList<String> formVariables = new ArrayList<>();
+    String eName;
+    String eType;
+    String eTime;
+    /******FORM FIELDS********/
 
     /******Map fields******/
     private GoogleMap mMap;
     private LocationManager locManager;
     private GoogleApiClient mLocationClient;
     private com.google.android.gms.location.LocationListener mListener;
+    private LatLng currentLocale;  //holds the current location throughout the activity
+    private static final int ERROR_DIALOG_REQUEST = 9001;
     /****End Map fields****/
 
 
@@ -88,6 +100,22 @@ public class CreateActivity extends FragmentActivity implements GoogleApiClient.
                 Toast.makeText(this, "Map not connected!", Toast.LENGTH_SHORT).show();
             }
         }//end checking to see if map is working
+
+        //The following code checks to see if the map marker has been moved
+        //if it has been moved it will pass the lat and lng to the map activity class
+        mMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener(){
+            @Override
+            public void onMarkerDragStart(Marker marker){
+            }
+            @Override
+            public void onMarkerDrag(Marker marker){
+            }
+            @Override
+            public void onMarkerDragEnd(Marker marker){
+                LatLng ll = marker.getPosition();
+                currentLocale = ll;
+            }
+        });
             //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
             //---------------------------------------------------------------------------------------
@@ -130,8 +158,30 @@ public class CreateActivity extends FragmentActivity implements GoogleApiClient.
                 }
             });
             //-------------------------END SPINNER SECTION-------------------------------------------
+
+
+       /*****************Start Searh Section***********************/
+        //button for search
+        final Button searchButton = (Button) findViewById(R.id.searchButton);
+
+        //Click listener for search
+        searchButton.setOnClickListener(new View.OnClickListener() {
+           //Once search is clicked, pull search text and find location
+            public void onClick(View v) {
+                LatLng newLoc;
+                //Save search data into variable
+                EditText searchBox = (EditText) findViewById(R.id.search);
+                String searchItem = searchBox.getText().toString();
+                //use search method below to find string (if nothing found return null)
+                newLoc= getLocationFromAddress(CreateActivity.this, searchItem);
+                gotoLocation(newLoc.latitude, newLoc.longitude, 10);
+                placeMapMarker(newLoc.latitude, newLoc.longitude);
+            }
+        });
+        /*****************End Searh Section***********************/
+
             //Ties the completeForm button to the variable submitButton
-            Button submitButton = (Button) findViewById(R.id.completeForm);
+            final Button submitButton = (Button) findViewById(R.id.completeForm);
 
             //Create an onClickListener to save user input to variables and open MapActivity
             //Once the "Subtmit" button has been pressed save the event name "eName"
@@ -142,16 +192,25 @@ public class CreateActivity extends FragmentActivity implements GoogleApiClient.
                 public void onClick(View v) {
                     //On button press, store text from the 3 fields
                     chosenEventName = (EditText) findViewById(R.id.eventName);
-                    String eName = chosenEventName.getText().toString();
-                    String eType = staticSpinner.getSelectedItem().toString();
-                    String eTime = dynamicSpinner.getSelectedItem().toString();
+                    eName = chosenEventName.getText().toString();
+                    eType = staticSpinner.getSelectedItem().toString();
+                    eTime = dynamicSpinner.getSelectedItem().toString();
+                    //Here is your objective. Make sure that the current location is always saved
+                    //to currentLocale, once it is saved to that then come into this section
+                    //break up the currentLocale into two variables to be put into the string array
+                    //then you need to go to map activity, unpack those locations and use them for
+                    String eLat = Double.toString(currentLocale.latitude);
+                    String eLng = Double.toString(currentLocale.longitude);
+
+                    //the marker on the map.
 
 
                     //Built Arraylist to store variables from Form
-                    ArrayList<String> formVariables = new ArrayList<>();
                     formVariables.add(eName);
                     formVariables.add(eType);
                     formVariables.add(eTime);
+                    formVariables.add(eLat);
+                    formVariables.add(eLng);
 
                 /* unblock this when ready for parse server
                 //Add it to parse test
@@ -170,17 +229,41 @@ public class CreateActivity extends FragmentActivity implements GoogleApiClient.
                     //Create Identifier for variable types in this .java file
                     //Make an arraylist instead of putExtra
                     //Testing parse so I am commenting this out.
-                    intent.putExtra("formVar", formVariables);
+                        intent.putExtra("formVar", formVariables);
 
                     //Start other Activity (MapsActivity) with pin
-                    startActivity(intent);
+                        startActivity(intent);
                 }
             });
         }
+    //This code gets location from address passed in search bar
+    public LatLng getLocationFromAddress(Context context,String strAddress) {
 
-//------------------------------------
-    //This section is the new code added for location services on the createActivity class
-    //--------------------------------
+        Geocoder coder = new Geocoder(context);
+        List<Address> address;
+        LatLng p1 = null;
+
+        try {
+            address = coder.getFromLocationName(strAddress, 5);
+            if (address == null) {
+                return null;
+            }
+            Address location = address.get(0);
+            location.getLatitude();
+            location.getLongitude();
+
+            p1 = new LatLng(location.getLatitude(), location.getLongitude() );
+
+        } catch (Exception ex) {
+
+            ex.printStackTrace();
+        }
+
+        return p1;
+    }
+//-----------------------------------------------------------------------------------------
+    //Checks to make sure the services are available and the map is initialized
+    //------------------------------------------------------------------------------------
     public boolean servicesOK() {
         int isAvailable = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
 
@@ -208,17 +291,35 @@ public class CreateActivity extends FragmentActivity implements GoogleApiClient.
     }
 
 
+
     //This method updates the maps current location
     // Pass in a lat, lng, and zoom distance and it will move the camera to the desired location
     private void gotoLocation(double lat, double lng, float zoom) {
         LatLng latLng = new LatLng(lat, lng);
+        currentLocale = latLng;
         CameraUpdate update = CameraUpdateFactory.newLatLngZoom(latLng, zoom);
         mMap.moveCamera(update);
     }
 
+
+    private void placeMapMarker(double lat, double lng) {
+        LatLng latLng = new LatLng(lat, lng);
+        currentLocale =latLng;
+        MarkerOptions marker = new MarkerOptions()
+                .draggable(true)
+                .position(currentLocale);
+
+        if(currentLocale!=null) {
+            //add marker and move camera to current location
+            mMap.addMarker(marker);
+        }else{
+            Toast.makeText(CreateActivity.this, "No Current Location.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     @Override
     public void onConnected(Bundle bundle) {
-        Toast.makeText(this, "Create An Event!", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "Create An Event!", Toast.LENGTH_SHORT).show();
 
         //checks for permissions to make sure we can use the map
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -236,7 +337,8 @@ public class CreateActivity extends FragmentActivity implements GoogleApiClient.
         mListener = new com.google.android.gms.location.LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
-                gotoLocation(location.getLatitude(), location.getLongitude(), 15);
+                gotoLocation(location.getLatitude(), location.getLongitude(), 15);  //updates the map to the current location
+                placeMapMarker(location.getLatitude(), location.getLongitude());    //places movable marker on current location
             }
         };
         //This section updates the map
@@ -249,7 +351,6 @@ public class CreateActivity extends FragmentActivity implements GoogleApiClient.
         LocationServices.FusedLocationApi.requestLocationUpdates(
                 mLocationClient, request, mListener
         );
-
     }
 
     @Override
@@ -262,6 +363,8 @@ public class CreateActivity extends FragmentActivity implements GoogleApiClient.
 
     }
 
+    //This method is to save battery, when the app is paused (sent to the background)
+    //it stops trying to update the map. If we need to add more battery saving things in, do it here
     @Override
     protected void onPause(){
         super.onPause();

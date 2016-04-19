@@ -18,12 +18,17 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdate;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -44,7 +49,7 @@ import java.util.Calendar;
 import java.util.List;
 
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener, AdapterView.OnItemClickListener {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener, AdapterView.OnItemClickListener{
 
 
     /******Map fields******/
@@ -54,6 +59,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private LocationManager locManager;
     private LatLng currentLocale;
     private OnMapReadyCallback callback;
+    private GoogleApiClient mLocationClient;
+    private com.google.android.gms.location.LocationListener mListener;
+    private int imageResource;
     /****End Map fields****/
     LatLng northRidge = new LatLng(34.2417, -118.5283);
 
@@ -129,6 +137,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         listView.setOnItemClickListener(this);
         adapter = new DrawerAdapter(MapsActivity.this, drawerString);
         listView.setAdapter(adapter);
+    }
 
         startTimer(); //notifications
 
@@ -198,7 +207,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //currently forms.get(0) is Event Name
         //currently forms.get(1) is Event Type
         //currently forms.get(2) is Event Time
-
+        //currently forms.get(3) is Event lat
+        //currently forms.get(4) is Event lng
         //This section of code works on adding custom info window.--------------------------------
         if(mMap != null){
             //setinfoWindowAdapter is what we use to override Androids default popup window
@@ -214,6 +224,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 @Override
                 public View getInfoContents(Marker marker) {
                     View v = getLayoutInflater().inflate(R.layout.custom_info_window, null);
+
+                    /******Show Image for Info Window*********/
+                    imageResource = getResources().getIdentifier(forms.get(1), "drawable", getPackageName());
+                   ImageView iv = (ImageView) v.findViewById(R.id.markerImage);
+                    iv.setImageResource(imageResource);
+                    /******Show Image for Info Window*********/
+
                     //This pulls the info from our form and populates the info window
                     TextView tvEname = (TextView) v.findViewById(R.id.eName);
                     TextView tvEType = (TextView) v.findViewById(R.id.eType);
@@ -244,7 +261,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         tvEname.setText(forms.get(0));
                         tvEType.setText(forms.get(1));
                         tvETime.setText(forms.get(2));
+
                     }
+
+
                     return v;
                 }
             });
@@ -256,17 +276,56 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Toast toast = new Toast(getApplicationContext());
             toast.setGravity(Gravity.TOP | Gravity.LEFT, 0, 0);
             toast.makeText(MapsActivity.this, forms.get(0), toast.LENGTH_SHORT).show();
+
+/*
+        //Changes the image displayed based on the category chosen
+        if(forms.get(1).equals("Sports")){
+            Toast.makeText(MapsActivity.this, "Sports", Toast.LENGTH_SHORT).show();
+            ImageView img= (ImageView) findViewById(R.id.markerImage);
+            img.setImageResource(R.drawable.sports);
+        }else if(forms.get(1).equals("Gaming")){
+            Toast.makeText(MapsActivity.this, "Gaming", Toast.LENGTH_SHORT).show();
+            ImageView img= (ImageView) findViewById(R.id.markerImage);
+            img.setImageResource(R.drawable.gaming);
+        }else if(forms.get(1).equals("Food")){
+            Toast.makeText(MapsActivity.this, "Food", Toast.LENGTH_SHORT).show();
+            ImageView img= (ImageView) findViewById(R.id.markerImage);
+            img.setImageResource(R.drawable.food);
+        }else if(forms.get(1).equals("Relax")){
+            Toast.makeText(MapsActivity.this, "Relax", Toast.LENGTH_SHORT).show();
+            ImageView img= (ImageView) findViewById(R.id.markerImage);
+            img.setImageResource(R.drawable.relax);
+        }else if(forms.get(1).equals("Drinks")){
+            Toast.makeText(MapsActivity.this, "Drinks", Toast.LENGTH_SHORT).show();
+            ImageView img= (ImageView) findViewById(R.id.markerImage);
+            img.setImageResource(R.drawable.drinks);
+        }else if(forms.get(1).equals("Other")){
+            Toast.makeText(MapsActivity.this, "Other", Toast.LENGTH_SHORT).show();
+            ImageView img= (ImageView) findViewById(R.id.markerImage);
+            img.setImageResource(R.drawable.other);
+        }else{
+            Toast.makeText(MapsActivity.this, "You Picked Nothing", Toast.LENGTH_SHORT).show();
+            ImageView img= (ImageView) findViewById(R.id.markerImage);
+            img.setImageResource(R.drawable.holderpic);
+        }//end Change picture section
+*/
+
             //-------------------------------------------------------------------------------------
+            //here is were we are going to convert the lat and lng back into a LatLng variable
+            double lat = Double.parseDouble(forms.get(3));
+            double lng = Double.parseDouble(forms.get(4));
+            LatLng newLL = new LatLng(lat,lng);
+            currentLocale = newLL;
 
             //This is the marker that is being used to store the data from the form
             MarkerOptions marker = new MarkerOptions()
-                    .draggable(true)
+                    .draggable(false)       //we don't want the marker to move once event is set
                     .position(currentLocale);
 
             if(currentLocale!=null) {
                 //add marker and move camera to current location
                 mMap.addMarker(marker);
-                mMap.moveCamera(CameraUpdateFactory.newLatLng(currentLocale));
+                gotoLocation(currentLocale.latitude, currentLocale.longitude,10);
             }else{
                 toast.makeText(MapsActivity.this, "No Current Location.", toast.LENGTH_SHORT).show();
             }
@@ -360,7 +419,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 intent = new Intent(MapsActivity.this, CreateActivity.class);
                 break;
             case 3:
-                intent = new Intent(MapsActivity.this, CreateActivity.class);
+                intent = new Intent(MapsActivity.this, FriendsActivity.class);
                 break;
             case 4:
                 //ToDo: add QR here
@@ -376,6 +435,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         return intent;
     }
 
+    //This method updates the maps current location
+    // Pass in a lat, lng, and zoom distance and it will move the camera to the desired location
+    private void gotoLocation(double lat, double lng, float zoom) {
+        LatLng latLng = new LatLng(lat, lng);
+        currentLocale = latLng;
+        CameraUpdate update = CameraUpdateFactory.newLatLngZoom(latLng, zoom);
+        mMap.moveCamera(update);
+    }
     public void notif(View view) {
         Button button = (Button) findViewById(R.id.notifs);
         button.getBackground().setColorFilter(Color.BLUE, PorterDuff.Mode.MULTIPLY);

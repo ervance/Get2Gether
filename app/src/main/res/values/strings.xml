@@ -8,9 +8,13 @@
     <string name="event_save">Save Event</string>
     <!-- LoginForm Strings-->
     <string name="error_field_required">This field is required</string>
-    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_user">This username is invalid</string>
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="login">Login</string>
+    <string name="new_user">Create User</string>
+    <string name="user_not_found">User Not Found. Please create an account with the Create User Button.</string>
+    <string name="user_creation_error">Error Creating User</string>
     <!-- end Login-->
 
     <!--Scanner-->
@@ -19,11 +23,13 @@
     <!-- Array for Event Type static Spinner-->
         <string-array name="brew_array">
             <item>Select Event Type</item>
-            <item>Sports</item>
-            <item>Food</item>
-            <item>Social</item>
-            <item>Relax</item>
-            <item>Other</item>
+            <item>sports</item>
+            <item>drinks</item>
+            <item>food</item>
+            <item>social</item>
+            <item>gaming</item>
+            <item>relax</item>
+            <item>other</item>
         </string-array>
     <!-- End Array for Event Type -->
 
