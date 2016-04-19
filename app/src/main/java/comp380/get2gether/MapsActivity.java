@@ -443,7 +443,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
     public void notif(View view) {
         Button button = (Button) findViewById(R.id.notifs);
-        button.setBackgroundResource(android.R.drawable.btn_default);
+        button.getBackground().setColorFilter(Color.LTGRAY, PorterDuff.Mode.MULTIPLY);
         Intent intent = new Intent(MapsActivity.this, NotificationActivity.class);
         startActivity(intent);
         //update oldSize with new size of current notification object in database
