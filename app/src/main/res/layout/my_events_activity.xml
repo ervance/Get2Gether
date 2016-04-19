@@ -7,6 +7,17 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:id="@+id/myevents_relative_layout"
     tools:context="comp380.get2gether.MyEventsActivity">
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/myevents_list_view"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentTop="true"
+        android:clickable="true"
+        android:backgroundTint="@color/colorPrimary"
+        />
 
 </RelativeLayout>
