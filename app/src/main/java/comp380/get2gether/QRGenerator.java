@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Display;
@@ -25,14 +27,21 @@ import com.google.zxing.integration.android.IntentResult;
 public class QRGenerator extends AppCompatActivity {
 
     private String LOG_TAG = "GenerateQRCode";
-    // this is for testing need to get this data from db
-    private String name = "COMP";
-    private String phone = "380";
-    private String email = "email@gmail.com";
-    private String contact = "addalldatahere (create a method that combines all data together";
+    // this is for testing need to get this data from db of the user (who's data being encoded in QR CODE
+    private String uName = ;
+    private String uPhone = "380";
+    private String uEmail = "email@gmail.com";
+    private String contact;
+
+    //this is for data that will be decoded from the QR THIS NEED TO BE ADDED
+    private String newContactName;
+    private String newContactPhone;
+    private String newContactEmail;
+    private String scannedText;
+
 
     //scanner variables:
-    private TextView formatTxt, contentTxt;
+    private TextView contentTxt;
     IntentIntegrator scanIntegrator = new IntentIntegrator(this);
 
     @Override
@@ -46,46 +55,47 @@ public class QRGenerator extends AppCompatActivity {
         Button generateButton = (Button) findViewById(R.id.generateqrbutton);
         generateButton.setOnClickListener(new View.OnClickListener() {
 
-                                       public void onClick(View v) {
-                                           // make sure that generate qr has been presed:
-                                           switch (v.getId()) {
-                                               case R.id.generateqrbutton:
+                                              public void onClick(View v) {
+                                                  // make sure that generate qr has been presed:
+                                                  switch (v.getId()) {
+                                                      case R.id.generateqrbutton:
 
-                                                   //Find screen size
-                                                   WindowManager manager = (WindowManager) getSystemService(WINDOW_SERVICE);
-                                                   Display display = manager.getDefaultDisplay();
-                                                   Point point = new Point();
-                                                   display.getSize(point);
-                                                   int width = point.x;
-                                                   int height = point.y;
-                                                   int smallerDimension = width < height ? width : height;
-                                                   smallerDimension = smallerDimension * 3 / 4;
+                                                          //Find screen size
+                                                          WindowManager manager = (WindowManager) getSystemService(WINDOW_SERVICE);
+                                                          Display display = manager.getDefaultDisplay();
+                                                          Point point = new Point();
+                                                          display.getSize(point);
+                                                          int width = point.x;
+                                                          int height = point.y;
+                                                          int smallerDimension = width < height ? width : height;
+                                                          smallerDimension = smallerDimension * 3 / 4;
 
-                                                   //Encode with a QR Code image
-                                                   QRGen qrCodeEncoder = new QRGen(contact,
-                                                           null,
-                                                           Contents.Type.TEXT,
-                                                           BarcodeFormat.QR_CODE.toString(),
-                                                           smallerDimension);
-                                                   try {
-                                                       Bitmap bitmap = qrCodeEncoder.encodeAsBitmap();
-                                                       ImageView myImage = (ImageView) findViewById(R.id.imageViewqr);
-                                                       myImage.setImageBitmap(bitmap);
+                                                          //Encode with a QR Code image
+                                                          contact = combineStrings(uName, uPhone, uEmail);
+                                                          QRGen qrCodeEncoder = new QRGen(contact,
+                                                                  null,
+                                                                  Contents.Type.TEXT,
+                                                                  BarcodeFormat.QR_CODE.toString(),
+                                                                  smallerDimension);
+                                                          try {
+                                                              Bitmap bitmap = qrCodeEncoder.encodeAsBitmap();
+                                                              ImageView myImage = (ImageView) findViewById(R.id.imageViewqr);
+                                                              myImage.setImageBitmap(bitmap);
 
-                                                   } catch (WriterException e) {
-                                                       e.printStackTrace();
-                                                   }
+                                                          } catch (WriterException e) {
+                                                              e.printStackTrace();
+                                                          }
 
 
-                                                   break;
-                                           }
-                                       }
+                                                          break;
+                                                  }
+                                              }
 
-                                   }
+                                          }
 
         );
         // scan button:
-        Button scanButton = (Button)findViewById(R.id.scanqrbutton);
+        Button scanButton = (Button) findViewById(R.id.scanqrbutton);
         scanButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 //make sure that scan button has been pressed:
@@ -93,6 +103,21 @@ public class QRGenerator extends AppCompatActivity {
                     if (v.getId() == R.id.scanqrbutton) {
 
                         scanIntegrator.initiateScan();
+                        new CountDownTimer(10000, 1000) {
+                            //add a new field of text: "If you dont want to add this contact press cancel"
+                            Button cancelButton = (Button) findViewById(R.id.cancelButton)
+                            cancelButton.setOnClickListener(new View.OnClickListener() {
+                                public void onCLick() {
+                                cancel();
+                        //}});
+                          public void onTick(long millisUntilFinished) {
+//                                mTextField.setText(millisUntilFinished / 1000);
+                           }
+
+                            public void onFinish() {
+                                insertNewContact();
+                            }
+                        }.start();
 
 
                     }
@@ -105,23 +130,88 @@ public class QRGenerator extends AppCompatActivity {
 
     }
 
-    //method to decode scanend data
+    //method to decode scanned data
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-    //retrieve scan result
+        //retrieve scan result
         IntentResult scanningResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
         if (scanningResult != null) {
-            String scanContent = scanningResult.getContents();
-            contentTxt = (TextView)findViewById(R.id.scan_content);
-            contentTxt.setText("CONTENT: " + scanContent);
-        }
-        else{
+            this.scannedText = scanningResult.getContents();
+            stringDecoder(this.scannedText);
+            contentTxt = (TextView) findViewById(R.id.scan_content);
+            contentTxt.setText("Name: " + this.newContactName + "\nPhone: " + this.newContactPhone + "\nEmail: " + this.newContactEmail);
+        } else {
             Toast toast = Toast.makeText(getApplicationContext(),
                     "No scan data received!", Toast.LENGTH_SHORT);
             toast.show();
         }
 
     }
+
+    public String combineStrings(String userName, String userPhone, String userEmail) {
+        String separator = "|";
+        String combinedText = separator + userName + separator + userPhone + separator + userEmail + separator;
+        return combinedText;
+    }
+
+    public void stringDecoder(String contact) {
+        int length = contact.length();
+        int nextCharPtr = 0;
+        String name = "";
+        String phone = "";
+        String email = "";
+
+        if (length > 0) {
+            //get name:
+            for (int i = 1; i < length; i++) {
+                char current = contact.charAt(i);
+                nextCharPtr = i + 1;
+                if (current == '|') {
+                    i = length;
+                } else
+                    name += current;
+            }
+            //get phone:
+            for (int i = nextCharPtr; i < length; i++) {
+                char current = contact.charAt(i);
+                nextCharPtr = i + 1;
+                if (current == '|') {
+                    i = length;
+                } else
+                    phone += current;
+            }
+            //get email:
+            for (int i = nextCharPtr; i < length; i++) {
+                char current = contact.charAt(i);
+                nextCharPtr = i + 1;
+                if (current == '|') {
+                    i = length;
+                } else
+                    email += current;
+            }
+
+        }
+
+        //add data to the private values:
+        newContactName = name;
+        newContactPhone = phone;
+        newContactEmail = email;
+    }
+
+    //insert a new contact to the phone:
+    public void insertNewContact() {
+        Intent intent = new Intent(Intent.ACTION_INSERT);
+        // Sets the MIME type to match the Contacts Provider
+        intent.setType(ContactsContract.RawContacts.CONTENT_TYPE);
+        intent.putExtra(ContactsContract.Intents.Insert.NAME, newContactName);
+        intent.putExtra(ContactsContract.Intents.Insert.EMAIL, newContactEmail);
+        intent.putExtra(ContactsContract.Intents.Insert.PHONE, newContactPhone);
+        startActivity(intent);
+
+    }
 }
+
+
+
 
 
 
