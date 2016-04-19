@@ -95,14 +95,9 @@
         <activity
             android:name=".SettingsActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".FriendInfo"></activity>
-        <activity android:name=".LoginActivity"
-            android:windowSoftInputMode="stateHidden"></activity>
-        <activity android:name=".MyEventsActivity" />
-        <activity android:name=".FriendsActivity" />
-        <activity android:name=".QRGenerator" />
-        <activity android:name=".SettingsActivity"></activity>
-        <activity android:name=".NotificationActivity" />
+        <activity
+            android:name=".NotificationActivity"
+            android:screenOrientation="portrait" />
 
     </application>
 

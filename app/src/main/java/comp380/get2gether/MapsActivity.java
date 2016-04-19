@@ -137,11 +137,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         listView.setOnItemClickListener(this);
         adapter = new DrawerAdapter(MapsActivity.this, drawerString);
         listView.setAdapter(adapter);
-    }
 
         startTimer(); //notifications
-
-}
+    }
 
     /**
      * Manipulates the map once available.
