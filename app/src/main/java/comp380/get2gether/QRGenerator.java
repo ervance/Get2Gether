@@ -28,7 +28,7 @@ public class QRGenerator extends AppCompatActivity {
 
     private String LOG_TAG = "GenerateQRCode";
     // this is for testing need to get this data from db of the user (who's data being encoded in QR CODE
-    private String uName = ;
+    private String uName  = "COMP";
     private String uPhone = "380";
     private String uEmail = "email@gmail.com";
     private String contact;
@@ -105,11 +105,12 @@ public class QRGenerator extends AppCompatActivity {
                         scanIntegrator.initiateScan();
                         new CountDownTimer(10000, 1000) {
                             //add a new field of text: "If you dont want to add this contact press cancel"
-                            Button cancelButton = (Button) findViewById(R.id.cancelButton)
+                            Button cancelButton = (Button) findViewById(R.id.cancelbutton);
                             cancelButton.setOnClickListener(new View.OnClickListener() {
-                                public void onCLick() {
+                                public void onCLick(View v) {
                                 cancel();
-                        //}});
+                                }
+                            });
                           public void onTick(long millisUntilFinished) {
 //                                mTextField.setText(millisUntilFinished / 1000);
                            }
@@ -135,10 +136,10 @@ public class QRGenerator extends AppCompatActivity {
         //retrieve scan result
         IntentResult scanningResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
         if (scanningResult != null) {
-            this.scannedText = scanningResult.getContents();
-            stringDecoder(this.scannedText);
+            scannedText = scanningResult.getContents();
+            stringDecoder(scannedText);
             contentTxt = (TextView) findViewById(R.id.scan_content);
-            contentTxt.setText("Name: " + this.newContactName + "\nPhone: " + this.newContactPhone + "\nEmail: " + this.newContactEmail);
+            contentTxt.setText("Name: " + newContactName + "\nPhone: " + newContactPhone + "\nEmail: " + newContactEmail);
         } else {
             Toast toast = Toast.makeText(getApplicationContext(),
                     "No scan data received!", Toast.LENGTH_SHORT);
@@ -192,9 +193,12 @@ public class QRGenerator extends AppCompatActivity {
         }
 
         //add data to the private values:
-        newContactName = name;
-        newContactPhone = phone;
-        newContactEmail = email;
+        if (name != null)
+            newContactName = name;
+        if (phone != null)
+            newContactPhone = phone;
+        if (email != null)
+            newContactEmail = email;
     }
 
     //insert a new contact to the phone:
@@ -202,9 +206,12 @@ public class QRGenerator extends AppCompatActivity {
         Intent intent = new Intent(Intent.ACTION_INSERT);
         // Sets the MIME type to match the Contacts Provider
         intent.setType(ContactsContract.RawContacts.CONTENT_TYPE);
-        intent.putExtra(ContactsContract.Intents.Insert.NAME, newContactName);
-        intent.putExtra(ContactsContract.Intents.Insert.EMAIL, newContactEmail);
-        intent.putExtra(ContactsContract.Intents.Insert.PHONE, newContactPhone);
+        if (newContactName != null)
+            intent.putExtra(ContactsContract.Intents.Insert.NAME, newContactName);
+        if (newContactEmail != null)
+            intent.putExtra(ContactsContract.Intents.Insert.EMAIL, newContactEmail);
+        if (newContactPhone != null)
+            intent.putExtra(ContactsContract.Intents.Insert.PHONE, newContactPhone);
         startActivity(intent);
 
     }
