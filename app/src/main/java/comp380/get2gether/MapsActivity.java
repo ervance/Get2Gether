@@ -475,7 +475,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         //users will still get a toast message and the button will be a different color when they return
                         //to maps
                         if(oldSize < newSize) {
-                            final String msg = "New Notification!";
+                            final String msg = "KickIt Notification!";
                             //show the toast
                             int duration = Toast.LENGTH_SHORT;
                             Toast toast = Toast.makeText(getApplicationContext(), msg, duration);
