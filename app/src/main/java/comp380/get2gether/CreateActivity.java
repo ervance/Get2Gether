@@ -57,12 +57,11 @@ public class CreateActivity extends FragmentActivity implements GoogleApiClient.
 
     /******FORM FIELDS********/
     private EditText chosenEventName; //holds the event name from the eventName text box
-    private EditText chosenEventType; //Holds eventLocation ""
-    private EditText chosenEventTime;  //holds the eventTime ""
     ArrayList<String> formVariables = new ArrayList<>();
     String eName;
     String eType;
-    String eTime;
+    String eStartTime;
+    String eEndTime;
     /******FORM FIELDS********/
 
     /******Map fields******/
@@ -119,33 +118,33 @@ public class CreateActivity extends FragmentActivity implements GoogleApiClient.
             //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
             //---------------------------------------------------------------------------------------
-            //This code handles the spinner on the CreateActivity page
-            final Spinner staticSpinner = (Spinner) findViewById(R.id.static_spinner);
+            //This is the code for the spinner from the Strings array
+            final Spinner eventTypeSpinner = (Spinner) findViewById(R.id.eventSpinner);
 
             // Create an ArrayAdapter using the string array and a default spinner
-            ArrayAdapter<CharSequence> staticAdapter = ArrayAdapter
-                    .createFromResource(this, R.array.brew_array,
+            final ArrayAdapter<CharSequence> eventTypeAdapter = ArrayAdapter
+                    .createFromResource(this, R.array.eventArray,
                             android.R.layout.simple_spinner_item);
 
             // Specify the layout to use when the list of choices appears
-            staticAdapter
+            eventTypeAdapter
                     .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
             // Apply the adapter to the spinner
-            staticSpinner.setAdapter(staticAdapter);
+            eventTypeSpinner.setAdapter(eventTypeAdapter);
+        //------------------------------------------------------------------------------------------
+            final Spinner startTimesSpinner = (Spinner) findViewById(R.id.startTimeSpinner);
 
-            final Spinner dynamicSpinner = (Spinner) findViewById(R.id.dynamic_spinner);
-
-            String[] items = new String[]{"Select a Time", "1:00 am", "2:00 am", "3:00 am", "4:00 am", "5:00 am", "6:00 am",
+            final String[] startTimes = new String[]{"Select a Start Time", "1:00 am", "2:00 am", "3:00 am", "4:00 am", "5:00 am", "6:00 am",
                     "7:00 am", "8:00 am", "9:00 am", "10:00 am", "11:00 am", "12:00 pm", "1:00 pm", "2:00 pm", "3:00 pm", "4:00 pm", "5:00 pm", "6:00 pm",
                     "7:00 pm", "8:00 pm", "9:00 pm", "10:00 pm", "11:00 pm", "12:00 am"};
 
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                    android.R.layout.simple_spinner_item, items);
+            ArrayAdapter<String> start = new ArrayAdapter<String>(this,
+                    android.R.layout.simple_spinner_item, startTimes);
 
-            dynamicSpinner.setAdapter(adapter);
+            startTimesSpinner.setAdapter(start);
 
-            dynamicSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            startTimesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view,
                                            int position, long id) {
@@ -158,6 +157,32 @@ public class CreateActivity extends FragmentActivity implements GoogleApiClient.
                 }
             });
             //-------------------------END SPINNER SECTION-------------------------------------------
+
+        //---------------------------------------------------------------------------------------
+        final Spinner stopTimeSpinner = (Spinner) findViewById(R.id.stopTimeSpinner);
+
+        String[] stopTimes = new String[]{"Select an End Time", "1:00 am", "2:00 am", "3:00 am", "4:00 am", "5:00 am", "6:00 am",
+                "7:00 am", "8:00 am", "9:00 am", "10:00 am", "11:00 am", "12:00 pm", "1:00 pm", "2:00 pm", "3:00 pm", "4:00 pm", "5:00 pm", "6:00 pm",
+                "7:00 pm", "8:00 pm", "9:00 pm", "10:00 pm", "11:00 pm", "12:00 am"};
+
+        ArrayAdapter<String> stop = new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_item, stopTimes);
+
+        stopTimeSpinner.setAdapter(stop);
+
+        stopTimeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view,
+                                       int position, long id) {
+                Log.v("item", (String) parent.getItemAtPosition(position));
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // TODO Auto-generated method stub
+            }
+        });
+        //-------------------------END SPINNER SECTION-------------------------------------------
 
 
        /*****************Start Searh Section***********************/
@@ -178,7 +203,7 @@ public class CreateActivity extends FragmentActivity implements GoogleApiClient.
                 placeMapMarker(newLoc.latitude, newLoc.longitude);
             }
         });
-        /*****************End Searh Section***********************/
+        /*****************End Search Section***********************/
 
             //Ties the completeForm button to the variable submitButton
             final Button submitButton = (Button) findViewById(R.id.completeForm);
@@ -193,8 +218,9 @@ public class CreateActivity extends FragmentActivity implements GoogleApiClient.
                     //On button press, store text from the 3 fields
                     chosenEventName = (EditText) findViewById(R.id.eventName);
                     eName = chosenEventName.getText().toString();
-                    eType = staticSpinner.getSelectedItem().toString();
-                    eTime = dynamicSpinner.getSelectedItem().toString();
+                    eType = eventTypeSpinner.getSelectedItem().toString();
+                    eStartTime = startTimesSpinner.getSelectedItem().toString();
+                    eEndTime = stopTimeSpinner.getSelectedItem().toString();
                     //Here is your objective. Make sure that the current location is always saved
                     //to currentLocale, once it is saved to that then come into this section
                     //break up the currentLocale into two variables to be put into the string array
@@ -208,7 +234,8 @@ public class CreateActivity extends FragmentActivity implements GoogleApiClient.
                     //Built Arraylist to store variables from Form
                     formVariables.add(eName);
                     formVariables.add(eType);
-                    formVariables.add(eTime);
+                    formVariables.add(eStartTime);
+                    formVariables.add(eEndTime);
                     formVariables.add(eLat);
                     formVariables.add(eLng);
 

@@ -204,9 +204,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         final ArrayList<String> forms = (ArrayList<String>) getIntent().getSerializableExtra("formVar");
         //currently forms.get(0) is Event Name
         //currently forms.get(1) is Event Type
-        //currently forms.get(2) is Event Time
-        //currently forms.get(3) is Event lat
-        //currently forms.get(4) is Event lng
+        //currently forms.get(2) is Event Start time
+        //currently forms.get(3) is Event End time
+        //currently forms.get(4) is Event lat
+        //currently forms.get(5) is Event lng
         //This section of code works on adding custom info window.--------------------------------
         if(mMap != null){
             //setinfoWindowAdapter is what we use to override Androids default popup window
@@ -232,8 +233,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     //This pulls the info from our form and populates the info window
                     TextView tvEname = (TextView) v.findViewById(R.id.eName);
                     TextView tvEType = (TextView) v.findViewById(R.id.eType);
-                    TextView tvETime = (TextView) v.findViewById(R.id.eTime);
-                    TextView tvOther = (TextView) v.findViewById(R.id.otherStuff);
+                    TextView tvEStartTime = (TextView) v.findViewById(R.id.eStartTime);
+                    TextView tvEStopTime = (TextView) v.findViewById(R.id.eStopTime);
 
                     //this locates the position of the marker in order to put the bubble in the
                     //correct location
@@ -258,7 +259,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     if(forms != null) {
                         tvEname.setText(forms.get(0));
                         tvEType.setText(forms.get(1));
-                        tvETime.setText(forms.get(2));
+                        tvEStartTime.setText(forms.get(2));
+                        tvEStopTime.setText(forms.get(3));
 
                     }
 
@@ -275,43 +277,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             toast.setGravity(Gravity.TOP | Gravity.LEFT, 0, 0);
             toast.makeText(MapsActivity.this, forms.get(0), toast.LENGTH_SHORT).show();
 
-/*
-        //Changes the image displayed based on the category chosen
-        if(forms.get(1).equals("Sports")){
-            Toast.makeText(MapsActivity.this, "Sports", Toast.LENGTH_SHORT).show();
-            ImageView img= (ImageView) findViewById(R.id.markerImage);
-            img.setImageResource(R.drawable.sports);
-        }else if(forms.get(1).equals("Gaming")){
-            Toast.makeText(MapsActivity.this, "Gaming", Toast.LENGTH_SHORT).show();
-            ImageView img= (ImageView) findViewById(R.id.markerImage);
-            img.setImageResource(R.drawable.gaming);
-        }else if(forms.get(1).equals("Food")){
-            Toast.makeText(MapsActivity.this, "Food", Toast.LENGTH_SHORT).show();
-            ImageView img= (ImageView) findViewById(R.id.markerImage);
-            img.setImageResource(R.drawable.food);
-        }else if(forms.get(1).equals("Relax")){
-            Toast.makeText(MapsActivity.this, "Relax", Toast.LENGTH_SHORT).show();
-            ImageView img= (ImageView) findViewById(R.id.markerImage);
-            img.setImageResource(R.drawable.relax);
-        }else if(forms.get(1).equals("Drinks")){
-            Toast.makeText(MapsActivity.this, "Drinks", Toast.LENGTH_SHORT).show();
-            ImageView img= (ImageView) findViewById(R.id.markerImage);
-            img.setImageResource(R.drawable.drinks);
-        }else if(forms.get(1).equals("Other")){
-            Toast.makeText(MapsActivity.this, "Other", Toast.LENGTH_SHORT).show();
-            ImageView img= (ImageView) findViewById(R.id.markerImage);
-            img.setImageResource(R.drawable.other);
-        }else{
-            Toast.makeText(MapsActivity.this, "You Picked Nothing", Toast.LENGTH_SHORT).show();
-            ImageView img= (ImageView) findViewById(R.id.markerImage);
-            img.setImageResource(R.drawable.holderpic);
-        }//end Change picture section
-*/
-
             //-------------------------------------------------------------------------------------
             //here is were we are going to convert the lat and lng back into a LatLng variable
-            double lat = Double.parseDouble(forms.get(3));
-            double lng = Double.parseDouble(forms.get(4));
+            double lat = Double.parseDouble(forms.get(4));
+            double lng = Double.parseDouble(forms.get(5));
             LatLng newLL = new LatLng(lat,lng);
             currentLocale = newLL;
 

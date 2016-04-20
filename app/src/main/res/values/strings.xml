@@ -21,7 +21,7 @@
     <string name="scan">Scan</string>
 
     <!-- Array for Event Type static Spinner-->
-        <string-array name="brew_array">
+        <string-array name="eventArray">
             <item>Select Event Type</item>
             <item>sports</item>
             <item>drinks</item>
