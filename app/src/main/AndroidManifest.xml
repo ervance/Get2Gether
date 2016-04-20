@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="comp380.get2gether">
+    package="comp380.get2gether"> <!-- NEED for QR -->
+    <uses-sdk android:minSdkVersion="15" />
 
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
          Google Maps Android API v2, but you must specify either coarse or fine
          location permissions for the 'MyLocation' functionality. 
     -->
-    <!-- used for location for map fragment in CreateActivity-->
+    <!-- used for location for map fragment in CreateActivity -->
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <!-- Needed for accessing current location -->
@@ -16,11 +17,15 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <!-- Needed for Parse -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_SERVICE"/>
 
     <!--NEED for QR-->
     <uses-sdk android:minSdkVersion="15" />
     <uses-permission android:name="android.permission.WRITE_INTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <android:uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <android:uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:name=".ParseInit"
@@ -57,11 +62,16 @@
         <activity
             android:name=".CreateActivity"
             android:label="FormScreen"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
+
+
 
         <!-- The Intent-filter controls what activity launches first -->
         <!-- SpalshActivity starts first -->
-        <activity android:name=".SplashActivity">
+        <activity
+            android:name=".SplashActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -69,12 +79,26 @@
             </intent-filter>
         </activity>
         <activity android:name=".ViewEvent" />
-        <activity android:name=".LoginActivity"
-            android:windowSoftInputMode="stateHidden"></activity>
-        <activity android:name=".MyEventsActivity" />
-        <activity android:name=".FriendsActivity" />
-        <activity android:name=".QRGenerator" />
-        <activity android:name=".SettingsActivity"></activity>
+        <activity
+            android:name=".LoginActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".MyEventsActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".FriendsActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".QRGenerator"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".SettingsActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".NotificationActivity"
+            android:screenOrientation="portrait" />
+
     </application>
 
 </manifest>
