@@ -89,8 +89,8 @@ public class LoginActivity extends AppCompatActivity {
     private void attemptLogin(){
         boolean cancelLogin = false;
         View focusView = null;
-        String password = mPasswordView.getText().toString();
-        String userLogin = mUserView.getText().toString();
+        final String password = mPasswordView.getText().toString();
+        final String userLogin = mUserView.getText().toString();
 
         //validate the password entered is ok ***NOTE DOES NOT VALIDATE AGAINST DB
         if(!TextUtils.isEmpty(password) && !isPasswordValid(password)){
@@ -121,7 +121,7 @@ public class LoginActivity extends AppCompatActivity {
                     if (user != null) {
                         //user is logged in
                         Log.d("Login", "success loggin in");
-                        sucessLoggingIn();
+                        sucessLoggingIn(userLogin);
                     } else {
                         Log.d("Login", "error loggin in");
                         errorLoggingIn();
@@ -135,8 +135,8 @@ public class LoginActivity extends AppCompatActivity {
         boolean cancelLogin = false;
         View focusView = null;
 
-        String password = mPasswordView.getText().toString();
-        String userLogin = mUserView.getText().toString();
+        final String password = mPasswordView.getText().toString();
+        final String userLogin = mUserView.getText().toString();
 
         // Check for a valid username.
         if (TextUtils.isEmpty(userLogin)) {
@@ -159,7 +159,7 @@ public class LoginActivity extends AppCompatActivity {
                 @Override
                 public void done(ParseException e) {
                     if (e == null) {
-                        sucessLoggingIn();
+                        sucessLoggingIn(userLogin);
                     } else {
                         errorLoggingIn();
                     }
@@ -189,10 +189,11 @@ public class LoginActivity extends AppCompatActivity {
         mTextView.setVisibility(View.VISIBLE);
     }
 
-    private void sucessLoggingIn(){
+    private void sucessLoggingIn(String userLogin){
         logo.startAnimation(fade);
         finish();
         Intent intent = new Intent(LoginActivity.this, MapsActivity.class);
+        intent.putExtra("user", userLogin);
         startActivity(intent);
     }
 
