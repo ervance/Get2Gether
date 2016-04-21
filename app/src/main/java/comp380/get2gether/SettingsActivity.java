@@ -10,4 +10,14 @@ public class SettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings_activity);
     }
+
+    //call to database to initialize button fields
+    public  void initSettings(){
+
+    }
+
+    //save to database changes
+    public void saveSettings(){
+
+    }
 }
