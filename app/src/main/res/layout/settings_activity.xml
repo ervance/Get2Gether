@@ -9,4 +9,66 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="comp380.get2gether.SettingsActivity">
 
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:text="First Name"
+        android:ems="10"
+        android:id="@+id/firstName"
+        android:layout_marginTop="62dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textEmailAddress"
+        android:ems="10"
+        android:id="@+id/phoneField"
+        android:text="Phone"
+        android:layout_below="@+id/emailField"
+        android:layout_centerHorizontal="true" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="phone"
+        android:ems="10"
+        android:id="@+id/emailField"
+        android:text="Email"
+        android:layout_below="@+id/lastName"
+        android:layout_alignStart="@+id/lastName" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:text="Last Name"
+        android:ems="10"
+        android:id="@+id/lastName"
+        android:layout_below="@+id/firstName"
+        android:layout_alignStart="@+id/firstName" />
+
+    <Switch
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Private Mode"
+        android:id="@+id/privateSwitch"
+        android:checked="false"
+        android:layout_below="@+id/phoneField"
+        android:layout_alignStart="@+id/phoneField"
+        android:layout_above="@+id/submitBtn"
+        android:layout_alignEnd="@+id/submitBtn" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Submit Changes"
+        android:id="@+id/submitBtn"
+        android:onClick="saveSettings"
+        android:layout_marginBottom="83dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
+
 </RelativeLayout>

@@ -1,25 +1,31 @@
 package comp380.get2gether;
 
-/**
- * Created by Eric on 4/17/2016.
- */
+import bolts.Bolts;
+
 public class Event {
+    //needs attributes
+    public String name;
+    public String time;
+    public String type;
+    public Boolean isAttending;
+    public Boolean isInvited;
+    public int photo;
 
-    String eventName;
-    int eventTime;
-    int eventType;
-    String host;
+    public Boolean getIsAttending(String user){
+       //returns if user is attending
+        isAttending = true;
 
-
-    Event(){
+        return isAttending;
     }
 
-    Event(String eventName, int eventTime, String host){
-        this.eventName = eventName;
-        this.eventTime = eventTime;
-        this.host = host;
+    public Boolean getIsInvited(String user){
+        //returns if user is invited
+        isInvited = false;
+
+        return isInvited;
     }
 
-    //ToDo: create more setters getters
-
+    public int getPhoto(){
+        return photo;
+    }
 }

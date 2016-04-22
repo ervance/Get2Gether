@@ -4,10 +4,13 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.DrawerLayout;
@@ -16,6 +19,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -25,6 +29,9 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdate;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -39,6 +46,7 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 
@@ -67,6 +75,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     final private String[] NAVIGATION = {"Create Event","My Events", "Filter", "Friends", "QR Code", "Settings"};
     final private int[] IMG = {R.drawable.holderpic,R.drawable.holderpic,R.drawable.holderpic,R.drawable.holderpic,R.drawable.holderpic,R.drawable.holderpic};
     /***End Drawer***/
+
+    //for notifications
+    Timer timer;
+    TimerTask timerTask;
+    final Handler handler = new Handler();
+    int oldSize = 5; //will use database to find old size of
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,6 +142,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         listView.setOnItemClickListener(this);
         adapter = new DrawerAdapter(MapsActivity.this, drawerString);
         listView.setAdapter(adapter);
+
+        startTimer(); //notifications
     }
 
     /**
@@ -193,9 +209,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         final ArrayList<String> forms = (ArrayList<String>) getIntent().getSerializableExtra("formVar");
         //currently forms.get(0) is Event Name
         //currently forms.get(1) is Event Type
-        //currently forms.get(2) is Event Time
-        //currently forms.get(3) is Event lat
-        //currently forms.get(4) is Event lng
+        //currently forms.get(2) is Event Start time
+        //currently forms.get(3) is Event End time
+        //currently forms.get(4) is Event lat
+        //currently forms.get(5) is Event lng
         //This section of code works on adding custom info window.--------------------------------
         if(mMap != null){
             //setinfoWindowAdapter is what we use to override Androids default popup window
@@ -221,8 +238,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     //This pulls the info from our form and populates the info window
                     TextView tvEname = (TextView) v.findViewById(R.id.eName);
                     TextView tvEType = (TextView) v.findViewById(R.id.eType);
-                    TextView tvETime = (TextView) v.findViewById(R.id.eTime);
-                    TextView tvOther = (TextView) v.findViewById(R.id.otherStuff);
+                    TextView tvEStartTime = (TextView) v.findViewById(R.id.eStartTime);
+                    TextView tvEStopTime = (TextView) v.findViewById(R.id.eStopTime);
 
                     //this locates the position of the marker in order to put the bubble in the
                     //correct location
@@ -247,7 +264,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     if(forms != null) {
                         tvEname.setText(forms.get(0));
                         tvEType.setText(forms.get(1));
-                        tvETime.setText(forms.get(2));
+                        tvEStartTime.setText(forms.get(2));
+                        tvEStopTime.setText(forms.get(3));
 
                     }
 
@@ -264,43 +282,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             toast.setGravity(Gravity.TOP | Gravity.LEFT, 0, 0);
             toast.makeText(MapsActivity.this, forms.get(0), toast.LENGTH_SHORT).show();
 
-/*
-        //Changes the image displayed based on the category chosen
-        if(forms.get(1).equals("Sports")){
-            Toast.makeText(MapsActivity.this, "Sports", Toast.LENGTH_SHORT).show();
-            ImageView img= (ImageView) findViewById(R.id.markerImage);
-            img.setImageResource(R.drawable.sports);
-        }else if(forms.get(1).equals("Gaming")){
-            Toast.makeText(MapsActivity.this, "Gaming", Toast.LENGTH_SHORT).show();
-            ImageView img= (ImageView) findViewById(R.id.markerImage);
-            img.setImageResource(R.drawable.gaming);
-        }else if(forms.get(1).equals("Food")){
-            Toast.makeText(MapsActivity.this, "Food", Toast.LENGTH_SHORT).show();
-            ImageView img= (ImageView) findViewById(R.id.markerImage);
-            img.setImageResource(R.drawable.food);
-        }else if(forms.get(1).equals("Relax")){
-            Toast.makeText(MapsActivity.this, "Relax", Toast.LENGTH_SHORT).show();
-            ImageView img= (ImageView) findViewById(R.id.markerImage);
-            img.setImageResource(R.drawable.relax);
-        }else if(forms.get(1).equals("Drinks")){
-            Toast.makeText(MapsActivity.this, "Drinks", Toast.LENGTH_SHORT).show();
-            ImageView img= (ImageView) findViewById(R.id.markerImage);
-            img.setImageResource(R.drawable.drinks);
-        }else if(forms.get(1).equals("Other")){
-            Toast.makeText(MapsActivity.this, "Other", Toast.LENGTH_SHORT).show();
-            ImageView img= (ImageView) findViewById(R.id.markerImage);
-            img.setImageResource(R.drawable.other);
-        }else{
-            Toast.makeText(MapsActivity.this, "You Picked Nothing", Toast.LENGTH_SHORT).show();
-            ImageView img= (ImageView) findViewById(R.id.markerImage);
-            img.setImageResource(R.drawable.holderpic);
-        }//end Change picture section
-*/
-
             //-------------------------------------------------------------------------------------
             //here is were we are going to convert the lat and lng back into a LatLng variable
-            double lat = Double.parseDouble(forms.get(3));
-            double lng = Double.parseDouble(forms.get(4));
+            double lat = Double.parseDouble(forms.get(4));
+            double lng = Double.parseDouble(forms.get(5));
             LatLng newLL = new LatLng(lat,lng);
             currentLocale = newLL;
 
@@ -429,6 +414,54 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         currentLocale = latLng;
         CameraUpdate update = CameraUpdateFactory.newLatLngZoom(latLng, zoom);
         mMap.moveCamera(update);
+    }
+    public void notif(View view) {
+        Button button = (Button) findViewById(R.id.notifs);
+        button.getBackground().setColorFilter(Color.LTGRAY, PorterDuff.Mode.MULTIPLY);
+        Intent intent = new Intent(MapsActivity.this, NotificationActivity.class);
+        startActivity(intent);
+        //update oldSize with new size of current notification object in database
+    }
+
+
+    //TODO: find way to save old values db
+    //running notifications service in background->currently every 5 secs
+    public void startTimer() {
+        //set a new Timer
+        timer = new Timer();
+        //initialize the TimerTask's job
+        initializeTimerTask();
+        //schedule the timer, after the first 5000ms the TimerTask will run every 10000ms
+        timer.schedule(timerTask, 5000, 10000); //
+    }
+    public void initializeTimerTask() {
+        timerTask = new TimerTask() {
+            public void run() {
+                //use a handler to run a toast that shows when new item added for user in database for notification
+                handler.post(new Runnable() {
+                    public void run() {
+                        //comparing static number with random number between 1 and 10
+                        int newSize = (int )(Math.random() * 10 + 1);
+                        //here we have the saved size of the old notification object of the database
+                        //and we compare with the size of the new notification object that we just queried
+                        //if the new size is bigger, we will display a toast and change the button color
+                        //the timer feature will run in the background, so even in another android activity,
+                        //users will still get a toast message and the button will be a different color when they return
+                        //to maps
+                        if(oldSize < newSize) {
+                            final String msg = "Kickit Notification!";
+                            //show the toast
+                            int duration = Toast.LENGTH_SHORT;
+                            Toast toast = Toast.makeText(getApplicationContext(), msg, duration);
+                            toast.show();
+                            //change button color
+                            Button button = (Button) findViewById(R.id.notifs);
+                            button.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY);
+                        }
+                    }
+                });
+            }
+        };
     }
 }
 
