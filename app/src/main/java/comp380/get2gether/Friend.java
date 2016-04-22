@@ -13,7 +13,14 @@ public class Friend {
     public List<String> hostingEvents;
     public List<String> attendingEvents;
     public int photo;
+    public String description;
 
+    Friend(){}
+
+    Friend(String firstName, String lastName){
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
 
     public String getFirstLast() {
         String firstLast = firstName + " " + lastName;

@@ -23,6 +23,9 @@
     <android:uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <android:uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
+    <!-- to get rid of the top ttile bar on all the activities add this to each one or to application for all
+    android:theme="@android:style/Theme.NoTitleBar"-->
+
     <application
         android:name=".ParseInit"
         android:allowBackup="true"
