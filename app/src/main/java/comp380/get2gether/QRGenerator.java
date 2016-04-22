@@ -21,12 +21,14 @@ import com.google.zxing.client.android.Contents;
 import com.google.zxing.client.android.Intents;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+import com.parse.ParseUser;
 
 public class QRGenerator extends AppCompatActivity {
 
     private String LOG_TAG = "GenerateQRCode";
     // this is for testing need to get this data from db
-    private String name = "COMP";
+    ParseUser currentUser = ParseUser.getCurrentUser();
+    private String name = currentUser.getUsername().toString();
     private String phone = "380";
     private String email = "email@gmail.com";
     private String contact = "addalldatahere (create a method that combines all data together";
