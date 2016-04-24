@@ -23,15 +23,13 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.parse.ParseUser;
 
+
 public class QRGenerator extends AppCompatActivity {
 
     private String LOG_TAG = "GenerateQRCode";
     // this is for testing need to get this data from db
-    ParseUser currentUser = ParseUser.getCurrentUser();
-    private String name = currentUser.getUsername().toString();
-    private String phone = "380";
-    private String email = "email@gmail.com";
-    private String contact = "addalldatahere (create a method that combines all data together";
+    private final ParseUser currentUser = ParseUser.getCurrentUser();
+    private String contact;// = "addalldatahere (create a method that combines all data together";
 
     //scanner variables:
     private TextView formatTxt, contentTxt;
@@ -40,71 +38,81 @@ public class QRGenerator extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.qr_layout);
 
-        Intent intent = new Intent(Intents.Encode.ACTION);
+        if (currentUser == null){
+            //send them to log in
+            Intent intent = new Intent(QRGenerator.this, LoginActivity.class);
+            startActivity(intent);
+        }
+        else {
 
+            contact = createContactInfo();
 
-        Button generateButton = (Button) findViewById(R.id.generateqrbutton);
-        generateButton.setOnClickListener(new View.OnClickListener() {
+            setContentView(R.layout.qr_layout);
 
-                                       public void onClick(View v) {
-                                           // make sure that generate qr has been presed:
-                                           switch (v.getId()) {
-                                               case R.id.generateqrbutton:
+            Intent intent = new Intent(Intents.Encode.ACTION);
 
-                                                   //Find screen size
-                                                   WindowManager manager = (WindowManager) getSystemService(WINDOW_SERVICE);
-                                                   Display display = manager.getDefaultDisplay();
-                                                   Point point = new Point();
-                                                   display.getSize(point);
-                                                   int width = point.x;
-                                                   int height = point.y;
-                                                   int smallerDimension = width < height ? width : height;
-                                                   smallerDimension = smallerDimension * 3 / 4;
+            Button generateButton = (Button) findViewById(R.id.generateqrbutton);
+            generateButton.setOnClickListener(new View.OnClickListener() {
 
-                                                   //Encode with a QR Code image
-                                                   QRGen qrCodeEncoder = new QRGen(contact,
-                                                           null,
-                                                           Contents.Type.TEXT,
-                                                           BarcodeFormat.QR_CODE.toString(),
-                                                           smallerDimension);
-                                                   try {
-                                                       Bitmap bitmap = qrCodeEncoder.encodeAsBitmap();
-                                                       ImageView myImage = (ImageView) findViewById(R.id.imageViewqr);
-                                                       myImage.setImageBitmap(bitmap);
+                                                  public void onClick(View v) {
+                                                      // make sure that generate qr has been presed:
+                                                      switch (v.getId()) {
+                                                          case R.id.generateqrbutton:
 
-                                                   } catch (WriterException e) {
-                                                       e.printStackTrace();
-                                                   }
+                                                              //Find screen size
+                                                              WindowManager manager = (WindowManager) getSystemService(WINDOW_SERVICE);
+                                                              Display display = manager.getDefaultDisplay();
+                                                              Point point = new Point();
+                                                              display.getSize(point);
+                                                              int width = point.x;
+                                                              int height = point.y;
+                                                              int smallerDimension = width < height ? width : height;
+                                                              smallerDimension = smallerDimension * 3 / 4;
 
+                                                              //Encode with a QR Code image
+                                                              QRGen qrCodeEncoder = new QRGen(contact,
+                                                                      null,
+                                                                      Contents.Type.TEXT,
+                                                                      BarcodeFormat.QR_CODE.toString(),
+                                                                      smallerDimension);
+                                                              try {
+                                                                  Bitmap bitmap = qrCodeEncoder.encodeAsBitmap();
+                                                                  ImageView myImage = (ImageView) findViewById(R.id.imageViewqr);
+                                                                  myImage.setImageBitmap(bitmap);
 
-                                                   break;
-                                           }
-                                       }
-
-                                   }
-
-        );
-        // scan button:
-        Button scanButton = (Button)findViewById(R.id.scanqrbutton);
-        scanButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                //make sure that scan button has been pressed:
-                try {
-                    if (v.getId() == R.id.scanqrbutton) {
-
-                        scanIntegrator.initiateScan();
+                                                              } catch (WriterException e) {
+                                                                  e.printStackTrace();
+                                                              }
 
 
+                                                              break;
+                                                      }
+                                                  }
+
+                                              }
+
+            );
+
+            // scan button:
+            Button scanButton = (Button) findViewById(R.id.scanqrbutton);
+            scanButton.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    //make sure that scan button has been pressed:
+                    try {
+                        if (v.getId() == R.id.scanqrbutton) {
+
+                            scanIntegrator.initiateScan();
+
+
+                        }
+                    } catch (ActivityNotFoundException anfe) {
+                        Log.e("onCreate", "Scanner Not Found", anfe);
                     }
-                } catch (ActivityNotFoundException anfe) {
-                    Log.e("onCreate", "Scanner Not Found", anfe);
                 }
-            }
-        });
+            });
 
-
+        }//end login check
     }
 
     //method to decode scanend data
@@ -121,6 +129,30 @@ public class QRGenerator extends AppCompatActivity {
                     "No scan data received!", Toast.LENGTH_SHORT);
             toast.show();
         }
+
+    }
+
+    private String createContactInfo(){
+        //creates contactinfo for qr generator
+        String name = "";
+        String phone;
+        String email;
+
+        if (currentUser.has("firstName"))
+            name = currentUser.getString("firstName");
+        if (currentUser.has("lastName"))
+            name = name + currentUser.getString("lastName");
+
+        if (currentUser.has("email"))
+            email = currentUser.getString("email");
+        else
+            email = "N/A";
+        if (currentUser.has("phone"))
+            phone = currentUser.getString("phone");
+        else
+            phone = "N/A";
+
+        return "Name: " + name + "\nEmail: " + email + "\nPhone Number: " + phone;
 
     }
 }

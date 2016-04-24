@@ -31,7 +31,7 @@ public class FriendInfo extends AppCompatActivity {
             "TestEvent5", "TestEvent6"};
     final private String[] HOST = {"TestHost1", "TestHost2", "TestHost3", "TestHost4",
             "TestHost5", "TestHost6"};
-    final private int[] TIME = {1,2,3,4,5,6};
+    final private String[] TIME = {"11:00","11:00","11:00","11:00","11:00","11:00"};
     private Friend testFriend = new Friend("TEST", "FRIEND");
 
 
@@ -71,7 +71,7 @@ public class FriendInfo extends AppCompatActivity {
 
         for(int i = 0; i < EVENTNAME.length; i++){
             Event event = new Event(EVENTNAME[i], TIME[i], HOST[i]);
-            event.eventType = IMG[0];
+            event.photo = IMG[0];
             eventList.add(event);
         }
 
