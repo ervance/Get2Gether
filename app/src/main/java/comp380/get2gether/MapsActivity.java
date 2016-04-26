@@ -43,6 +43,7 @@ import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -86,7 +87,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.drawer);//this was activity_maps
-        //the drawer layout has the link to the map fragment that is why it works!
+
+        //get username
+        ParseUser currentUser = ParseUser.getCurrentUser();
+        Toast toast = new Toast(getApplicationContext());
+        toast.makeText(this, currentUser.getUsername().toString(), toast.LENGTH_LONG).show();
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
