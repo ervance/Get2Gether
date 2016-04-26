@@ -288,7 +288,7 @@ public class CreateActivity extends FragmentActivity implements GoogleApiClient.
 
         return p1;
     }
-//-----------------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------------
     //Checks to make sure the services are available and the map is initialized
     //------------------------------------------------------------------------------------
     public boolean servicesOK() {
