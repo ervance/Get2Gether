@@ -43,8 +43,11 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.parse.FindCallback;
 import com.parse.ParseException;
+import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -73,10 +76,17 @@ public class CreateActivity extends FragmentActivity implements GoogleApiClient.
     private static final int ERROR_DIALOG_REQUEST = 9001;
     /****End Map fields****/
 
+    private final ParseUser CURRENTUSER = ParseUser.getCurrentUser();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if(CURRENTUSER == null){
+            Intent intent = new Intent(CreateActivity.this, LoginActivity.class);
+            startActivity(intent);
+        }
+
         setContentView(R.layout.activity_form);
 
         //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -221,16 +231,73 @@ public class CreateActivity extends FragmentActivity implements GoogleApiClient.
                     eType = eventTypeSpinner.getSelectedItem().toString();
                     eStartTime = startTimesSpinner.getSelectedItem().toString();
                     eEndTime = stopTimeSpinner.getSelectedItem().toString();
+
+                    //create unique id for event
+                    String uniqueEventID = eName + CURRENTUSER.getObjectId().toString();
+
                     //Here is your objective. Make sure that the current location is always saved
                     //to currentLocale, once it is saved to that then come into this section
                     //break up the currentLocale into two variables to be put into the string array
                     //then you need to go to map activity, unpack those locations and use them for
                     String eLat = Double.toString(currentLocale.latitude);
                     String eLng = Double.toString(currentLocale.longitude);
+                    ParseGeoPoint eventLocation = new ParseGeoPoint(currentLocale.latitude,
+                            currentLocale.longitude);
+                    //Check to make event public so that it will show up on everyones query
+                    //holder for now
+                    boolean eventPublic = true;
+                    if(eventPublic){
+                        ParseObject publicEvent = new ParseObject("PublicEvent");
+                        publicEvent.put("uniqueID", uniqueEventID);
+                        publicEvent.put("eName", eName);
+                        publicEvent.put("eType", eType);
+                        publicEvent.put("eStartTime", eStartTime);
+                        publicEvent.put("eEndTime", eEndTime);
+                        publicEvent.put("eLocation", eventLocation);
+                        publicEvent.saveInBackground(new SaveCallback() {
+                            @Override
+                            public void done(ParseException e) {
+                                if (e != null){
+                                    Log.d("createActivity", "error saving public event");
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+                    }
 
                     //the marker on the map.
+                    ParseObject event = new ParseObject("Event");
 
+                    event.put("eName", eName);
+                    event.put("eType", eType);
+                    event.put("eStartTime", eStartTime);
+                    event.put("eEndTime", eEndTime);
+                    event.put("eLocation", eventLocation);
 
+                    if(CURRENTUSER.has("events")){
+                        //a created event list already exists
+                        ParseObject newEvent = (ParseObject)CURRENTUSER.get("events");
+                        newEvent.put(uniqueEventID, event); //this stores
+                        /* the event object on the current users event object list, and the
+                        events unique id, is the events name + user objcectId
+                        */
+                    }
+                    else{
+                        //current user has no created event list
+                        ParseObject eventList = new ParseObject("EventList");
+                        eventList.put(uniqueEventID, event);
+                        CURRENTUSER.put("events", eventList);
+                    }
+
+                    CURRENTUSER.saveInBackground(new SaveCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            if(e != null){
+                                Log.d("createActivity", "error saving to current user");
+                                e.printStackTrace();
+                            }
+                        }
+                    });
                     //Built Arraylist to store variables from Form
                     formVariables.add(eName);
                     formVariables.add(eType);
@@ -256,7 +323,7 @@ public class CreateActivity extends FragmentActivity implements GoogleApiClient.
                     //Create Identifier for variable types in this .java file
                     //Make an arraylist instead of putExtra
                     //Testing parse so I am commenting this out.
-                        intent.putExtra("formVar", formVariables);
+                        //intent.putExtra("formVar", formVariables);
 
                     //Start other Activity (MapsActivity) with pin
                         startActivity(intent);
