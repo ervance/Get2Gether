@@ -1,6 +1,7 @@
 package comp380.get2gether;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -52,13 +53,12 @@ public class FriendsActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Log.d("FriendClick", "FriendClickWorked Correctly on " +FRIENDFIRSTNAMES[position]);
+                Intent intent = new Intent(FriendsActivity.this, FriendInfo.class);
+                startActivity(intent);
             }
         });
         fAdapter = new FriendAdapter(FriendsActivity.this, friendList);
         listView.setAdapter(fAdapter);
     }
 
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id){
-        Toast.makeText(this, "Click Successful", Toast.LENGTH_SHORT).show();
-    }
 }

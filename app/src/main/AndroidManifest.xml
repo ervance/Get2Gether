@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="comp380.get2gether"> <!-- NEED for QR -->
-    <uses-sdk android:minSdkVersion="15" />
 
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
@@ -17,15 +16,19 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <!-- Needed for Parse -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_SERVICE" />
 
-    <!--NEED for QR-->
+    <!-- NEED for QR -->
     <uses-sdk android:minSdkVersion="15" />
+
     <uses-permission android:name="android.permission.WRITE_INTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
-    <android:uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <android:uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+    <!-- to get rid of the top ttile bar on all the activities add this to each one or to application for all
+    android:theme="@android:style/Theme.NoTitleBar"-->
 
     <application
         android:name=".ParseInit"
@@ -65,8 +68,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
 
-
-
         <!-- The Intent-filter controls what activity launches first -->
         <!-- SpalshActivity starts first -->
         <activity
@@ -98,7 +99,6 @@
         <activity
             android:name=".NotificationActivity"
             android:screenOrientation="portrait" />
-
     </application>
 
 </manifest>

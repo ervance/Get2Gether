@@ -23,7 +23,9 @@ import android.widget.Toast;
 
 import com.parse.LogInCallback;
 import com.parse.ParseException;
+import com.parse.ParseObject;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 import com.parse.SignUpCallback;
 
 import java.nio.channels.AsynchronousCloseException;
@@ -56,10 +58,19 @@ public class LoginActivity extends AppCompatActivity {
         //deal with logo spinning
         logo = (ImageView) findViewById(R.id.loginLogo);
         rotation = AnimationUtils.loadAnimation(getBaseContext(), R.anim.rotate);
-        fade = AnimationUtils.loadAnimation(getBaseContext(),R.anim.abc_fade_out);
+        fade = AnimationUtils.loadAnimation(getBaseContext(), R.anim.abc_fade_out);
 
         //user to login/create
-        user = new ParseUser();
+        user = ParseUser.getCurrentUser();
+        if (user == null) {
+            Log.d("login", "no user currently logged in");
+            user = new ParseUser();
+        }
+        else {
+            Log.d("login", "user "+ user.getUsername() + " is alreayd logged in, log them out");
+            user.logOut();
+            user = new ParseUser();
+        }
 
         //Submit credentials
         Button submitButton =(Button) findViewById(R.id.logInButton);
@@ -89,8 +100,8 @@ public class LoginActivity extends AppCompatActivity {
     private void attemptLogin(){
         boolean cancelLogin = false;
         View focusView = null;
-        String password = mPasswordView.getText().toString();
-        String userLogin = mUserView.getText().toString();
+        final String password = mPasswordView.getText().toString();
+        final String userLogin = mUserView.getText().toString();
 
         //validate the password entered is ok ***NOTE DOES NOT VALIDATE AGAINST DB
         if(!TextUtils.isEmpty(password) && !isPasswordValid(password)){
@@ -121,7 +132,7 @@ public class LoginActivity extends AppCompatActivity {
                     if (user != null) {
                         //user is logged in
                         Log.d("Login", "success loggin in");
-                        sucessLoggingIn();
+                        sucessLoggingIn(userLogin);
                     } else {
                         Log.d("Login", "error loggin in");
                         errorLoggingIn();
@@ -135,8 +146,8 @@ public class LoginActivity extends AppCompatActivity {
         boolean cancelLogin = false;
         View focusView = null;
 
-        String password = mPasswordView.getText().toString();
-        String userLogin = mUserView.getText().toString();
+        final String password = mPasswordView.getText().toString();
+        final String userLogin = mUserView.getText().toString();
 
         // Check for a valid username.
         if (TextUtils.isEmpty(userLogin)) {
@@ -159,7 +170,7 @@ public class LoginActivity extends AppCompatActivity {
                 @Override
                 public void done(ParseException e) {
                     if (e == null) {
-                        sucessLoggingIn();
+                       sucessLoggingIn(userLogin);
                     } else {
                         errorLoggingIn();
                     }
@@ -189,7 +200,7 @@ public class LoginActivity extends AppCompatActivity {
         mTextView.setVisibility(View.VISIBLE);
     }
 
-    private void sucessLoggingIn(){
+    private void sucessLoggingIn(String userLogin){
         logo.startAnimation(fade);
         finish();
         Intent intent = new Intent(LoginActivity.this, MapsActivity.class);
