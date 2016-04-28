@@ -1,40 +1,32 @@
 package comp380.get2gether;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.Intent;
-import android.os.AsyncTask;
-import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.parse.LogInCallback;
 import com.parse.ParseException;
-import com.parse.ParseObject;
 import com.parse.ParseUser;
-import com.parse.SaveCallback;
 import com.parse.SignUpCallback;
 
-import java.nio.channels.AsynchronousCloseException;
-
-public class LoginActivity extends AppCompatActivity {
-
+public class CreateUserActivity extends AppCompatActivity {
     //UI references
-    private EditText mUserView; //email login
-    private EditText mPasswordView; //password login
+    private EditText mUserView; //user login
+    private EditText mPasswordView; //user password
+    private EditText mBirthdayView; //user birthday
+    private EditText mFirstNameView; //user first name
+    private EditText mLastNameView; //user last name
+    private RadioButton mGenderView; //user gender
+    private RadioGroup radioSexGroup;
     private TextView mTextView;
     //rotate logo to show loggin in progress
     private ImageView logo;
@@ -51,14 +43,19 @@ public class LoginActivity extends AppCompatActivity {
         //create views
         setContentView(R.layout.login_activity);
 
-        mUserView = (EditText) findViewById(R.id.userLogin);
-        mPasswordView = (EditText) findViewById(R.id.passwordLogin);
+        mUserView = (EditText) findViewById(R.id.userName);
+        mPasswordView = (EditText) findViewById(R.id.pwd);
+        mBirthdayView = (EditText) findViewById(R.id.birthday);
+        mFirstNameView = (EditText) findViewById(R.id.fname);
+        mLastNameView = (EditText) findViewById(R.id.lname);
+        radioSexGroup = (RadioGroup) findViewById(R.id.sexGroup);
+        // get selected radio button from radioGroup
+        int selectedId = radioSexGroup.getCheckedRadioButtonId();
+
+        mGenderView = (RadioButton) findViewById(selectedId);
+
         mTextView = (TextView) findViewById(R.id.userNotFound);
         mTextView.setVisibility(View.INVISIBLE);
-        //deal with logo spinning
-        logo = (ImageView) findViewById(R.id.loginLogo);
-        rotation = AnimationUtils.loadAnimation(getBaseContext(), R.anim.rotate);
-        fade = AnimationUtils.loadAnimation(getBaseContext(), R.anim.abc_fade_out);
 
         //user to login/create
         user = ParseUser.getCurrentUser();
@@ -73,42 +70,29 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         //Submit credentials
-        Button submitButton =(Button) findViewById(R.id.logInButton);
-        Button newUserButton = (Button) findViewById(R.id.newUser);
+        Button newUserButton = (Button) findViewById(R.id.createBtn);
 
-
-        //attempt to login
-        submitButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                logo.startAnimation(rotation);
-                attemptLogin();//right now it will always return true
-            }
-        });
-
-        //go to create user page
+        //create user
         newUserButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(LoginActivity.this, CreateUserActivity.class);
-                startActivity(intent);
+                logo.startAnimation(rotation);
+                attemptCreateUser();
             }
         });
 
     }
 
-    private void attemptLogin(){
+    private void attemptCreateUser() {
         boolean cancelLogin = false;
         View focusView = null;
+
         final String password = mPasswordView.getText().toString();
         final String userLogin = mUserView.getText().toString();
-
-        //validate the password entered is ok ***NOTE DOES NOT VALIDATE AGAINST DB
-        if(!TextUtils.isEmpty(password) && !isPasswordValid(password)){
-            mPasswordView.setError(getString(R.string.error_field_required));
-            focusView = mPasswordView;
-            cancelLogin = true;
-        }
+        final String birthday = mBirthdayView.getText().toString();
+        final String firstname = mFirstNameView.getText().toString();
+        final String lastname = mLastNameView.getText().toString();
+        final String gender = mGenderView.getText().toString();
 
         // Check for a valid username.
         if (TextUtils.isEmpty(userLogin)) {
@@ -121,20 +105,22 @@ public class LoginActivity extends AppCompatActivity {
             cancelLogin = true;
         }
 
-        //try to log user in
-        if(cancelLogin) {
-                focusView.requestFocus();
+        if(cancelLogin){
+            focusView.requestFocus();
         }
         else {
-            ParseUser.logInInBackground(userLogin, password, new LogInCallback() {
+            user.setUsername(userLogin);
+            user.setPassword(password);
+            user.put("firstName", firstname);
+            user.put("lastName", lastname);
+            user.put("birthday", birthday);
+            user.put("gender", gender);
+            user.signUpInBackground(new SignUpCallback() {
                 @Override
-                public void done(ParseUser user, ParseException e) {
-                    if (user != null) {
-                        //user is logged in
-                        Log.d("Login", "success loggin in");
+                public void done(ParseException e) {
+                    if (e == null) {
                         sucessLoggingIn(userLogin);
                     } else {
-                        Log.d("Login", "error loggin in");
                         errorLoggingIn();
                     }
                 }
@@ -166,7 +152,7 @@ public class LoginActivity extends AppCompatActivity {
     private void sucessLoggingIn(String userLogin){
         logo.startAnimation(fade);
         finish();
-        Intent intent = new Intent(LoginActivity.this, MapsActivity.class);
+        Intent intent = new Intent(CreateUserActivity.this, MapsActivity.class);
         startActivity(intent);
     }
 
