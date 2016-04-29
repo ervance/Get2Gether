@@ -29,6 +29,8 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdate;
+
+import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -66,6 +68,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     /****End Map fields****/
     LatLng northRidge = new LatLng(34.2417, -118.5283);
 
+    /*Parse Query Items*/
+    private List<ParseObject> publicEvents;
+    private List<ParseObject> personalEvents;
+
     /****Drawer*****/
     private DrawerLayout drawerLayout;
     private RelativeLayout mDrawer;
@@ -81,6 +87,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     TimerTask timerTask;
     final Handler handler = new Handler();
     int oldSize = 5; //will use database to find old size of
+
+    //LogID
+    private final String LOGID = "mapsActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -367,7 +376,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
         //ToDo: this is where you handle what happens when the item in the drawer is clicked
-        Toast.makeText(this, "Click Successful", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "Click Successful", Toast.LENGTH_SHORT).show();
         //going to use the northridge location as a tester
         Intent intent = switchActivity(position);
         startActivity(intent);
@@ -463,5 +472,27 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         };
     }
+
+    public void queryPublicEvents(){
+        Date date = new Date();
+        //this will update the publicEvents array list with events
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("PublicEvent");
+        //ToDO: this will need to be added when the correct end time and start time are put on
+        // there, we need to have it be a string in the date format
+        //query.whereLessThanOrEqualTo("eEndTime", date);
+        query.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> newPublicEvents, ParseException e) {
+                if(e == null){
+                    Log.d(LOGID, "query succesful for PublicEvent");
+                    publicEvents = newPublicEvents;
+                }
+                else
+                    Log.d(LOGID, "query failed for PublicEvent");
+            }
+        });
+
+    }
+
 }
 
