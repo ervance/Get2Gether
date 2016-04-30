@@ -280,7 +280,7 @@ public class CreateActivity extends FragmentActivity implements GoogleApiClient.
                     event.put("eStartTime", eStartTime);
                     event.put("eEndTime", eEndTime);
                     event.put("eLocation", eventLocation);
-                    event.put("eventDescrip", eventDescrip);
+                    event.put("eDescription", eDescription);
 
                     if(CURRENTUSER.has("events")){
                         //a created event list already exists
