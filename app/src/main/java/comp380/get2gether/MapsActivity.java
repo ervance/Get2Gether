@@ -20,6 +20,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -75,6 +76,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     /****Drawer*****/
     private DrawerLayout drawerLayout;
     private RelativeLayout mDrawer;
+    private LinearLayout rightDrawer;
     private ListView listView;
     private DrawerAdapter adapter;
     private List<NavigationIcon> drawerString;
@@ -109,6 +111,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         /****Set up drawer for slider from left side***********/
         mDrawer = (RelativeLayout) findViewById(R.id.relative_drawer);
+
         DrawerLayout.LayoutParams params = (android.support.v4.widget.DrawerLayout.LayoutParams) mDrawer.getLayoutParams();
         params.width = (int) (getResources().getDisplayMetrics().widthPixels * 0.5); //set width of drawer
         //create the listener for drawer
@@ -397,7 +400,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 break;
             case 2:
                 //Todo: change to filter
-                intent = new Intent(MapsActivity.this, CreateActivity.class);
+                intent = new Intent(MapsActivity.this, Filter.class);
                 break;
             case 3:
                 intent = new Intent(MapsActivity.this, FriendsActivity.class);
