@@ -235,10 +235,6 @@ public class CreateActivity extends FragmentActivity implements GoogleApiClient.
                     //create unique id for event
                     String uniqueEventID = eName + CURRENTUSER.getObjectId().toString();
 
-                    //Here is your objective. Make sure that the current location is always saved
-                    //to currentLocale, once it is saved to that then come into this section
-                    //break up the currentLocale into two variables to be put into the string array
-                    //then you need to go to map activity, unpack those locations and use them for
                     String eLat = Double.toString(currentLocale.latitude);
                     String eLng = Double.toString(currentLocale.longitude);
                     ParseGeoPoint eventLocation = new ParseGeoPoint(currentLocale.latitude,
@@ -267,7 +263,6 @@ public class CreateActivity extends FragmentActivity implements GoogleApiClient.
 
                     //the marker on the map.
                     ParseObject event = new ParseObject("Event");
-
                     event.put("eName", eName);
                     event.put("eType", eType);
                     event.put("eStartTime", eStartTime);
@@ -355,7 +350,7 @@ public class CreateActivity extends FragmentActivity implements GoogleApiClient.
 
         return p1;
     }
-//-----------------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------------
     //Checks to make sure the services are available and the map is initialized
     //------------------------------------------------------------------------------------
     public boolean servicesOK() {
