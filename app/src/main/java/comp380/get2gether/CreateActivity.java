@@ -209,8 +209,15 @@ public class CreateActivity extends FragmentActivity implements GoogleApiClient.
                 String searchItem = searchBox.getText().toString();
                 //use search method below to find string (if nothing found return null)
                 newLoc= getLocationFromAddress(CreateActivity.this, searchItem);
-                gotoLocation(newLoc.latitude, newLoc.longitude, 10);
-                placeMapMarker(newLoc.latitude, newLoc.longitude);
+                if (newLoc != null){
+                    gotoLocation(newLoc.latitude, newLoc.longitude, 10);
+                    placeMapMarker(newLoc.latitude, newLoc.longitude);
+                }
+                else {
+                    Toast t = new Toast(CreateActivity.this);
+                    t.makeText(CreateActivity.this, "Location not found try again.",
+                            Toast.LENGTH_SHORT);
+                }
             }
         });
         /*****************End Search Section***********************/

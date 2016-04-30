@@ -11,5 +11,6 @@ public class MarkerAttributes {
     String endTime;     //holds end time for event
     double markerLat;   // holds the latitude of the event
     double markerLong;  // holds the longitude of the event
-    ParseGeoPoint markerLL = new ParseGeoPoint(); // holds the LatLng for the class.
+    String arrayPos;
+    //ParseGeoPoint markerLL; // holds the LatLng for the class.
 }
