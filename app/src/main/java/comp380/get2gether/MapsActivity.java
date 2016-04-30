@@ -515,9 +515,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void queryPublicEvents(){
-        Date date = new Date();
+        //Date date = new Date();
         //this will update the publicEvents array list with events
         ParseQuery<ParseObject> query = ParseQuery.getQuery("PublicEvent");
+        query.orderByAscending("_created_at");
         //ToDO: this will need to be added when the correct end time and start time are put on
         // there, we need to have it be a string in the date format
         //query.whereLessThanOrEqualTo("eEndTime", date);
