@@ -207,6 +207,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             double longitude = location.getLongitude();
             //create the location
             currentLocale = new LatLng(latitude,longitude);
+            gotoLocation(latitude,longitude, 10); //center camera on current location
         }//end if
 //        else
 //        {
@@ -219,15 +220,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //May or may not need to use the OnMapReadyCallback here
         //Turns out it was causing a problem so I took it out
 
-        /****This Arraylist Holds the FormActivity Variables****/
-        final ArrayList<String> forms = (ArrayList<String>) getIntent().getSerializableExtra("formVar");
-        //currently forms.get(0) is Event Name
-        //currently forms.get(1) is Event Type
-        //currently forms.get(2) is Event Start time
-        //currently forms.get(3) is Event End time
-        //currently forms.get(4) is Event lat
-        //currently forms.get(5) is Event lng
-        gotoLocation(Double.parseDouble(forms.get(4)), Double.parseDouble(forms.get(5)),10);
+
+            /****This Arraylist Holds the FormActivity Variables****/
+            //final ArrayList<String> forms = (ArrayList<String>) getIntent().getSerializableExtra("formVar");
+            //currently forms.get(0) is Event Name
+            //currently forms.get(1) is Event Type
+            //currently forms.get(2) is Event Start time
+            //currently forms.get(3) is Event End time
+            //currently forms.get(4) is Event lat
+            //currently forms.get(5) is Event lng
+
+
 
         /*TODO ERIC****** Here is where I left off.-----------------------------------------------------
          TODO  My goal here was to create a loop to gather
