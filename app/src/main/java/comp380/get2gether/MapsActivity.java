@@ -195,7 +195,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         */
 
 
-        //Get an updtated location
+        //Get an updtated location *--Eric if you Delete this I will kill you :)
         locManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         locManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000L, 500.0f, locationListener);
         Location location = locManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
