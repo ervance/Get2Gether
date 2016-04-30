@@ -529,6 +529,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             m.startTime = eventList.get(i).getString("eStartTime");
             m.endTime = eventList.get(i).getString("eEndTime");
             ParseGeoPoint location = eventList.get(i).getParseGeoPoint("eLocation");
+            m.eventDescription = eventList.get(i).getString("eDescription");
             m.markerLat = location.getLatitude();
             m.markerLong = location.getLongitude();
             m.arrayPos = new Integer(i).toString();

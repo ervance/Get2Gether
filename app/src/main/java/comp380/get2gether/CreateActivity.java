@@ -60,11 +60,13 @@ public class CreateActivity extends FragmentActivity implements GoogleApiClient.
 
     /******FORM FIELDS********/
     private EditText chosenEventName; //holds the event name from the eventName text box
+    private EditText eventDescrip; //holds the event description
     ArrayList<String> formVariables = new ArrayList<>();
     String eName;
     String eType;
     String eStartTime;
     String eEndTime;
+    String eDescription;
     /******FORM FIELDS********/
 
     /******Map fields******/
@@ -238,6 +240,8 @@ public class CreateActivity extends FragmentActivity implements GoogleApiClient.
                     eType = eventTypeSpinner.getSelectedItem().toString();
                     eStartTime = startTimesSpinner.getSelectedItem().toString();
                     eEndTime = stopTimeSpinner.getSelectedItem().toString();
+                    eventDescrip = (EditText) findViewById(R.id.eventDescription);
+                    eDescription = eventDescrip.getText().toString();
 
                     //create unique id for event
                     String uniqueEventID = eName + CURRENTUSER.getObjectId().toString();
@@ -257,6 +261,7 @@ public class CreateActivity extends FragmentActivity implements GoogleApiClient.
                         publicEvent.put("eStartTime", eStartTime);
                         publicEvent.put("eEndTime", eEndTime);
                         publicEvent.put("eLocation", eventLocation);
+                        publicEvent.put("eDescription", eDescription);
                         publicEvent.saveInBackground(new SaveCallback() {
                             @Override
                             public void done(ParseException e) {
@@ -275,6 +280,7 @@ public class CreateActivity extends FragmentActivity implements GoogleApiClient.
                     event.put("eStartTime", eStartTime);
                     event.put("eEndTime", eEndTime);
                     event.put("eLocation", eventLocation);
+                    event.put("eventDescrip", eventDescrip);
 
                     if(CURRENTUSER.has("events")){
                         //a created event list already exists
