@@ -307,6 +307,7 @@ public class CreateActivity extends FragmentActivity implements GoogleApiClient.
                         }
                     });
                     //Built Arraylist to store variables from Form
+                    //this is for the local user
                     formVariables.add(eName);
                     formVariables.add(eType);
                     formVariables.add(eStartTime);
@@ -402,7 +403,6 @@ public class CreateActivity extends FragmentActivity implements GoogleApiClient.
         CameraUpdate update = CameraUpdateFactory.newLatLngZoom(latLng, zoom);
         mMap.moveCamera(update);
     }
-
 
     private void placeMapMarker(double lat, double lng) {
         LatLng latLng = new LatLng(lat, lng);
