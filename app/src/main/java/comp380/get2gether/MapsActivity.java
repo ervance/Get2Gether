@@ -48,6 +48,7 @@ import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -72,6 +73,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     /*Parse Query Items*/
     private List<ParseObject> publicEvents;
+    private ArrayList<MarkerAttributes> mapMarkers;
     private List<ParseObject> personalEvents;
 
     /****Drawer*****/
@@ -234,8 +236,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
          */
         queryPublicEvents();
         //array list to hold marker attributes
-        ArrayList<MarkerAttributes> mapMarkers = new ArrayList<MarkerAttributes>();
-        createMarkerAttList(publicEvents, mapMarkers);
+        mapMarkers = new ArrayList<MarkerAttributes>();
+        createMarkerAttList(publicEvents, mapMarkers, publicEvents.size(),0);
         makeCustomInfoWindow(mapMarkers);
 
         //placeMarker();
@@ -395,6 +397,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             Button button = (Button) findViewById(R.id.notifs);
                             button.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY);
                         }
+                        List<ParseObject> newQueryList = queryPublicInBackground();
+                        if(newQueryList != null){
+                            //updating map icons
+                            if(publicEvents.size() != newQueryList.size()){
+                                int oldSize = publicEvents.size();
+                                int currSize = newQueryList.size();
+                                Log.d("notification", "updating map with new notification size of" +
+                                        " lists were old: " + oldSize + " new: " + currSize);
+                                int range;
+                                if (oldSize < currSize)
+                                    range = (currSize - oldSize);
+                                else
+                                    range = (oldSize - currSize);
+                                publicEvents = newQueryList;
+                                mapMarkers = new ArrayList<MarkerAttributes>();
+                                createMarkerAttList(publicEvents, mapMarkers, range,
+                                        oldSize-1);
+                            }
+
+                        }
                     }
                 });
             }
@@ -492,7 +514,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }//end if (and end custom info window section----------------------------------------------
     }
 
-    public void queryPublicEvents(){
+    private void queryPublicEvents(){
         Date date = new Date();
         //this will update the publicEvents array list with events
         ParseQuery<ParseObject> query = ParseQuery.getQuery("PublicEvent");
@@ -519,10 +541,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
+    private List<ParseObject> queryPublicInBackground(){
+        List<ParseObject> queryList = null;
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("PublicEvent");
+        query.orderByAscending("_created_at");
+        try {
+            queryList = query.find();
+        }
+        catch (ParseException e){
+            Log.d("query", "problem with query orderByascending");
+            e.printStackTrace();
+        }
+
+        return queryList;
+    }
+
     private void createMarkerAttList(List<ParseObject> eventList,
-                                                            ArrayList<MarkerAttributes> mapMarkers){
+                                     ArrayList<MarkerAttributes> mapMarkers,
+                                     int range, int start){
         //parse object to obtain marker info.
-        for(int i = 0; i < eventList.size(); i++) {
+        for(int i = start; i < range; i++) {
             MarkerAttributes m = new MarkerAttributes();
             m.eventName = eventList.get(i).getString("eName");
             m.eventType = eventList.get(i).getString("eType");
