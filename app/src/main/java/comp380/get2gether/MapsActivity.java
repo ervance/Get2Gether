@@ -398,7 +398,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             button.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY);
                         }
                         List<ParseObject> newQueryList = queryPublicInBackground();
-                        if(newQueryList != null){
+                        if(newQueryList != null && publicEvents != null){
                             //updating map icons
                             if(publicEvents.size() != newQueryList.size()){
                                 int oldSize = publicEvents.size();
