@@ -9,6 +9,7 @@ public class MarkerAttributes {
     String eventType;   //holds event type
     String startTime;   //holds start time for event
     String endTime;     //holds end time for event
+    String eventDescription; //holds event description
     double markerLat;   // holds the latitude of the event
     double markerLong;  // holds the longitude of the event
     String arrayPos;

@@ -18,7 +18,7 @@ public class Filter extends AppCompatActivity {
         setContentView(R.layout.filter_form);
 
 
-        final Spinner eventTypeSpinner = (Spinner) findViewById(R.id.eventSpinner);
+        final Spinner eventTypeSpinner = (Spinner) findViewById(R.id.type_spinner);
 
         // Create an ArrayAdapter using the string array and a default spinner
         final ArrayAdapter<CharSequence> eventTypeAdapter = ArrayAdapter
