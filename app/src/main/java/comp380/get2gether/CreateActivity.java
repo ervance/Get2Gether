@@ -42,6 +42,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.parse.FindCallback;
+import com.parse.ParseACL;
 import com.parse.ParseException;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
@@ -255,6 +256,9 @@ public class CreateActivity extends FragmentActivity implements GoogleApiClient.
                     boolean eventPublic = true;
                     if(eventPublic){
                         ParseObject publicEvent = new ParseObject("PublicEvent");
+                        ParseACL publicACL = new ParseACL(ParseUser.getCurrentUser());
+                        publicACL.setPublicReadAccess(true);
+                        publicEvent.setACL(publicACL);
                         publicEvent.put("uniqueID", uniqueEventID);
                         publicEvent.put("eName", eName);
                         publicEvent.put("eType", eType);
