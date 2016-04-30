@@ -41,6 +41,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.parse.FindCallback;
 import com.parse.ParseException;
+import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
@@ -213,96 +214,29 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //currently forms.get(3) is Event End time
         //currently forms.get(4) is Event lat
         //currently forms.get(5) is Event lng
-        //This section of code works on adding custom info window.--------------------------------
-        if(mMap != null){
-            //setinfoWindowAdapter is what we use to override Androids default popup window
-            mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
-
-                @Override
-                public View getInfoWindow(Marker marker) {
-                    return null;
-                }
-
-                //This section of code locates the contents of our custom_info_window.xml
-                //It is going to use that layout to structure our window
-                @Override
-                public View getInfoContents(Marker marker) {
-                    View v = getLayoutInflater().inflate(R.layout.custom_info_window, null);
-
-                    /******Show Image for Info Window*********/
-                    imageResource = getResources().getIdentifier(forms.get(1), "drawable", getPackageName());
-                   ImageView iv = (ImageView) v.findViewById(R.id.markerImage);
-                    iv.setImageResource(imageResource);
-                    /******Show Image for Info Window*********/
-
-                    //This pulls the info from our form and populates the info window
-                    TextView tvEname = (TextView) v.findViewById(R.id.eName);
-                    TextView tvEType = (TextView) v.findViewById(R.id.eType);
-                    TextView tvEStartTime = (TextView) v.findViewById(R.id.eStartTime);
-                    TextView tvEStopTime = (TextView) v.findViewById(R.id.eStopTime);
-
-                    //this locates the position of the marker in order to put the bubble in the
-                    //correct location
-                    LatLng ll = marker.getPosition();
-
-                    //Make a parse query to get the data
-                    ParseQuery<ParseObject> query = ParseQuery.getQuery("InputForm");
-
-                    query.whereEqualTo("name", forms.get(0));
-                    query.findInBackground(new FindCallback<ParseObject>() {
-                        @Override
-                        public void done(List<ParseObject> formData, ParseException e) {
-                            if (e==null)
-                                for(int i = 0; i< formData.size(); i++)
-                                Log.e("name", "Retrieved" + formData.get(i) + " formData");
-                            else
-                                Log.e("name", "Error: " + e.getMessage());
-                        }
-                    });
-
-                    //If form is not null then populate the info window
-                    if(forms != null) {
-                        tvEname.setText(forms.get(0));
-                        tvEType.setText(forms.get(1));
-                        tvEStartTime.setText(forms.get(2));
-                        tvEStopTime.setText(forms.get(3));
-
-                    }
 
 
-                    return v;
-                }
-            });
-        }//end if (and end custom info window section----------------------------------------------
-
-        //If forms == null that means we have not returned from FormActivity
-        if (forms != null) {
-            //Toast is a pop up message on screen could be useful later...right now not important.
-            Toast toast = new Toast(getApplicationContext());
-            toast.setGravity(Gravity.TOP | Gravity.LEFT, 0, 0);
-            toast.makeText(MapsActivity.this, forms.get(0), toast.LENGTH_SHORT).show();
-
-            //-------------------------------------------------------------------------------------
-            //here is were we are going to convert the lat and lng back into a LatLng variable
-            double lat = Double.parseDouble(forms.get(4));
-            double lng = Double.parseDouble(forms.get(5));
-            LatLng newLL = new LatLng(lat,lng);
-            currentLocale = newLL;
-
-            //This is the marker that is being used to store the data from the form
-            MarkerOptions marker = new MarkerOptions()
-                    .draggable(false)       //we don't want the marker to move once event is set
-                    .position(currentLocale);
-
-            if(currentLocale!=null) {
-                //add marker and move camera to current location
-                mMap.addMarker(marker);
-                gotoLocation(currentLocale.latitude, currentLocale.longitude,10);
-            }else{
-                toast.makeText(MapsActivity.this, "No Current Location.", toast.LENGTH_SHORT).show();
-            }
-        }//end if
-
+        /*TODO ERIC****** Here is where I left off.-----------------------------------------------------
+         TODO  My goal here was to create a loop to gather
+         TODO everything from the parse server, but I don't think it is right.
+         */
+        //array list to hold marker attributes
+        ArrayList<MarkerAttributes> mapMarkers = new ArrayList<MarkerAttributes>();
+        //parse object to obtain marker info.
+        ParseObject attributes = new ParseObject("Event");
+        while(attributes != null){
+            MarkerAttributes m = new MarkerAttributes();
+            m.eventName = attributes.getString("eName");
+            m.eventType = attributes.getString("eType");
+            m.startTime = attributes.getString("eStartTime");
+            m.endTime = attributes.getString("eEndTime");
+            m.markerLL = attributes.getParseGeoPoint("eLocation");
+            //adds m to an array list of marker objects
+            mapMarkers.add(m);
+        }
+        //makeCustomInfoWindow();
+        //placeMarker();
+//TODO THIS IS THE END OF WHAT I ADDED -----------------------------------------------------------------
         mMap.setOnInfoWindowClickListener(this);
 
     }//end onMapReady
@@ -462,6 +396,102 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 });
             }
         };
+    }
+
+    //This is the method for placing the marker
+    private void placeMarker(ParseObject event){
+        //If forms == null that means we have not returned from FormActivity
+        if (event != null) {
+            //here is were we are going to convert the lat and lng back into a LatLng variable
+            ParseGeoPoint location = (ParseGeoPoint)event.get("eLocation");
+            double lat = location.getLatitude();
+            double lng = location.getLongitude();
+            LatLng newLL = new LatLng(lat,lng);
+            currentLocale = newLL;
+
+            //This is the marker that is being used to store the data from the form
+            MarkerOptions marker = new MarkerOptions()
+                    .draggable(false)       //we don't want the marker to move once event is set
+                    .position(currentLocale);
+
+            if(currentLocale!=null) {
+                //add marker and move camera to current location
+                mMap.addMarker(marker);
+                gotoLocation(currentLocale.latitude, currentLocale.longitude,10);
+            }else{
+                Toast.makeText(MapsActivity.this, "No Current Location.", Toast.LENGTH_SHORT).show();
+            }
+        }//end if
+    }
+
+    //This method is for making each custom info window.
+    private void makeCustomInfoWindow(final ParseObject infoWindowData){
+        //This section of code works on adding custom info window.--------------------------------
+        if(mMap != null){
+            //setinfoWindowAdapter is what we use to override Androids default popup window
+            mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+
+                @Override
+                public View getInfoWindow(Marker marker) {
+                    return null;
+                }
+
+                //This section of code locates the contents of our custom_info_window.xml
+                //It is going to use that layout to structure our window
+                @Override
+                public View getInfoContents(Marker marker) {
+                    View v = getLayoutInflater().inflate(R.layout.custom_info_window, null);
+
+                    /******Show Image for Info Window*********/
+                    imageResource = getResources().getIdentifier(infoWindowData.getString("eType"), "drawable", getPackageName());
+                    ImageView iv = (ImageView) v.findViewById(R.id.markerImage);
+                    iv.setImageResource(imageResource);
+                    /******Show Image for Info Window*********/
+
+                    //This pulls the info from our form and populates the info window
+                    TextView tvEname = (TextView) v.findViewById(R.id.eName);
+                    TextView tvEType = (TextView) v.findViewById(R.id.eType);
+                    TextView tvEStartTime = (TextView) v.findViewById(R.id.eStartTime);
+                    TextView tvEStopTime = (TextView) v.findViewById(R.id.eStopTime);
+
+                    //this locates the position of the marker in order to put the bubble in the
+                    //correct location
+                    LatLng ll = marker.getPosition();
+
+                    //Make a parse query to get the data
+//                    ParseQuery<ParseObject> query = ParseQuery.getQuery("InputForm");
+//
+//                    query.whereEqualTo("name", forms.get(0));
+//                    query.findInBackground(new FindCallback<ParseObject>() {
+//                        @Override
+//                        public void done(List<ParseObject> formData, ParseException e) {
+//                            if (e==null)
+//                                for(int i = 0; i< formData.size(); i++)
+//                                    Log.e("name", "Retrieved" + formData.get(i) + " formData");
+//                            else
+//                                Log.e("name", "Error: " + e.getMessage());
+//                        }
+//                    });
+
+                    //If form is not null then populate the info window
+                    if(infoWindowData != null) {
+                        if(infoWindowData.has("eName")) {
+                            tvEname.setText(infoWindowData.getString("eName"));
+                        }
+                        if(infoWindowData.has("eType")) {
+                            tvEType.setText(infoWindowData.getString("eType"));
+                        }
+                        if(infoWindowData.has("eStartTime")) {
+                            tvEStartTime.setText(infoWindowData.getString("eStartTime"));
+                        }
+                        if(infoWindowData.has("eEndTime")) {
+                            tvEStopTime.setText(infoWindowData.getString("eEndTime"));
+                        }
+                    }
+                    return v;
+                }
+            });
+        }//end if (and end custom info window section----------------------------------------------
     }
 }
 
