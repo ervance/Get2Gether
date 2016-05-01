@@ -91,6 +91,7 @@
         android:hint="@string/birthday_hint"
         android:ems="10"
         android:id="@+id/birthday"
+        android:onClick="showDialog"
         android:layout_centerVertical="true"
         android:layout_alignStart="@+id/sexGroup"
         android:layout_alignEnd="@+id/sexGroup" />

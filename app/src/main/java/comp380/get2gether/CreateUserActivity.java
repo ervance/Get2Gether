@@ -14,9 +14,20 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import android.app.DatePickerDialog;
+import android.app.DatePickerDialog.OnDateSetListener;
+import android.view.View.OnClickListener;
+import android.widget.DatePicker;
+import android.text.InputType;
+import android.view.Menu;
+
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
 
 public class CreateUserActivity extends AppCompatActivity {
     //UI references
@@ -36,6 +47,11 @@ public class CreateUserActivity extends AppCompatActivity {
     //Parse User for db check
     private ParseUser user;
 
+    //date picker
+    private DatePickerDialog datePickerDialog;
+
+    private SimpleDateFormat dateFormatter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,12 +59,19 @@ public class CreateUserActivity extends AppCompatActivity {
         //create views
         setContentView(R.layout.create_user);
 
+        dateFormatter = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
+
         mUserView = (EditText) findViewById(R.id.userName);
         mPasswordView = (EditText) findViewById(R.id.pwd);
         mBirthdayView = (EditText) findViewById(R.id.birthday);
         mFirstNameView = (EditText) findViewById(R.id.fname);
         mLastNameView = (EditText) findViewById(R.id.lname);
         radioSexGroup = (RadioGroup) findViewById(R.id.sexGroup);
+
+        mBirthdayView.setInputType(InputType.TYPE_NULL);
+        mBirthdayView.requestFocus();
+
+        setDateTimeField();
 
         //user to login/create
         user = ParseUser.getCurrentUser();
@@ -62,6 +85,25 @@ public class CreateUserActivity extends AppCompatActivity {
             user = new ParseUser();
         }
 
+    }
+
+    private void setDateTimeField() {
+        Calendar newCalendar = Calendar.getInstance();
+        datePickerDialog = new DatePickerDialog(this, new OnDateSetListener() {
+
+            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                Calendar newDate = Calendar.getInstance();
+                newDate.set(year, monthOfYear, dayOfMonth);
+                mBirthdayView.setText(dateFormatter.format(newDate.getTime()));
+            }
+
+        }, newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
+    }
+
+    public void showDialog(View view) {
+        if(view == mBirthdayView) {
+            datePickerDialog.show();
+        }
     }
 
     public void attemptCreateUser(View view) {
