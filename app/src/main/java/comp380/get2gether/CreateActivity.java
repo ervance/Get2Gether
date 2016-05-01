@@ -253,52 +253,36 @@ public class CreateActivity extends FragmentActivity implements GoogleApiClient.
                             currentLocale.longitude);
                     //Check to make event public so that it will show up on everyones query
                     //holder for now
-                    boolean eventPublic = true;
-                    if(eventPublic){
-                        ParseObject publicEvent = new ParseObject("PublicEvent");
-                        ParseACL publicACL = new ParseACL(ParseUser.getCurrentUser());
-                        publicACL.setPublicReadAccess(true);
-                        publicEvent.setACL(publicACL);
-                        publicEvent.put("uniqueID", uniqueEventID);
-                        publicEvent.put("eName", eName);
-                        publicEvent.put("eType", eType);
-                        publicEvent.put("eStartTime", eStartTime);
-                        publicEvent.put("eEndTime", eEndTime);
-                        publicEvent.put("eLocation", eventLocation);
-                        publicEvent.put("eDescription", eDescription);
-                        publicEvent.saveInBackground(new SaveCallback() {
-                            @Override
-                            public void done(ParseException e) {
-                                if (e != null){
-                                    Log.d("createActivity", "error saving public event");
-                                    e.printStackTrace();
-                                }
-                            }
-                        });
-                    }
+                    boolean privateEvent = false;
+                    String host = CURRENTUSER.getUsername().toString();
+                    Event event = new Event(CURRENTUSER,host ,uniqueEventID, eName, eStartTime,
+                            eEndTime, eType, eDescription, eventLocation, privateEvent);
 
+                    event.saveEvent();
                     //the marker on the map.
-                    ParseObject event = new ParseObject("Event");
-                    event.put("eName", eName);
-                    event.put("eType", eType);
-                    event.put("eStartTime", eStartTime);
-                    event.put("eEndTime", eEndTime);
-                    event.put("eLocation", eventLocation);
-                    event.put("eDescription", eDescription);
+//                    ParseObject event = new ParseObject("Event");
+//                    event.put("uniqueEventID", uniqueEventID);
+//                    event.put("eName", eName);
+//                    event.put("eType", eType);
+//                    event.put("eStartTime", eStartTime);
+//                    event.put("eEndTime", eEndTime);
+//                    event.put("eLocation", eventLocation);
+//                    event.put("eDescription", eDescription);
+//                    event.put("private", privateEvent);
 
-                    if(CURRENTUSER.has("events")){
+
+                    ArrayList<Event> eventList = new ArrayList<Event>();
+
+                    if(CURRENTUSER.has("myEvents")){
                         //a created event list already exists
-                        ParseObject newEvent = (ParseObject)CURRENTUSER.get("events");
-                        newEvent.put(uniqueEventID, event); //this stores
-                        /* the event object on the current users event object list, and the
-                        events unique id, is the events name + user objcectId
-                        */
+                        eventList = (ArrayList<Event>)CURRENTUSER.get("myEvents");
+                        eventList.add(event); //this stores
+                        CURRENTUSER.put("myEvents", eventList);
                     }
                     else{
                         //current user has no created event list
-                        ParseObject eventList = new ParseObject("EventList");
-                        eventList.put(uniqueEventID, event);
-                        CURRENTUSER.put("events", eventList);
+                        eventList.add(event);
+                        CURRENTUSER.put("myEvents", eventList);
                     }
 
                     CURRENTUSER.saveInBackground(new SaveCallback() {
@@ -319,14 +303,6 @@ public class CreateActivity extends FragmentActivity implements GoogleApiClient.
                     formVariables.add(eLat);
                     formVariables.add(eLng);
 
-                /* unblock this when ready for parse server
-                //Add it to parse test
-                ParseObject inputForm = new ParseObject("InputForm");
-                inputForm.put("name", eName);
-                inputForm.put("type", eType);
-                inputForm.put("time", eTime);
-                inputForm.saveInBackground();
-                */
                     //----------------------------------------------------------------------------------------
 
                     //Create an Intent in order to pass info to "MapsAcitivity"
@@ -343,6 +319,10 @@ public class CreateActivity extends FragmentActivity implements GoogleApiClient.
                 }
             });
         }
+
+
+
+
     //This code gets location from address passed in search bar
     public LatLng getLocationFromAddress(Context context,String strAddress) {
 

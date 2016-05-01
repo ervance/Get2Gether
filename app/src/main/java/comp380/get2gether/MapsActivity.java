@@ -72,9 +72,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     LatLng northRidge = new LatLng(34.2417, -118.5283);
 
     /*Parse Query Items*/
-    private List<ParseObject> publicEvents;
+    private List<ParseObject> events;
     private ArrayList<MarkerAttributes> mapMarkers;
     private List<ParseObject> personalEvents;
+    boolean filter;
 
     /****Drawer*****/
     private DrawerLayout drawerLayout;
@@ -100,6 +101,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.drawer);//this was activity_maps
+
+
 
         //get username
         ParseUser currentUser = ParseUser.getCurrentUser();
@@ -236,10 +239,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
          TODO  My goal here was to create a loop to gather
          TODO everything from the parse server, but I don't think it is right.
          */
-        queryPublicEvents();
+        Intent intent = getIntent();
+
+        if (intent != null) {
+            filter = true;
+            events = filterQuery(intent);
+        }
+        else {
+            filter = false;
+            queryEvents();
+        }
+        if (events == null)//just in case the filterQuery fails
+            queryEvents();
         //array list to hold marker attributes
         mapMarkers = new ArrayList<MarkerAttributes>();
-        createMarkerAttList(publicEvents, mapMarkers, publicEvents.size(),0);
+        createMarkerAttList(events, mapMarkers, events.size(),0);
         makeCustomInfoWindow(mapMarkers);
 
         //placeMarker();
@@ -399,25 +413,31 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             Button button = (Button) findViewById(R.id.notifs);
                             button.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY);
                         }
-                        List<ParseObject> newQueryList = queryPublicInBackground();
-                        if(newQueryList != null && publicEvents != null){
-                            //updating map icons
-                            if(publicEvents.size() != newQueryList.size()){
-                                int oldSize = publicEvents.size();
-                                int currSize = newQueryList.size();
-                                Log.d("notification", "updating map with new notification size of" +
-                                        " lists were old: " + oldSize + " new: " + currSize);
-                                int range;
-                                if (oldSize < currSize)
-                                    range = (currSize - oldSize);
-                                else
-                                    range = (oldSize - currSize);
-                                publicEvents = newQueryList;
-                                mapMarkers = new ArrayList<MarkerAttributes>();
-                                createMarkerAttList(publicEvents, mapMarkers, range,
-                                        oldSize-1);
-                            }
+                        Log.d("filter", "" + filter);
+                        if (!filter) {//if a filter is not in place
+                            List<ParseObject> newQueryList = queryEventInBackground();
+                            Log.d("notification", "events and newQueryList is not empty");
+                            if (newQueryList != null && events != null) {
+                                //updating map icons
+                                Log.d("notification", "events and newQueryList is not empty newQuery: " +
+                                        "" + newQueryList.size() + " events: " + events.size());
+                                if (events.size() != newQueryList.size()) {
+                                    int oldSize = events.size();
+                                    int currSize = newQueryList.size();
+                                    Log.d("notification", "updating map with new notification size of" +
+                                            " lists were old: " + oldSize + " new: " + currSize);
+                                    int range;
+                                    if (oldSize < currSize)
+                                        range = (currSize - oldSize);
+                                    else
+                                        range = (oldSize - currSize);
+                                    events = newQueryList;
+                                    mapMarkers = new ArrayList<MarkerAttributes>();
+                                    createMarkerAttList(events, mapMarkers, range,
+                                            oldSize - 1);
+                                }
 
+                            }
                         }
                     }
                 });
@@ -516,19 +536,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }//end if (and end custom info window section----------------------------------------------
     }
 
-    private void queryPublicEvents(){
+    private void queryEvents(){
         //Date date = new Date();
         //this will update the publicEvents array list with events
-        ParseQuery<ParseObject> query = ParseQuery.getQuery("PublicEvent");
-        query.orderByAscending("_created_at");
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("Event");
+        query.orderByAscending("createdAt");
         //ToDO: this will need to be added when the correct end time and start time are put on
         // there, we need to have it be a string in the date format
         //query.whereLessThanOrEqualTo("eEndTime", date);
         try {
-            publicEvents = query.find();
+            events = query.find();
         }
         catch (ParseException e){
-            Log.d(LOGID, "query failed for PublicEvent");
+            Log.d(LOGID, "query failed for Event");
         }
 //        InBackground(new FindCallback<ParseObject>() {
 //            @Override
@@ -544,10 +564,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
-    private List<ParseObject> queryPublicInBackground(){
+    private List<ParseObject> queryEventInBackground(){
         List<ParseObject> queryList = null;
-        ParseQuery<ParseObject> query = ParseQuery.getQuery("PublicEvent");
-        query.orderByAscending("_created_at");
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("Event");
+        query.orderByAscending("createdAt");
         try {
             queryList = query.find();
         }
@@ -581,5 +601,44 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
-}
+    private List<ParseObject> filterQuery(Intent intent){
+        List<ParseObject> queryList = null;
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("Event");
+        if (currentLocale != null) {
+            ParseGeoPoint location = new ParseGeoPoint(currentLocale.latitude, currentLocale
+                    .longitude);
+            //query.whereNear("eLocation", location); //dont think i need this wherWithin MIles
+            // does the same?
+            int distance;
+            if (intent.hasExtra("distance")) {
+
+                distance = intent.getIntExtra("distance", 20);
+                Log.d("filterQuery", "" + intent.getStringExtra("distance"));
+
+                //distance = Integer.parseInt(dist[0]);//distance is in the first position
+            } else {
+                distance = 20; //default distance of 20 miles
+            }
+            if (intent.hasExtra("eventType")) {
+                query.whereEqualTo("eType", intent.getStringExtra("eventType"));
+            }
+            //this needs to be added to our create event before I can query it
+//                if(intent.hasExtra("privateEventOnly"))
+//                    if(intent.getBooleanExtra("privateEventOnly", false))
+//                        query.whereEqualTo("privateEvent", true);
+//                    else
+//                        query.whereEqualTo("privateEvent", false);
+
+            query.whereWithinMiles("eLocation", location, distance);
+            try{
+                queryList = query.find();
+            }
+            catch (ParseException e){
+                Log.d("queryFilter", "problem with query filterQuery");
+                e.printStackTrace();
+            }
+        }
+        return queryList;
+    }
+}//end class
 
