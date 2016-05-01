@@ -179,7 +179,6 @@ public class CreateUserActivity extends AppCompatActivity {
     }
 
     private void sucessLoggingIn(String userLogin){
-        logo.startAnimation(fade);
         finish();
         Intent intent = new Intent(CreateUserActivity.this, MapsActivity.class);
         startActivity(intent);
