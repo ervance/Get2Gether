@@ -25,6 +25,7 @@ import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
 
+import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
@@ -117,7 +118,7 @@ public class CreateUserActivity extends AppCompatActivity {
 
         final String password = mPasswordView.getText().toString();
         final String userLogin = mUserView.getText().toString();
-        final String birthday = mBirthdayView.getText().toString();
+        final Date birthday = mBirthdayView.getText().toString();
         final String firstname = mFirstNameView.getText().toString();
         final String lastname = mLastNameView.getText().toString();
         final String gender = mGenderView.getText().toString();
