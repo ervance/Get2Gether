@@ -41,7 +41,7 @@ public class CreateUserActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //create views
-        setContentView(R.layout.login_activity);
+        setContentView(R.layout.create_user);
 
         mUserView = (EditText) findViewById(R.id.userName);
         mPasswordView = (EditText) findViewById(R.id.pwd);
@@ -49,13 +49,6 @@ public class CreateUserActivity extends AppCompatActivity {
         mFirstNameView = (EditText) findViewById(R.id.fname);
         mLastNameView = (EditText) findViewById(R.id.lname);
         radioSexGroup = (RadioGroup) findViewById(R.id.sexGroup);
-        // get selected radio button from radioGroup
-        int selectedId = radioSexGroup.getCheckedRadioButtonId();
-
-        mGenderView = (RadioButton) findViewById(selectedId);
-
-        mTextView = (TextView) findViewById(R.id.userNotFound);
-        mTextView.setVisibility(View.INVISIBLE);
 
         //user to login/create
         user = ParseUser.getCurrentUser();
@@ -69,23 +62,16 @@ public class CreateUserActivity extends AppCompatActivity {
             user = new ParseUser();
         }
 
-        //Submit credentials
-        Button newUserButton = (Button) findViewById(R.id.createBtn);
-
-        //create user
-        newUserButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                logo.startAnimation(rotation);
-                attemptCreateUser();
-            }
-        });
-
     }
 
-    private void attemptCreateUser() {
+    public void attemptCreateUser(View view) {
         boolean cancelLogin = false;
         View focusView = null;
+
+        // get selected radio button from radioGroup
+        int selectedId = radioSexGroup.getCheckedRadioButtonId();
+
+        mGenderView = (RadioButton) findViewById(selectedId);
 
         final String password = mPasswordView.getText().toString();
         final String userLogin = mUserView.getText().toString();
