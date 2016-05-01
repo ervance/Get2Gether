@@ -60,7 +60,7 @@ public class CreateUserActivity extends AppCompatActivity {
         //create views
         setContentView(R.layout.create_user);
 
-        dateFormatter = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
+        dateFormatter = new SimpleDateFormat("dd/MM/yyyy", Locale.US);
 
         mUserView = (EditText) findViewById(R.id.userName);
         mPasswordView = (EditText) findViewById(R.id.pwd);
@@ -118,7 +118,7 @@ public class CreateUserActivity extends AppCompatActivity {
 
         final String password = mPasswordView.getText().toString();
         final String userLogin = mUserView.getText().toString();
-        final Date birthday = mBirthdayView.getText().toString();
+        final String birthday = mBirthdayView.getText().toString();
         final String firstname = mFirstNameView.getText().toString();
         final String lastname = mLastNameView.getText().toString();
         final String gender = mGenderView.getText().toString();
