@@ -12,6 +12,8 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.parse.ParseUser;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,14 +38,17 @@ public class MyEventsActivity extends AppCompatActivity {
 
         mEvents = (RelativeLayout) findViewById(R.id.myevents_relative_layout);
 
-        eventList = new ArrayList<>();
-
-        for(int i = 0; i < EventNames.length; i++){
-            Event event = new Event();
-            event.name = EventNames[i];
-            event.photo = IMG[i];
-            eventList.add(event);
+        eventList = new ArrayList<Event>();
+        ParseUser currentUser = ParseUser.getCurrentUser();
+        if(currentUser != null && currentUser.has("myEvents")) {
+            eventList = (ArrayList<Event>) currentUser.get("myEvents");
         }
+//        for(int i = 0; i < EventNames.length; i++){
+//            Event event = new Event();
+//            event.name = EventNames[i];
+//            event.photo = IMG[i];
+//            eventList.add(event);
+//        }
 
         listView = (ListView) mEvents.findViewById(R.id.myevents_list_view);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -52,8 +57,10 @@ public class MyEventsActivity extends AppCompatActivity {
                 Log.d("EventClick", "EventClickWorked Correctly on " + EventNames[position]);
             }
         });
-        eAdapter = new EventAdapter(MyEventsActivity.this, eventList);
-        listView.setAdapter(eAdapter);
+        if(eventList.size() > 0) {
+            eAdapter = new EventAdapter(MyEventsActivity.this, eventList);
+            listView.setAdapter(eAdapter);
+        }
     }
 
     public void onItemClick(AdapterView<?> parent, View view, int position, long id){
