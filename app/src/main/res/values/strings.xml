@@ -22,19 +22,19 @@
     <string name="scan">Scan</string>
 
     <!-- Array for Event Type static Spinner-->
-        <string-array name="eventArray">
-            <item>Select Event Type</item>
-            <item>sports</item>
-            <item>drinks</item>
-            <item>food</item>
-            <item>social</item>
-            <item>gaming</item>
-            <item>relax</item>
-            <item>other</item>
-        </string-array>
+    <string-array name="eventArray">
+        <item>Select Event Type</item>
+        <item>sports</item>
+        <item>drinks</item>
+        <item>food</item>
+        <item>social</item>
+        <item>gaming</item>
+        <item>relax</item>
+        <item>other</item>
+    </string-array>
     <!-- End Array for Event Type -->
 
     <!-- Map Strings -->
-   <string name="error_connect_to_services">Can\'t connect to Google Play services</string>
+    <string name="error_connect_to_services">Can\'t connect to Google Play services</string>
     <!--End Map String -->
 </resources>
