@@ -9,6 +9,8 @@ import android.widget.RelativeLayout;
 import android.widget.TabHost;
 import android.widget.TextView;
 
+import com.parse.ParseUser;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -65,14 +67,10 @@ public class FriendInfo extends AppCompatActivity {
         friendTab.setContent(new Intent(FriendInfo.this, FriendsActivity.class));
 
 
-
-
-        eventList = new ArrayList<>();
-
-        for(int i = 0; i < EVENTNAME.length; i++){
-            Event event = new Event(EVENTNAME[i], TIME[i], HOST[i]);
-            event.photo = IMG[0];
-            eventList.add(event);
+        //ToDo: THIS MAY NEED TO BE CHANGED TO FRIENDS EVENTS
+        ParseUser currentUser = ParseUser.getCurrentUser();
+        if(currentUser.has("myEvents")) {
+            eventList = (ArrayList<Event>) currentUser.get("myEvents");
         }
 
         eventListView = (ListView) mRelativeFriendsInfo.findViewById(R.id.hostingEvents);

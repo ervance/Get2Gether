@@ -39,8 +39,9 @@ public class EventAdapter extends ArrayAdapter<Event> {
         else
             holder = (ViewHolder) view.getTag();
 
+        Log.d("eventList", "name :" + eventList.get(position).geteName() + " photo: " + eventList.get(position).getPhoto());
         holder.img.setImageResource(eventList.get(position).getPhoto());
-        holder.name.setText(eventList.get(position).name);
+        holder.name.setText(eventList.get(position).geteName());
 
         return view;
     }

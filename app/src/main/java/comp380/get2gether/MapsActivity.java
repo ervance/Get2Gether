@@ -20,6 +20,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -29,6 +30,8 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdate;
+
+import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -41,9 +44,11 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.parse.FindCallback;
 import com.parse.ParseException;
+import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -66,6 +71,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     /****End Map fields****/
     LatLng northRidge = new LatLng(34.2417, -118.5283);
 
+    /*Parse Query Items*/
+    private List<ParseObject> events;
+    private ArrayList<MarkerAttributes> mapMarkers;
+    private List<ParseObject> personalEvents;
+    boolean filter;
+
     /****Drawer*****/
     private DrawerLayout drawerLayout;
     private RelativeLayout mDrawer;
@@ -82,11 +93,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     final Handler handler = new Handler();
     int oldSize = 5; //will use database to find old size of
 
+    //LogID
+    private final String LOGID = "mapsActivity";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.drawer);//this was activity_maps
+
+
 
         //get username
         ParseUser currentUser = ParseUser.getCurrentUser();
@@ -100,6 +116,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         /****Set up drawer for slider from left side***********/
         mDrawer = (RelativeLayout) findViewById(R.id.relative_drawer);
+
         DrawerLayout.LayoutParams params = (android.support.v4.widget.DrawerLayout.LayoutParams) mDrawer.getLayoutParams();
         params.width = (int) (getResources().getDisplayMetrics().widthPixels * 0.5); //set width of drawer
         //create the listener for drawer
@@ -181,7 +198,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         */
 
 
-        //Get an updtated location
+        //Get an updtated location *--Eric if you Delete this I will kill you :)
         locManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         locManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000L, 500.0f, locationListener);
         Location location = locManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
@@ -193,6 +210,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             double longitude = location.getLongitude();
             //create the location
             currentLocale = new LatLng(latitude,longitude);
+            gotoLocation(latitude,longitude, 10); //center camera on current location
         }//end if
 //        else
 //        {
@@ -205,104 +223,41 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //May or may not need to use the OnMapReadyCallback here
         //Turns out it was causing a problem so I took it out
 
-        /****This Arraylist Holds the FormActivity Variables****/
-        final ArrayList<String> forms = (ArrayList<String>) getIntent().getSerializableExtra("formVar");
-        //currently forms.get(0) is Event Name
-        //currently forms.get(1) is Event Type
-        //currently forms.get(2) is Event Start time
-        //currently forms.get(3) is Event End time
-        //currently forms.get(4) is Event lat
-        //currently forms.get(5) is Event lng
-        //This section of code works on adding custom info window.--------------------------------
-        if(mMap != null){
-            //setinfoWindowAdapter is what we use to override Androids default popup window
-            mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
 
-                @Override
-                public View getInfoWindow(Marker marker) {
-                    return null;
-                }
-
-                //This section of code locates the contents of our custom_info_window.xml
-                //It is going to use that layout to structure our window
-                @Override
-                public View getInfoContents(Marker marker) {
-                    View v = getLayoutInflater().inflate(R.layout.custom_info_window, null);
-
-                    /******Show Image for Info Window*********/
-                    imageResource = getResources().getIdentifier(forms.get(1), "drawable", getPackageName());
-                   ImageView iv = (ImageView) v.findViewById(R.id.markerImage);
-                    iv.setImageResource(imageResource);
-                    /******Show Image for Info Window*********/
-
-                    //This pulls the info from our form and populates the info window
-                    TextView tvEname = (TextView) v.findViewById(R.id.eName);
-                    TextView tvEType = (TextView) v.findViewById(R.id.eType);
-                    TextView tvEStartTime = (TextView) v.findViewById(R.id.eStartTime);
-                    TextView tvEStopTime = (TextView) v.findViewById(R.id.eStopTime);
-
-                    //this locates the position of the marker in order to put the bubble in the
-                    //correct location
-                    LatLng ll = marker.getPosition();
-
-                    //Make a parse query to get the data
-                    ParseQuery<ParseObject> query = ParseQuery.getQuery("InputForm");
-
-                    query.whereEqualTo("name", forms.get(0));
-                    query.findInBackground(new FindCallback<ParseObject>() {
-                        @Override
-                        public void done(List<ParseObject> formData, ParseException e) {
-                            if (e==null)
-                                for(int i = 0; i< formData.size(); i++)
-                                Log.e("name", "Retrieved" + formData.get(i) + " formData");
-                            else
-                                Log.e("name", "Error: " + e.getMessage());
-                        }
-                    });
-
-                    //If form is not null then populate the info window
-                    if(forms != null) {
-                        tvEname.setText(forms.get(0));
-                        tvEType.setText(forms.get(1));
-                        tvEStartTime.setText(forms.get(2));
-                        tvEStopTime.setText(forms.get(3));
-
-                    }
+            /****This Arraylist Holds the FormActivity Variables****/
+            //final ArrayList<String> forms = (ArrayList<String>) getIntent().getSerializableExtra("formVar");
+            //currently forms.get(0) is Event Name
+            //currently forms.get(1) is Event Type
+            //currently forms.get(2) is Event Start time
+            //currently forms.get(3) is Event End time
+            //currently forms.get(4) is Event lat
+            //currently forms.get(5) is Event lng
 
 
-                    return v;
-                }
-            });
-        }//end if (and end custom info window section----------------------------------------------
 
-        //If forms == null that means we have not returned from FormActivity
-        if (forms != null) {
-            //Toast is a pop up message on screen could be useful later...right now not important.
-            Toast toast = new Toast(getApplicationContext());
-            toast.setGravity(Gravity.TOP | Gravity.LEFT, 0, 0);
-            toast.makeText(MapsActivity.this, forms.get(0), toast.LENGTH_SHORT).show();
+        /*TODO ERIC****** Here is where I left off.-----------------------------------------------------
+         TODO  My goal here was to create a loop to gather
+         TODO everything from the parse server, but I don't think it is right.
+         */
+        Intent intent = getIntent();
 
-            //-------------------------------------------------------------------------------------
-            //here is were we are going to convert the lat and lng back into a LatLng variable
-            double lat = Double.parseDouble(forms.get(4));
-            double lng = Double.parseDouble(forms.get(5));
-            LatLng newLL = new LatLng(lat,lng);
-            currentLocale = newLL;
+        if (intent != null) {
+            filter = true;
+            events = filterQuery(intent);
+        }
+        else {
+            filter = false;
+            queryEvents();
+        }
+        if (events == null)//just in case the filterQuery fails
+            queryEvents();
+        //array list to hold marker attributes
+        mapMarkers = new ArrayList<MarkerAttributes>();
+        createMarkerAttList(events, mapMarkers, events.size(),0);
+        makeCustomInfoWindow(mapMarkers);
 
-            //This is the marker that is being used to store the data from the form
-            MarkerOptions marker = new MarkerOptions()
-                    .draggable(false)       //we don't want the marker to move once event is set
-                    .position(currentLocale);
-
-            if(currentLocale!=null) {
-                //add marker and move camera to current location
-                mMap.addMarker(marker);
-                gotoLocation(currentLocale.latitude, currentLocale.longitude,10);
-            }else{
-                toast.makeText(MapsActivity.this, "No Current Location.", toast.LENGTH_SHORT).show();
-            }
-        }//end if
-
+        //placeMarker();
+//TODO THIS IS THE END OF WHAT I ADDED -----------------------------------------------------------------
         mMap.setOnInfoWindowClickListener(this);
 
     }//end onMapReady
@@ -367,7 +322,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
         //ToDo: this is where you handle what happens when the item in the drawer is clicked
-        Toast.makeText(this, "Click Successful", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "Click Successful", Toast.LENGTH_SHORT).show();
         //going to use the northridge location as a tester
         Intent intent = switchActivity(position);
         startActivity(intent);
@@ -388,7 +343,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 break;
             case 2:
                 //Todo: change to filter
-                intent = new Intent(MapsActivity.this, CreateActivity.class);
+                intent = new Intent(MapsActivity.this, Filter.class);
                 break;
             case 3:
                 intent = new Intent(MapsActivity.this, FriendsActivity.class);
@@ -458,10 +413,236 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             Button button = (Button) findViewById(R.id.notifs);
                             button.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY);
                         }
+                        Log.d("filter", "" + filter);
+                        if (!filter) {//if a filter is not in place
+                            List<ParseObject> newQueryList = queryEventInBackground();
+                            Log.d("notification", "check if null");
+                            if(newQueryList != null)
+                                Log.d("notification", "new query list size: " + newQueryList.size());
+                            if(events != null)
+                                Log.d("notification", "events list size: " + events.size());
+                            if (newQueryList != null && events != null) {
+                                //updating map icons
+                                Log.d("notification", "events and newQueryList is not empty newQuery: " +
+                                        "" + newQueryList.size() + " events: " + events.size());
+                                if (events.size() != newQueryList.size()) {
+                                    int oldSize = events.size();
+                                    int currSize = newQueryList.size();
+                                    Log.d("notification", "updating map with new notification size of" +
+                                            " lists were old: " + oldSize + " new: " + currSize);
+                                    int range;
+                                    if (oldSize < currSize)
+                                        range = (currSize - oldSize);
+                                    else
+                                        range = (oldSize - currSize);
+                                    events = newQueryList;
+                                    mapMarkers = new ArrayList<MarkerAttributes>();
+                                    createMarkerAttList(events, mapMarkers, range,
+                                            oldSize - 1);
+                                }
+
+                            }
+                        }
                     }
                 });
             }
         };
     }
-}
+
+    //This is the method for placing the marker
+    private void placeMarker(MarkerAttributes mAtt){
+        //If forms == null that means we have not returned from FormActivity
+
+            //here is were we are going to convert the lat and lng back into a LatLng variable
+//            ParseGeoPoint location = (ParseGeoPoint)event.get("eLocation");
+//            double lat = location.getLatitude();
+//            double lng = location.getLongitude();
+            LatLng newLL = new LatLng(mAtt.markerLat,mAtt.markerLong);
+//            currentLocale = newLL;
+
+            //This is the marker that is being used to store the data from the form
+            MarkerOptions marker = new MarkerOptions()
+                    .draggable(false)       //we don't want the marker to move once event is set
+                    .position(newLL)
+                    .snippet(mAtt.arrayPos);
+
+//            if(currentLocale!=null) {
+//                //add marker and move camera to current location
+//                mMap.addMarker(marker);
+//                gotoLocation(currentLocale.latitude, currentLocale.longitude,10);
+//            }else{
+//                Toast.makeText(MapsActivity.this, "No Current Location.", Toast.LENGTH_SHORT).show();
+//            }
+            mMap.addMarker(marker);
+    }
+
+    //This method is for making each custom info window.
+    private void makeCustomInfoWindow(final ArrayList<MarkerAttributes> markerList){
+        //This section of code works on adding custom info window.--------------------------------
+        if(mMap != null){
+            //setinfoWindowAdapter is what we use to override Androids default popup window
+            mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+
+                @Override
+                public View getInfoWindow(Marker marker) {
+                    return null;
+                }
+
+                //This section of code locates the contents of our custom_info_window.xml
+                //It is going to use that layout to structure our window
+                @Override
+                public View getInfoContents(Marker marker) {
+                    int pos = Integer.parseInt(marker.getSnippet());
+                    MarkerAttributes currentMarker = markerList.get(pos);
+                    View v = getLayoutInflater().inflate(R.layout.custom_info_window, null);
+
+                    /******Show Image for Info Window*********/
+                    imageResource = getResources().getIdentifier(currentMarker.eventType, "drawable",
+                            getPackageName());
+                    ImageView iv = (ImageView) v.findViewById(R.id.markerImage);
+                    iv.setImageResource(imageResource);
+                    /******Show Image for Info Window*********/
+
+                    //This pulls the info from our form and populates the info window
+                    TextView tvEname = (TextView) v.findViewById(R.id.eName);
+                    TextView tvEType = (TextView) v.findViewById(R.id.eType);
+                    TextView tvEStartTime = (TextView) v.findViewById(R.id.eStartTime);
+                    TextView tvEStopTime = (TextView) v.findViewById(R.id.eStopTime);
+
+                    //this locates the position of the marker in order to put the bubble in the
+                    //correct location
+                    LatLng ll = marker.getPosition();
+
+                    //Make a parse query to get the data
+//                    ParseQuery<ParseObject> query = ParseQuery.getQuery("InputForm");
+//
+//                    query.whereEqualTo("name", forms.get(0));
+//                    query.findInBackground(new FindCallback<ParseObject>() {
+//                        @Override
+//                        public void done(List<ParseObject> formData, ParseException e) {
+//                            if (e==null)
+//                                for(int i = 0; i< formData.size(); i++)
+//                                    Log.e("name", "Retrieved" + formData.get(i) + " formData");
+//                            else
+//                                Log.e("name", "Error: " + e.getMessage());
+//                        }
+//                    });
+
+                    //If form is not null then populate the info window
+                    tvEname.setText(currentMarker.eventName);
+                    tvEType.setText(currentMarker.eventType);
+                    tvEStartTime.setText(currentMarker.startTime);
+                    tvEStopTime.setText(currentMarker.endTime);
+
+                    return v;
+                }
+            });
+        }//end if (and end custom info window section----------------------------------------------
+    }
+
+    private void queryEvents(){
+        //Date date = new Date();
+        //this will update the publicEvents array list with events
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("Event");
+        query.orderByAscending("createdAt");
+        //ToDO: this will need to be added when the correct end time and start time are put on
+        // there, we need to have it be a string in the date format
+        //query.whereLessThanOrEqualTo("eEndTime", date);
+        try {
+            events = query.find();
+        }
+        catch (ParseException e){
+            Log.d(LOGID, "query failed for Event");
+        }
+//        InBackground(new FindCallback<ParseObject>() {
+//            @Override
+//            public void done(List<ParseObject> newPublicEvents, ParseException e) {
+//                if(e == null){
+//                    Log.d(LOGID, "query succesful for PublicEvent");
+//                    publicEvents = newPublicEvents;
+//                }
+//                else
+//                    Log.d(LOGID, "query failed for PublicEvent");
+//            }
+//        });
+
+    }
+
+    private List<ParseObject> queryEventInBackground(){
+        List<ParseObject> queryList = null;
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("Event");
+        query.orderByAscending("createdAt");
+        try {
+            queryList = query.find();
+        }
+        catch (ParseException e){
+            Log.d("query", "problem with query orderByascending");
+            e.printStackTrace();
+        }
+
+        return queryList;
+    }
+
+    private void createMarkerAttList(List<ParseObject> eventList,
+                                     ArrayList<MarkerAttributes> mapMarkers,
+                                     int range, int start){
+        //parse object to obtain marker info.
+        for(int i = start; i < range; i++) {
+            MarkerAttributes m = new MarkerAttributes();
+            m.eventName = eventList.get(i).getString("eName");
+            m.eventType = eventList.get(i).getString("eType");
+            m.startTime = eventList.get(i).getString("eStartTime");
+            m.endTime = eventList.get(i).getString("eEndTime");
+            ParseGeoPoint location = eventList.get(i).getParseGeoPoint("eLocation");
+            m.eventDescription = eventList.get(i).getString("eDescription");
+            m.markerLat = location.getLatitude();
+            m.markerLong = location.getLongitude();
+            m.arrayPos = new Integer(i).toString();
+            //adds m to an array list of marker objects
+            mapMarkers.add(m);
+            placeMarker(m);
+        }
+
+    }
+
+    private List<ParseObject> filterQuery(Intent intent){
+        List<ParseObject> queryList = null;
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("Event");
+        if (currentLocale != null) {
+            ParseGeoPoint location = new ParseGeoPoint(currentLocale.latitude, currentLocale
+                    .longitude);
+            //query.whereNear("eLocation", location); //dont think i need this wherWithin MIles
+            // does the same?
+            int distance;
+            if (intent.hasExtra("distance")) {
+
+                distance = intent.getIntExtra("distance", 20);
+                Log.d("filterQuery", "" + intent.getStringExtra("distance"));
+
+                //distance = Integer.parseInt(dist[0]);//distance is in the first position
+            } else {
+                distance = 20; //default distance of 20 miles
+            }
+            if (intent.hasExtra("eventType")) {
+                query.whereEqualTo("eType", intent.getStringExtra("eventType"));
+            }
+            //this needs to be added to our create event before I can query it
+//                if(intent.hasExtra("privateEventOnly"))
+//                    if(intent.getBooleanExtra("privateEventOnly", false))
+//                        query.whereEqualTo("privateEvent", true);
+//                    else
+//                        query.whereEqualTo("privateEvent", false);
+
+            query.whereWithinMiles("eLocation", location, distance);
+            try{
+                queryList = query.find();
+            }
+            catch (ParseException e){
+                Log.d("queryFilter", "problem with query filterQuery");
+                e.printStackTrace();
+            }
+        }
+        return queryList;
+    }
+}//end class
 

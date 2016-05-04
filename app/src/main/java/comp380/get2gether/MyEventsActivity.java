@@ -1,6 +1,7 @@
 package comp380.get2gether;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,19 +13,28 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.parse.ParseException;
+import com.parse.ParseGeoPoint;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+import com.parse.ParseUser;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import static comp380.get2gether.Event.createEventList;
+
+
 public class MyEventsActivity extends AppCompatActivity {
 
-
+    private final ParseUser CURRENTUSER = ParseUser.getCurrentUser();
     private RelativeLayout mEvents;
     private ListView listView;
     private EventAdapter eAdapter;
-    private List<Event> eventList;
-
     /*TEST DATA REMOVE ONCE YOU GET DATABASE HOOKED TO IT*/
     final private String[] EventNames = {"Party", "Restaurant", "Football", "Cooking", "Test1", "Test2", "Test3", "Test4","Test5"};
+
+    private List<ParseObject> parseList;
     final private int[] IMG = {R.drawable.holderpic, R.drawable.holderpic, R.drawable.holderpic, R.drawable.holderpic,
             R.drawable.holderpic, R.drawable.holderpic, R.drawable.holderpic, R.drawable.holderpic, R.drawable.holderpic};
 
@@ -32,17 +42,18 @@ public class MyEventsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if(CURRENTUSER == null){
+            Intent intent = new Intent(MyEventsActivity.this, LoginActivity.class);
+            startActivity(intent);
+        }
         setContentView(R.layout.my_events_activity);
-
         mEvents = (RelativeLayout) findViewById(R.id.myevents_relative_layout);
-
-        eventList = new ArrayList<>();
-
-        for(int i = 0; i < EventNames.length; i++){
-            Event event = new Event();
-            event.name = EventNames[i];
-            event.photo = IMG[i];
-            eventList.add(event);
+        List<Event> eventList;
+        Log.d("queryEvents", "error querying my events");
+        parseList = queryEvents(CURRENTUSER.getUsername().toString());
+        eventList = createEventList(CURRENTUSER, parseList);
+        for(int i = 0; i < eventList.size(); i++){
+            Log.d("eventList", "name :" + eventList.get(i).geteName());
         }
 
         listView = (ListView) mEvents.findViewById(R.id.myevents_list_view);
@@ -52,11 +63,31 @@ public class MyEventsActivity extends AppCompatActivity {
                 Log.d("EventClick", "EventClickWorked Correctly on " + EventNames[position]);
             }
         });
-        eAdapter = new EventAdapter(MyEventsActivity.this, eventList);
-        listView.setAdapter(eAdapter);
+        if(eventList != null) {
+            eAdapter = new EventAdapter(MyEventsActivity.this, eventList);
+            listView.setAdapter(eAdapter);
+        }
     }
 
     public void onItemClick(AdapterView<?> parent, View view, int position, long id){
         Toast.makeText(this, "Click Successful", Toast.LENGTH_SHORT).show();
     }
+
+    private List<ParseObject> queryEvents(String userName){
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("Event");
+        List<ParseObject> queryEvents = null;
+        query.whereEqualTo("userName", CURRENTUSER.getUsername().toString());
+        try{
+            queryEvents = query.find();
+        }
+        catch (ParseException e){
+            e.printStackTrace();
+            Log.d("queryEvents", "error querying my events");
+        }
+
+        return queryEvents;
+
+    }
+
+
 }
