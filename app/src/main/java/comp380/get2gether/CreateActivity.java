@@ -79,6 +79,8 @@ public class CreateActivity extends FragmentActivity implements GoogleApiClient.
     private com.google.android.gms.location.LocationListener mListener;
     private LatLng currentLocale;  //holds the current location throughout the activity
     private static final int ERROR_DIALOG_REQUEST = 9001;
+    private ArrayList<LatLng> coordinateList = new ArrayList<>();  //collects coordinates
+    private int listSize;  //size of coordinateList
     /****End Map fields****/
 
     private final ParseUser CURRENTUSER = ParseUser.getCurrentUser();
@@ -199,6 +201,24 @@ public class CreateActivity extends FragmentActivity implements GoogleApiClient.
         });
         //-------------------------END SPINNER SECTION-------------------------------------------
 
+        //gives permission to map
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }//end giving map permission
+
+        //Get an updtated location *--Eric if you Delete this I will kill you :)
+        locManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        locManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000L, 500.0f, locationListener);
+       final Location resetLocation = locManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+
 
        /*****************Start Searh Section***********************/
         //button for search
@@ -227,6 +247,20 @@ public class CreateActivity extends FragmentActivity implements GoogleApiClient.
         });
         /*****************End Search Section***********************/
 
+        //Reset button Section ---------------------------------------------------------------------
+        final Button resetButton = (Button) findViewById(R.id.Reset);
+
+        //Click listener for search
+        resetButton.setOnClickListener(new View.OnClickListener() {
+            //Once search is clicked, pull search text and find location
+            public void onClick(View v) {
+                //Save search data into variable
+                gotoLocation(resetLocation.getLatitude(),resetLocation.getLongitude(), 10); //center camera on current location
+            }
+        });
+
+
+        //------------------------------------------------------------------------------------------
             //Ties the completeForm button to the variable submitButton
             final Button submitButton = (Button) findViewById(R.id.completeForm);
 
@@ -383,7 +417,7 @@ public class CreateActivity extends FragmentActivity implements GoogleApiClient.
 
     //This method updates the maps current location
     // Pass in a lat, lng, and zoom distance and it will move the camera to the desired location
-    private void gotoLocation(double lat, double lng, float zoom) {
+    public void gotoLocation(double lat, double lng, float zoom) {
         LatLng latLng = new LatLng(lat, lng);
         currentLocale = latLng;
         CameraUpdate update = CameraUpdateFactory.newLatLngZoom(latLng, zoom);
@@ -429,6 +463,8 @@ public class CreateActivity extends FragmentActivity implements GoogleApiClient.
                 placeMapMarker(location.getLatitude(), location.getLongitude());    //places movable marker on current location
             }
         };
+
+
         //This section updates the map
         //I used balanced power in order to get decent accuracy without sacrificing battery life
         //If we want we can change this to low power.
@@ -458,5 +494,54 @@ public class CreateActivity extends FragmentActivity implements GoogleApiClient.
         super.onPause();
         LocationServices.FusedLocationApi.removeLocationUpdates(mLocationClient, mListener);
     }
+
+    //Location listener
+    //collect lat lngs and put into list
+    private final LocationListener locationListener = new LocationListener(){
+        @Override
+        public void onLocationChanged(Location location) {
+            updateWithNewLocation(location);
+            LatLng temp = new LatLng(location.getLatitude(), location.getLongitude());
+            coordinateList.add(temp);
+            listSize++;
+            Log.e("LocationListener", "Coordinates Added to list");
+        }
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+
+        }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+
+        }
+
+        @Override
+        public void onProviderDisabled(String provider) {
+            updateWithNewLocation(null);
+        }
+
+    };
+
+    private void updateWithNewLocation(Location location) {
+        String latLongString = "";
+
+        if (location != null){
+            //create a string with current lat long
+            double lat = location.getLatitude();
+            double lng = location.getLongitude();
+            //latLongString = "Lat:" + lat + "\nLong:" + lng;
+        }
+
+        //THIS MAY NOT NEED TO BE HERE
+        //ORIGNIAL CODE HAD REDUNCANCY
+        //CHECK TO MAKE SURE
+
+    }
+
+
+
+
 }
 
