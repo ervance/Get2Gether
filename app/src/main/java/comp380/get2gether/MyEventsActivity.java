@@ -32,12 +32,6 @@ public class MyEventsActivity extends AppCompatActivity {
     private List<ParseObject> parseList;
     private final ParseUser CURRENTUSER = ParseUser.getCurrentUser();
 
-    /*TEST DATA REMOVE ONCE YOU GET DATABASE HOOKED TO IT*/
-    final private String[] EventNames = {"Party", "Restaurant", "Football", "Cooking", "Test1", "Test2", "Test3", "Test4","Test5"};
-    final private int[] IMG = {R.drawable.holderpic, R.drawable.holderpic, R.drawable.holderpic, R.drawable.holderpic,
-            R.drawable.holderpic, R.drawable.holderpic, R.drawable.holderpic, R.drawable.holderpic, R.drawable.holderpic};
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,7 +64,8 @@ public class MyEventsActivity extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.d("EventClick", "EventClickWorked Correctly on " + EventNames[position]);
+                Intent intent = attachIntentInfo(eventList,position);
+                startActivity(intent);
             }
         });
         
@@ -97,6 +92,21 @@ public class MyEventsActivity extends AppCompatActivity {
         }
 
         return queryEvents;
+
+    }
+
+    private Intent attachIntentInfo(ArrayList<Event> eventList, int position){
+
+        Event event = eventList.get(position);
+        Intent intent = new Intent(MyEventsActivity.this, ViewEvent.class);
+
+        intent.putExtra("eName",event.geteName());
+        intent.putExtra("eType", event.geteType());
+        intent.putExtra("eStartTime", event.geteStartTime());
+        intent.putExtra("eEndTime", event.geteEndTime());
+        intent.putExtra("eDiscription", event.geteDescription());
+
+        return intent;
 
     }
 

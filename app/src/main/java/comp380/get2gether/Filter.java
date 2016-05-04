@@ -64,6 +64,14 @@ public class Filter extends AppCompatActivity {
             }
         });
 
+        final Button removeFilterbutton = (Button) findViewById(R.id.remove_filter);
+        removeFilterbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Filter.this, MapsActivity.class);
+                startActivity(intent);
+            }
+        });
 
     }
 
@@ -81,6 +89,7 @@ public class Filter extends AppCompatActivity {
         intent.putExtra("privateEventOnly", privateEventsOnly);
         intent.putExtra("distance", distance);
         intent.putExtra("eventType", eventType);
+        intent.putExtra("filter", true);
         startActivity(intent);
 
     }

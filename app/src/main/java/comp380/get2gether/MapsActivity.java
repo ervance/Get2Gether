@@ -11,12 +11,15 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.view.animation.BounceInterpolator;
+import android.view.animation.Interpolator;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.Button;
@@ -239,11 +242,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
          TODO  My goal here was to create a loop to gather
          TODO everything from the parse server, but I don't think it is right.
          */
-        Intent intent = null;
+        Intent intent = getIntent();
 
-        if (intent != null) {
-            filter = true;
-            events = filterQuery(intent);
+        Log.d("filter", "" + intent.toString() + " has filter " + intent.hasCategory("filter"));
+        if (intent != null && intent.hasExtra("filter")) {
+                filter = true;//only becomes true if filter is put onto the intent
+                events = filterQuery(intent);
         }
         else {
             filter = false;
@@ -252,8 +256,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if (events == null)//just in case the filterQuery fails
             queryEvents();
         //array list to hold marker attributes
-        mapMarkers = new ArrayList<MarkerAttributes>();
-        createMarkerAttList(events, mapMarkers, events.size(),0);
+        mapMarkers = createMarkerAttList(events, events.size(),0);
         makeCustomInfoWindow(mapMarkers);
 
         //placeMarker();
@@ -432,9 +435,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                     else
                                         range = (oldSize - currSize);
                                     events = newQueryList;
-                                    mapMarkers = new ArrayList<MarkerAttributes>();
-                                    createMarkerAttList(events, mapMarkers, range,
-                                            oldSize - 1);
+                                    mapMarkers = createMarkerAttList(events, range, oldSize - 1);
                                 }
 
                             }
@@ -449,18 +450,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private void placeMarker(MarkerAttributes mAtt){
         //If forms == null that means we have not returned from FormActivity
 
-            //here is were we are going to convert the lat and lng back into a LatLng variable
+        //here is were we are going to convert the lat and lng back into a LatLng variable
 //            ParseGeoPoint location = (ParseGeoPoint)event.get("eLocation");
 //            double lat = location.getLatitude();
 //            double lng = location.getLongitude();
-            LatLng newLL = new LatLng(mAtt.markerLat,mAtt.markerLong);
+        LatLng newLL = new LatLng(mAtt.markerLat,mAtt.markerLong);
 //            currentLocale = newLL;
 
-            //This is the marker that is being used to store the data from the form
-            MarkerOptions marker = new MarkerOptions()
-                    .draggable(false)       //we don't want the marker to move once event is set
-                    .position(newLL)
-                    .snippet(mAtt.arrayPos);
+        //This is the marker that is being used to store the data from the form
+        MarkerOptions marker = new MarkerOptions()
+                .draggable(false)       //we don't want the marker to move once event is set
+                .position(newLL)
+                .snippet(mAtt.arrayPos);
 
 //            if(currentLocale!=null) {
 //                //add marker and move camera to current location
@@ -469,7 +470,36 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //            }else{
 //                Toast.makeText(MapsActivity.this, "No Current Location.", Toast.LENGTH_SHORT).show();
 //            }
-            mMap.addMarker(marker);
+        Marker floatMarker = mMap.addMarker(marker);
+        dropPinEffect(floatMarker);
+
+    }
+
+    private void dropPinEffect(final Marker marker) {
+        final Handler handler = new Handler();
+        final long start = SystemClock.uptimeMillis();
+        final long duration = 1500;
+
+        final Interpolator interpolator = new BounceInterpolator();
+
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                long elapsed = SystemClock.uptimeMillis() - start;
+                float t = Math.max(
+                        1 - interpolator.getInterpolation((float) elapsed
+                                / duration), 0);
+                marker.setAnchor(0.5f, 1.0f + 14 * t);
+
+                if (t > 0.0) {
+                    // Post again 15ms later.
+                    handler.postDelayed(this, 15);
+                } else {
+                    marker.showInfoWindow();
+
+                }
+            }
+        });
     }
 
     //This method is for making each custom info window.
@@ -579,10 +609,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         return queryList;
     }
 
-    private void createMarkerAttList(List<ParseObject> eventList,
-                                     ArrayList<MarkerAttributes> mapMarkers,
+    private ArrayList<MarkerAttributes> createMarkerAttList(List<ParseObject> eventList,
                                      int range, int start){
         //parse object to obtain marker info.
+
+        ArrayList<MarkerAttributes> mapMarkers = new ArrayList<MarkerAttributes>();
         for(int i = start; i < range; i++) {
             MarkerAttributes m = new MarkerAttributes();
             m.eventName = eventList.get(i).getString("eName");
@@ -597,8 +628,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             //adds m to an array list of marker objects
             mapMarkers.add(m);
             placeMarker(m);
-        }
 
+        }
+        return mapMarkers;//CHANGIN THIS TO RETURN INSTEAD OF CHANGE THE GLOBAL COULD RUIN IT...
     }
 
     private List<ParseObject> filterQuery(Intent intent){
@@ -640,5 +672,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
         return queryList;
     }
+
 }//end class
 
