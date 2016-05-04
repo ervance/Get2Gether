@@ -98,9 +98,10 @@ public class Event {
         });
     }
 
-    public static List<Event> createEventList(ParseUser CURRENTUSER, List<ParseObject> parseObjects){
+    public static ArrayList<Event> createEventList(ParseUser CURRENTUSER, List<ParseObject>
+            parseObjects){
 
-        List<Event> eventList = new ArrayList<Event>();
+        ArrayList<Event> eventList = new ArrayList<Event>();
         String  host, uniqueEventID, eName, eStartTime, eEndTime, eDescription
                 ,eType;
         ParseGeoPoint eventLocation;
