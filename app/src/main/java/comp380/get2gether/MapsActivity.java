@@ -74,8 +74,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     /*Parse Query Items*/
     private List<ParseObject> events;
     private ArrayList<MarkerAttributes> mapMarkers;
-    private List<ParseObject> personalEvents;
+    private List<ParseObject> friendRequest;
     boolean filter;
+    private final ParseUser CURRENTUSER = ParseUser.getCurrentUser();
 
     /****Drawer*****/
     private DrawerLayout drawerLayout;
@@ -91,7 +92,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     Timer timer;
     TimerTask timerTask;
     final Handler handler = new Handler();
-    int oldSize = 5; //will use database to find old size of
+    int oldSize = getSize(); //will use database to find old size of friend requests
 
     //LogID
     private final String LOGID = "mapsActivity";
@@ -102,7 +103,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         super.onCreate(savedInstanceState);
         setContentView(R.layout.drawer);//this was activity_maps
 
-
+        if (CURRENTUSER == null){
+            Intent intent = new Intent(MapsActivity.this, LoginActivity.class);
+            startActivity(intent);
+        }
 
         //get username
         ParseUser currentUser = ParseUser.getCurrentUser();
@@ -373,6 +377,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void notif(View view) {
         Button button = (Button) findViewById(R.id.notifs);
         button.getBackground().setColorFilter(Color.LTGRAY, PorterDuff.Mode.MULTIPLY);
+        //set new size to old size
         Intent intent = new Intent(MapsActivity.this, NotificationActivity.class);
         startActivity(intent);
         //update oldSize with new size of current notification object in database
@@ -396,7 +401,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 handler.post(new Runnable() {
                     public void run() {
                         //comparing static number with random number between 1 and 10
-                        int newSize = (int )(Math.random() * 10 + 1);
+                        int newSize = getSize();
                         //here we have the saved size of the old notification object of the database
                         //and we compare with the size of the new notification object that we just queried
                         //if the new size is bigger, we will display a toast and change the button color
@@ -404,7 +409,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         //users will still get a toast message and the button will be a different color when they return
                         //to maps
                         if(oldSize < newSize) {
-                            final String msg = "Kickit Notification!";
+                            final String msg = "New Friend Request!";
                             //show the toast
                             int duration = Toast.LENGTH_SHORT;
                             Toast toast = Toast.makeText(getApplicationContext(), msg, duration);
@@ -412,6 +417,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             //change button color
                             Button button = (Button) findViewById(R.id.notifs);
                             button.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY);
+                            //set old size to new size
+                            oldSize = newSize;
+
                         }
                         Log.d("filter", "" + filter);
                         if (!filter) {//if a filter is not in place
@@ -639,6 +647,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         }
         return queryList;
+    }
+    private int getSize(){
+
+        List<ParseObject> queryList = null;
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("FriendRequest");
+        //queries all friend requests of current User
+        query.whereEqualTo("recipient", CURRENTUSER);
+        try{
+            queryList = query.find();
+        }
+        catch (ParseException e){
+            Log.d("queryFriendRequests", "problem with FriendRequest Query");
+            e.printStackTrace();
+        }
+        return queryList.size();
     }
 }//end class
 
