@@ -56,8 +56,7 @@
             android:hint="Search for Address"
             android:inputType="text"
             android:linksClickable="true"
-            android:layout_marginTop="36dp"
-            android:layout_below="@+id/eventDescription"
+            android:layout_above="@+id/map"
             android:layout_alignParentStart="true"
             android:layout_toStartOf="@+id/searchButton" />
 
@@ -67,8 +66,8 @@
             android:layout_height="wrap_content"
             android:text="Search"
             android:id="@+id/searchButton"
-            android:layout_alignBottom="@+id/search"
-            android:layout_alignEnd="@+id/stopTimeSpinner" />
+            android:layout_below="@+id/eventDescription"
+            android:layout_alignParentEnd="true" />
 
 
         <EditText
@@ -87,9 +86,8 @@
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="fill_parent"
-        android:layout_height="148dp"
-        android:layout_below="@+id/searchButton"
-        android:layout_alignParentStart="true" />
+        android:layout_height="230dp"
+        android:layout_below="@+id/searchButton" />
     <Button
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
@@ -98,6 +96,14 @@
         android:id="@+id/completeForm"
         android:layout_below="@+id/map"
         android:layout_centerHorizontal="true" />
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Reset Search"
+            android:id="@+id/Reset"
+            android:layout_below="@+id/search"/>
 
     </RelativeLayout>
 </ScrollView>
