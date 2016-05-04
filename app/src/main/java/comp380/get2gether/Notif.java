@@ -1,5 +1,7 @@
 package comp380.get2gether;
 
+import android.widget.Button;
+
 import java.util.List;
 
 /**
@@ -8,6 +10,7 @@ import java.util.List;
 public class Notif {
     //any other attributes?
     public String data;
-    public int timeAdded;
+    public Button accept;
+    public Button delete;
 
 }

@@ -8,23 +8,29 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+import com.parse.ParseUser;
+
 import java.util.ArrayList;
 import java.util.List;
-
+//TODO Add functionality to accept/delete button
 public class NotificationActivity extends AppCompatActivity {
     private RelativeLayout mNotifs;
     private ListView listView;
     private NotificationAdapter nAdapter;
     private List<Notif> nList;
+    private List<ParseObject> queryList;
+    private final ParseUser CURRENTUSER = ParseUser.getCurrentUser();
 
     /*TEST DATA FOR NOTIFICATIONS!!!!! REMOVE ONCE YOU GET DATABASE HOOKED TO IT*/
-    final private String[] data = {"Dino wants to be your friend", "Keith accepted your friend request", "Olga invited you to an event", "Basketball starting soon"};
-    final private int [] times = {R.drawable.holderpic, R.drawable.holderpic, R.drawable.holderpic, R.drawable.holderpic};
-
+    private String[] data;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,10 +40,18 @@ public class NotificationActivity extends AppCompatActivity {
 
         nList = new ArrayList<>();
 
+        //run friend requests query
+        queryList = getFriendRequests();
+
+        data = new String[queryList.size()];
+        //render into string array for adapter for list view
+        setData(queryList);
+
         for(int i = 0; i < data.length; i++){
             Notif notif = new Notif();
             notif.data = data[i];
-            notif.timeAdded = times[i];
+            notif.accept = (Button) findViewById(R.id.button1);
+            notif.delete = (Button) findViewById(R.id.button2);
             nList.add(notif);
         }
 
@@ -52,8 +66,28 @@ public class NotificationActivity extends AppCompatActivity {
         listView.setAdapter(nAdapter);
     }
 
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id){
-        Toast.makeText(this, "Click Successful", Toast.LENGTH_SHORT).show();
+    private List<ParseObject> getFriendRequests(){
+
+        List<ParseObject> queryList = null;
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("FriendRequest");
+        //queries all friend requests of current User
+        query.whereEqualTo("recipient", CURRENTUSER);
+        try{
+            queryList = query.find();
+        }
+        catch (ParseException e){
+            Log.d("queryFriendRequests", "problem with FriendRequest Query");
+            e.printStackTrace();
+        }
+        return queryList;
+    }
+
+    private void setData(List<ParseObject> list){
+        String newFriend;
+        for(int i=0; i<list.size(); i++){
+            newFriend = list.get(i).getString("sender") + " ";
+            data[i] = newFriend;
+        }
     }
 
 }

@@ -74,7 +74,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     /*Parse Query Items*/
     private List<ParseObject> events;
     private ArrayList<MarkerAttributes> mapMarkers;
-    private List<ParseObject> friendRequest;
     boolean filter;
     private final ParseUser CURRENTUSER = ParseUser.getCurrentUser();
 
@@ -648,7 +647,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
         return queryList;
     }
-    private int getSize(){
+    public int getSize(){
 
         List<ParseObject> queryList = null;
         ParseQuery<ParseObject> query = ParseQuery.getQuery("FriendRequest");
