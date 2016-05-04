@@ -416,11 +416,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         Log.d("filter", "" + filter);
                         if (!filter) {//if a filter is not in place
                             List<ParseObject> newQueryList = queryEventInBackground();
-                            Log.d("notification", "check if null");
-                            if(newQueryList != null)
-                                Log.d("notification", "new query list size: " + newQueryList.size());
-                            if(events != null)
-                                Log.d("notification", "events list size: " + events.size());
+                            Log.d("notification", "events and newQueryList is not empty");
                             if (newQueryList != null && events != null) {
                                 //updating map icons
                                 Log.d("notification", "events and newQueryList is not empty newQuery: " +
