@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -32,14 +33,14 @@ public class NotificationAdapter extends ArrayAdapter<Notif>{
             LayoutInflater inflater = ((Activity) context).getLayoutInflater();
             view = inflater.inflate(R.layout.friend_list, parent, false);
             holder = new ViewHolder();
-            holder.img = (ImageView) view.findViewById(R.id.friend_list_img_view);
             holder.name = (TextView) view.findViewById(R.id.friend_list_text_view);
+            holder.accept = (Button) view.findViewById(R.id.add_btn);
+            holder.delete = (Button) view.findViewById(R.id.delete_btn);
             view.setTag(holder);
         }
         else
             holder = (ViewHolder) view.getTag();
 
-        holder.img.setImageResource(notifList.get(position).timeAdded);
         holder.name.setText(notifList.get(position).data);
 
         return view;
@@ -47,6 +48,7 @@ public class NotificationAdapter extends ArrayAdapter<Notif>{
 
     private static class ViewHolder {
         private TextView name;
-        private ImageView img;
+        private Button accept;
+        private Button delete;
     }
 }

@@ -50,8 +50,6 @@ public class NotificationActivity extends AppCompatActivity {
         for(int i = 0; i < data.length; i++){
             Notif notif = new Notif();
             notif.data = data[i];
-            notif.accept = (Button) findViewById(R.id.button1);
-            notif.delete = (Button) findViewById(R.id.button2);
             nList.add(notif);
         }
 
