@@ -313,9 +313,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     //Listener to start the view the event
     @Override
     public void onInfoWindowClick(Marker marker) {
-        Intent intent = new Intent(MapsActivity.this, ViewEvent.class);
+
         //ToDo: add the identifier of the event in order to query the data in the ViewEvent
+        int pos = Integer.parseInt(marker.getSnippet());
+        MarkerAttributes currentMarker = mapMarkers.get(pos);
+        Intent intent = createEventInfoIntent(currentMarker);
+
         startActivity(intent);
+    }
+
+    private Intent createEventInfoIntent(MarkerAttributes currentMarker){
+        Intent intent = new Intent(MapsActivity.this, ViewEvent.class);
+        intent.putExtra("eName", currentMarker.eventName);
+        intent.putExtra("eDescription", currentMarker.eventDescription);
+        intent.putExtra("eType", currentMarker.eventType);
+
+        return intent;
+
     }
 
     @Override
