@@ -11,13 +11,14 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class EventAdapter extends ArrayAdapter<Event> {
     private final Context context;
-    private final List<Event> eventList;
+    private final ArrayList<Event> eventList;
 
-    public EventAdapter(Context context, List<Event> eventList) {
+    public EventAdapter(Context context, ArrayList<Event> eventList) {
         super(context, 0, eventList);
         this.context = context;
         this.eventList = eventList;
@@ -39,8 +40,9 @@ public class EventAdapter extends ArrayAdapter<Event> {
         else
             holder = (ViewHolder) view.getTag();
 
+        Log.d("eventList", "name :" + eventList.get(position).geteName() + " photo: " + eventList.get(position).getPhoto());
         holder.img.setImageResource(eventList.get(position).getPhoto());
-        holder.name.setText(eventList.get(position).name);
+        holder.name.setText(eventList.get(position).geteName());
 
         return view;
     }

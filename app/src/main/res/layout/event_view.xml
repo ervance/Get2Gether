@@ -60,7 +60,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="Description here"
-        android:id="@+id/eventDescription"
+        android:id="@+id/eventDescriptionDisplay"
         android:layout_alignParentStart="true"
         android:layout_above="@+id/checkBox"
         android:layout_alignParentEnd="true"
@@ -76,4 +76,5 @@
         android:layout_alignEnd="@+id/textView2"
         android:layout_toEndOf="@+id/checkBox"
         android:layout_below="@+id/eventDescription" />
+
 </RelativeLayout>

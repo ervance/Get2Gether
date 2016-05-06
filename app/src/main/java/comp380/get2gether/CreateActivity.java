@@ -42,12 +42,15 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.parse.FindCallback;
+import com.parse.ParseACL;
 import com.parse.ParseException;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
+
+import org.json.JSONArray;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -60,11 +63,13 @@ public class CreateActivity extends FragmentActivity implements GoogleApiClient.
 
     /******FORM FIELDS********/
     private EditText chosenEventName; //holds the event name from the eventName text box
+    private EditText eventDescrip; //holds the event description
     ArrayList<String> formVariables = new ArrayList<>();
     String eName;
     String eType;
     String eStartTime;
     String eEndTime;
+    String eDescription;
     /******FORM FIELDS********/
 
     /******Map fields******/
@@ -74,6 +79,8 @@ public class CreateActivity extends FragmentActivity implements GoogleApiClient.
     private com.google.android.gms.location.LocationListener mListener;
     private LatLng currentLocale;  //holds the current location throughout the activity
     private static final int ERROR_DIALOG_REQUEST = 9001;
+    private ArrayList<LatLng> coordinateList = new ArrayList<>();  //collects coordinates
+    private int listSize;  //size of coordinateList
     /****End Map fields****/
 
     private final ParseUser CURRENTUSER = ParseUser.getCurrentUser();
@@ -194,6 +201,24 @@ public class CreateActivity extends FragmentActivity implements GoogleApiClient.
         });
         //-------------------------END SPINNER SECTION-------------------------------------------
 
+        //gives permission to map
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }//end giving map permission
+
+        //Get an updtated location *--Eric if you Delete this I will kill you :)
+        locManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        locManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000L, 500.0f, locationListener);
+       final Location resetLocation = locManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+
 
        /*****************Start Searh Section***********************/
         //button for search
@@ -209,12 +234,33 @@ public class CreateActivity extends FragmentActivity implements GoogleApiClient.
                 String searchItem = searchBox.getText().toString();
                 //use search method below to find string (if nothing found return null)
                 newLoc= getLocationFromAddress(CreateActivity.this, searchItem);
-                gotoLocation(newLoc.latitude, newLoc.longitude, 10);
-                placeMapMarker(newLoc.latitude, newLoc.longitude);
+                if (newLoc != null){
+                    gotoLocation(newLoc.latitude, newLoc.longitude, 10);
+                    placeMapMarker(newLoc.latitude, newLoc.longitude);
+                }
+                else {
+                    Toast t = new Toast(CreateActivity.this);
+                    t.makeText(CreateActivity.this, "Location not found try again.",
+                            Toast.LENGTH_SHORT);
+                }
             }
         });
         /*****************End Search Section***********************/
 
+        //Reset button Section ---------------------------------------------------------------------
+        final Button resetButton = (Button) findViewById(R.id.Reset);
+
+        //Click listener for search
+        resetButton.setOnClickListener(new View.OnClickListener() {
+            //Once search is clicked, pull search text and find location
+            public void onClick(View v) {
+                //Save search data into variable
+                gotoLocation(resetLocation.getLatitude(),resetLocation.getLongitude(), 10); //center camera on current location
+            }
+        });
+
+
+        //------------------------------------------------------------------------------------------
             //Ties the completeForm button to the variable submitButton
             final Button submitButton = (Button) findViewById(R.id.completeForm);
 
@@ -231,89 +277,68 @@ public class CreateActivity extends FragmentActivity implements GoogleApiClient.
                     eType = eventTypeSpinner.getSelectedItem().toString();
                     eStartTime = startTimesSpinner.getSelectedItem().toString();
                     eEndTime = stopTimeSpinner.getSelectedItem().toString();
+                    eventDescrip = (EditText) findViewById(R.id.eventDescription);
+                    eDescription = eventDescrip.getText().toString();
 
                     //create unique id for event
                     String uniqueEventID = eName + CURRENTUSER.getObjectId().toString();
 
-                    //Here is your objective. Make sure that the current location is always saved
-                    //to currentLocale, once it is saved to that then come into this section
-                    //break up the currentLocale into two variables to be put into the string array
-                    //then you need to go to map activity, unpack those locations and use them for
                     String eLat = Double.toString(currentLocale.latitude);
                     String eLng = Double.toString(currentLocale.longitude);
                     ParseGeoPoint eventLocation = new ParseGeoPoint(currentLocale.latitude,
                             currentLocale.longitude);
                     //Check to make event public so that it will show up on everyones query
                     //holder for now
-                    boolean eventPublic = true;
-                    if(eventPublic){
-                        ParseObject publicEvent = new ParseObject("PublicEvent");
-                        publicEvent.put("uniqueID", uniqueEventID);
-                        publicEvent.put("eName", eName);
-                        publicEvent.put("eType", eType);
-                        publicEvent.put("eStartTime", eStartTime);
-                        publicEvent.put("eEndTime", eEndTime);
-                        publicEvent.put("eLocation", eventLocation);
-                        publicEvent.saveInBackground(new SaveCallback() {
-                            @Override
-                            public void done(ParseException e) {
-                                if (e != null){
-                                    Log.d("createActivity", "error saving public event");
-                                    e.printStackTrace();
-                                }
-                            }
-                        });
-                    }
+                    boolean privateEvent = false;
+                    String host = CURRENTUSER.getUsername().toString();
+                    Event event = new Event(CURRENTUSER,host ,uniqueEventID, eName, eStartTime,
+                            eEndTime, eType, eDescription, eventLocation, privateEvent);
 
+                    event.saveEvent();
                     //the marker on the map.
-                    ParseObject event = new ParseObject("Event");
+//                    ParseObject event = new ParseObject("Event");
+//                    event.put("uniqueEventID", uniqueEventID);
+//                    event.put("eName", eName);
+//                    event.put("eType", eType);
+//                    event.put("eStartTime", eStartTime);
+//                    event.put("eEndTime", eEndTime);
+//                    event.put("eLocation", eventLocation);
+//                    event.put("eDescription", eDescription);
+//                    event.put("private", privateEvent);
 
-                    event.put("eName", eName);
-                    event.put("eType", eType);
-                    event.put("eStartTime", eStartTime);
-                    event.put("eEndTime", eEndTime);
-                    event.put("eLocation", eventLocation);
 
-                    if(CURRENTUSER.has("events")){
-                        //a created event list already exists
-                        ParseObject newEvent = (ParseObject)CURRENTUSER.get("events");
-                        newEvent.put(uniqueEventID, event); //this stores
-                        /* the event object on the current users event object list, and the
-                        events unique id, is the events name + user objcectId
-                        */
-                    }
-                    else{
-                        //current user has no created event list
-                        ParseObject eventList = new ParseObject("EventList");
-                        eventList.put(uniqueEventID, event);
-                        CURRENTUSER.put("events", eventList);
-                    }
-
-                    CURRENTUSER.saveInBackground(new SaveCallback() {
-                        @Override
-                        public void done(ParseException e) {
-                            if(e != null){
-                                Log.d("createActivity", "error saving to current user");
-                                e.printStackTrace();
-                            }
-                        }
-                    });
+//                    ArrayList<Event> eventList = new ArrayList<Event>();
+//                    JSONArray eventList = new JSONArray();//need to change to JSON array i think
+//                    if(CURRENTUSER.has("myEvents")){
+//                        //a created event list already exists
+//                        eventList = (ArrayList<Event>)CURRENTUSER.get("myEvents");
+//                        eventList.add(event); //this stores
+//                        CURRENTUSER.put("myEvents", eventList);
+//                    }
+//                    else{
+//                        //current user has no created event list
+//                        eventList.add(event);
+//                        CURRENTUSER.put("myEvents", eventList);
+//                    }
+//
+//                    CURRENTUSER.saveInBackground(new SaveCallback() {
+//                        @Override
+//                        public void done(ParseException e) {
+//                            if(e != null){
+//                                Log.d("createActivity", "error saving to current user");
+//                                e.printStackTrace();
+//                            }
+//                        }
+//                    });
                     //Built Arraylist to store variables from Form
-                    formVariables.add(eName);
-                    formVariables.add(eType);
-                    formVariables.add(eStartTime);
-                    formVariables.add(eEndTime);
-                    formVariables.add(eLat);
-                    formVariables.add(eLng);
+                    //this is for the local user
+//                    formVariables.add(eName);
+//                    formVariables.add(eType);
+//                    formVariables.add(eStartTime);
+//                    formVariables.add(eEndTime);
+//                    formVariables.add(eLat);
+//                    formVariables.add(eLng);
 
-                /* unblock this when ready for parse server
-                //Add it to parse test
-                ParseObject inputForm = new ParseObject("InputForm");
-                inputForm.put("name", eName);
-                inputForm.put("type", eType);
-                inputForm.put("time", eTime);
-                inputForm.saveInBackground();
-                */
                     //----------------------------------------------------------------------------------------
 
                     //Create an Intent in order to pass info to "MapsAcitivity"
@@ -326,10 +351,14 @@ public class CreateActivity extends FragmentActivity implements GoogleApiClient.
                         //intent.putExtra("formVar", formVariables);
 
                     //Start other Activity (MapsActivity) with pin
-                        startActivity(intent);
+                    startActivity(intent);
                 }
             });
         }
+
+
+
+
     //This code gets location from address passed in search bar
     public LatLng getLocationFromAddress(Context context,String strAddress) {
 
@@ -355,7 +384,7 @@ public class CreateActivity extends FragmentActivity implements GoogleApiClient.
 
         return p1;
     }
-//-----------------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------------
     //Checks to make sure the services are available and the map is initialized
     //------------------------------------------------------------------------------------
     public boolean servicesOK() {
@@ -388,13 +417,12 @@ public class CreateActivity extends FragmentActivity implements GoogleApiClient.
 
     //This method updates the maps current location
     // Pass in a lat, lng, and zoom distance and it will move the camera to the desired location
-    private void gotoLocation(double lat, double lng, float zoom) {
+    public void gotoLocation(double lat, double lng, float zoom) {
         LatLng latLng = new LatLng(lat, lng);
         currentLocale = latLng;
         CameraUpdate update = CameraUpdateFactory.newLatLngZoom(latLng, zoom);
         mMap.moveCamera(update);
     }
-
 
     private void placeMapMarker(double lat, double lng) {
         LatLng latLng = new LatLng(lat, lng);
@@ -435,6 +463,8 @@ public class CreateActivity extends FragmentActivity implements GoogleApiClient.
                 placeMapMarker(location.getLatitude(), location.getLongitude());    //places movable marker on current location
             }
         };
+
+
         //This section updates the map
         //I used balanced power in order to get decent accuracy without sacrificing battery life
         //If we want we can change this to low power.
@@ -464,5 +494,54 @@ public class CreateActivity extends FragmentActivity implements GoogleApiClient.
         super.onPause();
         LocationServices.FusedLocationApi.removeLocationUpdates(mLocationClient, mListener);
     }
+
+    //Location listener
+    //collect lat lngs and put into list
+    private final LocationListener locationListener = new LocationListener(){
+        @Override
+        public void onLocationChanged(Location location) {
+            updateWithNewLocation(location);
+            LatLng temp = new LatLng(location.getLatitude(), location.getLongitude());
+            coordinateList.add(temp);
+            listSize++;
+            Log.e("LocationListener", "Coordinates Added to list");
+        }
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+
+        }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+
+        }
+
+        @Override
+        public void onProviderDisabled(String provider) {
+            updateWithNewLocation(null);
+        }
+
+    };
+
+    private void updateWithNewLocation(Location location) {
+        String latLongString = "";
+
+        if (location != null){
+            //create a string with current lat long
+            double lat = location.getLatitude();
+            double lng = location.getLongitude();
+            //latLongString = "Lat:" + lat + "\nLong:" + lng;
+        }
+
+        //THIS MAY NOT NEED TO BE HERE
+        //ORIGNIAL CODE HAD REDUNCANCY
+        //CHECK TO MAKE SURE
+
+    }
+
+
+
+
 }
 
