@@ -38,6 +38,7 @@ public class QRGenerator extends AppCompatActivity {
     private String newContactPhone;
     private String newContactEmail;
     private String scannedText;
+    CountDownTimer timer;
 
 
     //scanner variables:
@@ -94,6 +95,14 @@ public class QRGenerator extends AppCompatActivity {
                                           }
 
         );
+        final Button cancelButton = (Button) findViewById(R.id.cancelbutton);
+        cancelButton.setVisibility(View.INVISIBLE);
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                timer.cancel();
+            }
+        });
+
         // scan button:
         Button scanButton = (Button) findViewById(R.id.scanqrbutton);
         scanButton.setOnClickListener(new View.OnClickListener() {
@@ -103,16 +112,13 @@ public class QRGenerator extends AppCompatActivity {
                     if (v.getId() == R.id.scanqrbutton) {
 
                         scanIntegrator.initiateScan();
-                        new CountDownTimer(10000, 1000) {
+                        timer = new CountDownTimer(10000, 1000){
                             //add a new field of text: "If you dont want to add this contact press cancel"
-                            Button cancelButton = (Button) findViewById(R.id.cancelbutton);
-                            cancelButton.setOnClickListener(new View.OnClickListener() {
-                                public void onCLick(View v) {
-                                cancel();
-                                }
-                            });
+
                           public void onTick(long millisUntilFinished) {
 //                                mTextField.setText(millisUntilFinished / 1000);
+                              //display text:
+                              cancelButton.setVisibility(View.VISIBLE);
                            }
 
                             public void onFinish() {
