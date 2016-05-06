@@ -72,7 +72,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/event_save"
-        android:id="@+id/button"
+        android:id="@+id/save"
         android:layout_alignParentBottom="true"
         android:layout_alignEnd="@+id/eventTypeLarge"
         android:layout_toEndOf="@+id/checkBox"
