@@ -29,8 +29,8 @@ public class NotificationActivity extends AppCompatActivity {
     private List<ParseObject> queryList;
     private final ParseUser CURRENTUSER = ParseUser.getCurrentUser();
 
-    /*TEST DATA FOR NOTIFICATIONS!!!!! REMOVE ONCE YOU GET DATABASE HOOKED TO IT*/
     private String[] data;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,12 +64,14 @@ public class NotificationActivity extends AppCompatActivity {
         listView.setAdapter(nAdapter);
     }
 
+    //TODO Not returning FriendRequests
     private List<ParseObject> getFriendRequests(){
 
         List<ParseObject> queryList = null;
         ParseQuery<ParseObject> query = ParseQuery.getQuery("FriendRequest");
         //queries all friend requests of current User
-        query.whereEqualTo("recipient", CURRENTUSER);
+        query.whereEqualTo("recipient", CURRENTUSER.getUsername().toString());
+
         try{
             queryList = query.find();
         }
@@ -81,11 +83,8 @@ public class NotificationActivity extends AppCompatActivity {
     }
 
     private void setData(List<ParseObject> list){
-        String newFriend;
         for(int i=0; i<list.size(); i++){
-            newFriend = list.get(i).getString("sender") + " ";
-            data[i] = newFriend;
+            data[i] = list.get(i).getString("sender") + " ";
         }
     }
-
 }

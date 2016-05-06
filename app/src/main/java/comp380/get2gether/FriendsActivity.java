@@ -14,10 +14,12 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.google.android.gms.drive.metadata.internal.ParentDriveIdSet;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,9 +59,6 @@ public class FriendsActivity extends AppCompatActivity {
             for (int i = 0; i < usernames.length; i++) {
                 Friend friend = new Friend();
                 friend.username = usernames[i];
-                //friend.firstName = FRIENDFIRSTNAMES[i];
-                // friend.lastName = FRIENDLASTTNAMES[i];
-                //     friend.photo = IMG[i];
                 friendList.add(friend);
             }
 
@@ -72,15 +71,28 @@ public class FriendsActivity extends AppCompatActivity {
         friendSearch = (EditText)findViewById(R.id.search_friends);
     }
 
+    //TODO not properly saving friend requests
     //handles friendrequests from search feature
     public void sendFriendRequest(View view){
         //get username from search field
         String searchedUser = friendSearch.getText().toString();
+        /*ParseQuery queryFriends = ParseUser.getQuery();
+        queryFriends.whereEqualTo("username", searchedUser);
+        List<ParseUser> searchList = null;
+        try{
+            searchList = queryFriends.find();
+        }
+        catch (ParseException e){
+            Log.d("queryFriendRequests", "problem with Friends Search Query");
+            e.printStackTrace();
+        }
+
+        ParseUser searchParse = searchList.get(0);*/
 
         List<ParseObject> queryList = null;
         ParseQuery<ParseObject> query = ParseQuery.getQuery("FriendRequest");
         //checks if request already exist
-        query.whereEqualTo("sender", CURRENTUSER);
+        query.whereEqualTo("sender", CURRENTUSER.getUsername().toString());
         query.whereEqualTo("recipient", searchedUser);
         try{
             queryList = query.find();
@@ -89,16 +101,29 @@ public class FriendsActivity extends AppCompatActivity {
             Log.d("queryFriendRequests", "problem with FriendRequest Query");
             e.printStackTrace();
         }
+        Log.d("queryFriendRequests", "checking query size "+queryList.size());
         if(queryList.size() < 1) { //run only if request object doesn't exist in db
 
+            Log.d("queryFriendRequests", "creating new friend request");
             ParseObject friendRequest = new ParseObject("FriendRequest");
-            friendRequest.put("sender", CURRENTUSER); //after search made, sender will be CURRENTUSER
+            friendRequest.put("sender", CURRENTUSER.getUsername().toString()); //after search made, sender will be CURRENTUSER
             friendRequest.put("recipient", searchedUser); //after search made, recipient will be searched user
 
             Toast toast = new Toast(getApplicationContext());
             toast.makeText(this, "Friend Request Sent!", toast.LENGTH_LONG).show();
 
-            friendRequest.saveInBackground();
+            friendRequest.saveInBackground(new SaveCallback() {
+                @Override
+                public void done(ParseException e) {
+                    if(e!=null){
+                        Log.d("queryFriendRequests", "error saving");
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }
+        else {
+            Log.d("queryFriendRequests", "query > 0");
         }
 
     }
