@@ -50,6 +50,8 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
+import org.json.JSONArray;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -305,37 +307,37 @@ public class CreateActivity extends FragmentActivity implements GoogleApiClient.
 //                    event.put("private", privateEvent);
 
 
-                    ArrayList<Event> eventList = new ArrayList<Event>();
-
-                    if(CURRENTUSER.has("myEvents")){
-                        //a created event list already exists
-                        eventList = (ArrayList<Event>)CURRENTUSER.get("myEvents");
-                        eventList.add(event); //this stores
-                        CURRENTUSER.put("myEvents", eventList);
-                    }
-                    else{
-                        //current user has no created event list
-                        eventList.add(event);
-                        CURRENTUSER.put("myEvents", eventList);
-                    }
-
-                    CURRENTUSER.saveInBackground(new SaveCallback() {
-                        @Override
-                        public void done(ParseException e) {
-                            if(e != null){
-                                Log.d("createActivity", "error saving to current user");
-                                e.printStackTrace();
-                            }
-                        }
-                    });
+//                    ArrayList<Event> eventList = new ArrayList<Event>();
+//                    JSONArray eventList = new JSONArray();//need to change to JSON array i think
+//                    if(CURRENTUSER.has("myEvents")){
+//                        //a created event list already exists
+//                        eventList = (ArrayList<Event>)CURRENTUSER.get("myEvents");
+//                        eventList.add(event); //this stores
+//                        CURRENTUSER.put("myEvents", eventList);
+//                    }
+//                    else{
+//                        //current user has no created event list
+//                        eventList.add(event);
+//                        CURRENTUSER.put("myEvents", eventList);
+//                    }
+//
+//                    CURRENTUSER.saveInBackground(new SaveCallback() {
+//                        @Override
+//                        public void done(ParseException e) {
+//                            if(e != null){
+//                                Log.d("createActivity", "error saving to current user");
+//                                e.printStackTrace();
+//                            }
+//                        }
+//                    });
                     //Built Arraylist to store variables from Form
                     //this is for the local user
-                    formVariables.add(eName);
-                    formVariables.add(eType);
-                    formVariables.add(eStartTime);
-                    formVariables.add(eEndTime);
-                    formVariables.add(eLat);
-                    formVariables.add(eLng);
+//                    formVariables.add(eName);
+//                    formVariables.add(eType);
+//                    formVariables.add(eStartTime);
+//                    formVariables.add(eEndTime);
+//                    formVariables.add(eLat);
+//                    formVariables.add(eLng);
 
                     //----------------------------------------------------------------------------------------
 
@@ -349,7 +351,7 @@ public class CreateActivity extends FragmentActivity implements GoogleApiClient.
                         //intent.putExtra("formVar", formVariables);
 
                     //Start other Activity (MapsActivity) with pin
-                        startActivity(intent);
+                    startActivity(intent);
                 }
             });
         }

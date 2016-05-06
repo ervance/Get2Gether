@@ -10,6 +10,7 @@ import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import bolts.Bolts;
 
@@ -77,6 +78,7 @@ public class Event {
         publicACL.setPublicReadAccess(true);
         event.setACL(publicACL);
         event.put("uniqueID", uniqueEventID);
+        event.put("userName", parseHost.getUsername().toString());
         event.put("eName", eName);
         event.put("eType", eType);
         event.put("eStartTime", eStartTime);
@@ -89,11 +91,40 @@ public class Event {
             @Override
             public void done(ParseException e) {
                 if (e != null){
-                    Log.d("createActivity", "error saving public event");
+                    Log.d("createActivity", "error saving event");
                     e.printStackTrace();
                 }
             }
         });
+    }
+
+    public static ArrayList<Event> createEventList(ParseUser CURRENTUSER, List<ParseObject>
+            parseObjects){
+
+        ArrayList<Event> eventList = new ArrayList<Event>();
+        String  host, uniqueEventID, eName, eStartTime, eEndTime, eDescription
+                ,eType;
+        ParseGeoPoint eventLocation;
+        boolean privateEvent;
+
+        for(int i = 0; i < parseObjects.size(); i++){
+            ParseObject event = parseObjects.get(i);
+            uniqueEventID = event.getString("uniqueID");
+            host = event.getString("userName");
+            eName = event.getString("eName");
+            eType = event.getString("eType");
+            eStartTime = event.getString("eStartTime");
+            eEndTime = event.getString("eEndTime");
+            eventLocation = (ParseGeoPoint) event.get("eLocation");
+            eDescription = event.getString("eDescription");
+            privateEvent = event.getBoolean("private");
+            eventList.add(new Event(CURRENTUSER, host, uniqueEventID, eName, eStartTime,
+                    eEndTime, eType, eDescription, eventLocation, privateEvent));
+            Log.d("eventList", "name :" + eventList.get(i).geteName() + " photo: " + eventList.get(i).getPhoto());
+        }
+
+        return eventList;
+
     }
 
     public String geteHost() {

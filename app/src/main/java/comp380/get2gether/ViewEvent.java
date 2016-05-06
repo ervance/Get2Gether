@@ -7,7 +7,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RatingBar;
+import android.widget.TextView;
 
 import com.parse.ParseException;
 import com.parse.ParseGeoPoint;
@@ -17,13 +19,40 @@ import java.util.ArrayList;
 
 public class ViewEvent extends AppCompatActivity {
     private float ratingBarRating;
+    private int imageResource;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.event_view);
 
+
+
         //get intent from map activity
+        Intent intent = getIntent();
+        //get intent from map activity
+        String description = intent.getStringExtra("eDescription");
+        String type = intent.getStringExtra("eType");
+        String eventName = intent.getStringExtra("eName");
+
+        /******Show Image for Full Window*********/
+        imageResource = getResources().getIdentifier(type, "drawable",
+                getPackageName());
+        ImageView iv = (ImageView) findViewById(R.id.eventPic);
+        iv.setImageResource(imageResource);
+        /******Show Image for Full Window*********/
+
+        final TextView eventNameText = (TextView) findViewById(R.id.eventNameLarge);
+        eventNameText.setText(eventName);
+
+        final TextView eventTypeText = (TextView) findViewById(R.id.eventTypeLarge);
+        eventTypeText.setText(type);
+
+        final TextView eventDescriptionBox = (TextView) findViewById(R.id.eventDescriptionDisplay);
+        eventDescriptionBox.setText(description);
+
+
+
 
         //Rating bar button Section ---------------------------------------------------------------------
         final RatingBar rating = (RatingBar) findViewById(R.id.ratingBar);
@@ -62,5 +91,5 @@ public class ViewEvent extends AppCompatActivity {
 
     }//end onCreate Method
 
-    private Event queryEvent()
+   // private Event queryEvent()
 }

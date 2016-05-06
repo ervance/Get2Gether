@@ -12,7 +12,7 @@
     <ImageView
         android:layout_width="147dp"
         android:layout_height="147dp"
-        android:id="@+id/imageView"
+        android:id="@+id/eventPic"
         android:layout_gravity="left|top"
         android:src="@drawable/holderpic"/>
 
@@ -21,29 +21,29 @@
         android:layout_height="56dp"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Large Text"
-        android:id="@+id/textView"
+        android:id="@+id/eventNameLarge"
         android:layout_gravity="right|top"
         android:layout_alignParentTop="true"
-        android:layout_toEndOf="@+id/imageView" />
+        android:layout_toEndOf="@+id/eventPic" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Large Text"
-        android:id="@+id/textView2"
+        android:id="@+id/eventTypeLarge"
         android:layout_gravity="right|center_vertical"
-        android:layout_below="@+id/textView"
-        android:layout_alignEnd="@+id/textView"
-        android:layout_toEndOf="@+id/imageView"
-        android:layout_alignBottom="@+id/imageView" />
+        android:layout_below="@+id/eventNameLarge"
+        android:layout_alignEnd="@+id/eventNameLarge"
+        android:layout_toEndOf="@+id/eventPic"
+        android:layout_alignBottom="@+id/eventPic" />
 
     <RatingBar
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/ratingBar"
         android:layout_gravity="center"
-        android:layout_below="@+id/imageView"
+        android:layout_below="@+id/eventPic"
         android:layout_alignParentStart="true" />
 
     <CheckBox
@@ -53,7 +53,7 @@
         android:id="@+id/checkBox"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
-        android:layout_toStartOf="@+id/textView2"
+        android:layout_toStartOf="@+id/eventTypeLarge"
         android:checked="false" />
 
     <TextView
@@ -74,7 +74,7 @@
         android:text="@string/event_save"
         android:id="@+id/button"
         android:layout_alignParentBottom="true"
-        android:layout_alignEnd="@+id/textView2"
+        android:layout_alignEnd="@+id/eventTypeLarge"
         android:layout_toEndOf="@+id/checkBox"
         android:layout_below="@+id/eventDescription" />
 
