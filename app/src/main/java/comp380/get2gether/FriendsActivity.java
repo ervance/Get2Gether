@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -28,12 +29,15 @@ public class FriendsActivity extends AppCompatActivity {
     private ListView listView;
     private FriendAdapter fAdapter;
     private List<Friend> friendList;
+    private String friendUsernames;
+    private ParseUser CURRENTUSER = ParseUser.getCurrentUser();
+    private EditText friendSearch;
 
     /*TEST DATA FOR FRIENDS!!!!! REMOVE ONCE YOU GET DATABASE HOOKED TO IT*/
-    final private String[] FRIENDFIRSTNAMES = {"Dino", "Keith", "Olga", "Maroof", "TestFirst1", "TestFirst2", "TestFirst3", "TestFirst4","TestFirst5"};
-    final private String[] FRIENDLASTTNAMES = {"Biel", "Johnson", "Kup", "Haque", "TestLast1", "TestLast2", "TestLast3", "TestLast4", "TestLast5"};
-    final private int[] IMG = {R.drawable.holderpic, R.drawable.holderpic, R.drawable.holderpic, R.drawable.holderpic,
-            R.drawable.holderpic, R.drawable.holderpic, R.drawable.holderpic, R.drawable.holderpic, R.drawable.holderpic};
+  //  final private String[] FRIENDFIRSTNAMES = {"Dino", "Keith", "Olga", "Maroof", "TestFirst1", "TestFirst2", "TestFirst3", "TestFirst4","TestFirst5"};
+ //   final private String[] FRIENDLASTTNAMES = {"Biel", "Johnson", "Kup", "Haque", "TestLast1", "TestLast2", "TestLast3", "TestLast4", "TestLast5"};
+   // final private int[] IMG = {R.drawable.holderpic, R.drawable.holderpic, R.drawable.holderpic, R.drawable.holderpic,
+   //         R.drawable.holderpic, R.drawable.holderpic, R.drawable.holderpic, R.drawable.holderpic, R.drawable.holderpic};
 
 
     @Override
@@ -45,37 +49,37 @@ public class FriendsActivity extends AppCompatActivity {
 
         friendList = new ArrayList<>();
 
-        for(int i = 0; i < FRIENDFIRSTNAMES.length; i++){
+        friendUsernames = CURRENTUSER.getString("friends");
+
+        String[] usernames = friendUsernames.split(" ");
+
+        for(int i = 0; i < usernames.length; i++){
             Friend friend = new Friend();
-            friend.firstName = FRIENDFIRSTNAMES[i];
-            friend.lastName = FRIENDLASTTNAMES[i];
-            friend.photo = IMG[i];
+            friend.username = usernames[i];
+            //friend.firstName = FRIENDFIRSTNAMES[i];
+           // friend.lastName = FRIENDLASTTNAMES[i];
+       //     friend.photo = IMG[i];
             friendList.add(friend);
         }
 
         listView = (ListView) mFriends.findViewById(R.id.friend_list_view);
-        listView.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.d("FriendClick", "FriendClickWorked Correctly on " +FRIENDFIRSTNAMES[position]);
-                Intent intent = new Intent(FriendsActivity.this, FriendInfo.class);
-                startActivity(intent);
-            }
-        });
+
         fAdapter = new FriendAdapter(FriendsActivity.this, friendList);
         listView.setAdapter(fAdapter);
+
+        friendSearch = (EditText)findViewById(R.id.search_friends);
     }
 
-    //for now, this will send a friend request from dev to yourself
-    //TODO add search feature that will make sender you, and recipient the searched user
+    //handles friendrequests from search feature
     public void sendFriendRequest(View view){
-        //check if object exists
-        ParseUser CURRENTUSER = ParseUser.getCurrentUser();
+        //get username from search field
+        String searchedUser = friendSearch.getText().toString();
+
         List<ParseObject> queryList = null;
         ParseQuery<ParseObject> query = ParseQuery.getQuery("FriendRequest");
         //checks if request already exist
-        query.whereEqualTo("sender", "dev");
-        query.whereEqualTo("recipient", CURRENTUSER);
+        query.whereEqualTo("sender", CURRENTUSER);
+        query.whereEqualTo("recipient", searchedUser);
         try{
             queryList = query.find();
         }
@@ -83,14 +87,37 @@ public class FriendsActivity extends AppCompatActivity {
             Log.d("queryFriendRequests", "problem with FriendRequest Query");
             e.printStackTrace();
         }
-        if(queryList.size() < 1) { //run only if object doesn't exist in db
-            ParseObject friendRequest = new ParseObject("FriendRequest");
-            friendRequest.put("sender", "dev"); //after search made, sender will be CURRENTUSER
-            friendRequest.put("recipient", CURRENTUSER); //after search made, recipient will be searched user
-            friendRequest.saveInBackground();
+        if(queryList.size() < 1) { //run only if request object doesn't exist in db
+            //ensure searched user exists
+            ParseQuery<ParseUser> userQuery =
+                    ParseQuery.getQuery(ParseUser.class).
+                            whereEqualTo("username", searchedUser);
+            List<ParseUser> userQueryList = null;
+            try{
+                userQueryList = userQuery.find();
+            }
+            catch (ParseException e){
+                Log.d("queryFriendRequests", "problem with User Exists Query");
+                e.printStackTrace();
+            }
+
+            if(userQueryList.size() <1) {//user doesn't exist--> system doesn't support imaginary friends
+                Toast toast = new Toast(getApplicationContext());
+                toast.makeText(this, "User Doesn't Exist!", toast.LENGTH_LONG).show();
+            }
+            else {
+
+                ParseObject friendRequest = new ParseObject("FriendRequest");
+                friendRequest.put("sender", CURRENTUSER); //after search made, sender will be CURRENTUSER
+                friendRequest.put("recipient", searchedUser); //after search made, recipient will be searched user
+
+                Toast toast = new Toast(getApplicationContext());
+                toast.makeText(this, "Friend Request Sent!", toast.LENGTH_LONG).show();
+
+                friendRequest.saveInBackground();
+            }
         }
-            Toast toast = new Toast(getApplicationContext());
-            toast.makeText(this, "Friend Request Sent!", toast.LENGTH_LONG).show();
+
     }
 
 }

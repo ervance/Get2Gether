@@ -42,8 +42,9 @@ public class FriendAdapter extends ArrayAdapter<Friend> {
         else
             holder = (ViewHolder) view.getTag();
 
-        holder.img.setImageResource(friendList.get(position).getPhoto());
-        holder.name.setText(friendList.get(position).getFirstLast());
+       // holder.img.setImageResource(friendList.get(position).getPhoto());
+        //displaying only username for now
+        holder.name.setText(friendList.get(position).username);
 
         return view;
     }
