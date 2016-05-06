@@ -51,21 +51,23 @@ public class FriendsActivity extends AppCompatActivity {
 
         friendUsernames = CURRENTUSER.getString("friends");
 
-        String[] usernames = friendUsernames.split(" ");
+        if(friendUsernames!=null) {
+            String[] usernames = friendUsernames.split(" ");
 
-        for(int i = 0; i < usernames.length; i++){
-            Friend friend = new Friend();
-            friend.username = usernames[i];
-            //friend.firstName = FRIENDFIRSTNAMES[i];
-           // friend.lastName = FRIENDLASTTNAMES[i];
-       //     friend.photo = IMG[i];
-            friendList.add(friend);
+            for (int i = 0; i < usernames.length; i++) {
+                Friend friend = new Friend();
+                friend.username = usernames[i];
+                //friend.firstName = FRIENDFIRSTNAMES[i];
+                // friend.lastName = FRIENDLASTTNAMES[i];
+                //     friend.photo = IMG[i];
+                friendList.add(friend);
+            }
+
+            listView = (ListView) mFriends.findViewById(R.id.friend_list_view);
+
+            fAdapter = new FriendAdapter(FriendsActivity.this, friendList);
+            listView.setAdapter(fAdapter);
         }
-
-        listView = (ListView) mFriends.findViewById(R.id.friend_list_view);
-
-        fAdapter = new FriendAdapter(FriendsActivity.this, friendList);
-        listView.setAdapter(fAdapter);
 
         friendSearch = (EditText)findViewById(R.id.search_friends);
     }
@@ -88,34 +90,15 @@ public class FriendsActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         if(queryList.size() < 1) { //run only if request object doesn't exist in db
-            //ensure searched user exists
-            ParseQuery<ParseUser> userQuery =
-                    ParseQuery.getQuery(ParseUser.class).
-                            whereEqualTo("username", searchedUser);
-            List<ParseUser> userQueryList = null;
-            try{
-                userQueryList = userQuery.find();
-            }
-            catch (ParseException e){
-                Log.d("queryFriendRequests", "problem with User Exists Query");
-                e.printStackTrace();
-            }
 
-            if(userQueryList.size() <1) {//user doesn't exist--> system doesn't support imaginary friends
-                Toast toast = new Toast(getApplicationContext());
-                toast.makeText(this, "User Doesn't Exist!", toast.LENGTH_LONG).show();
-            }
-            else {
+            ParseObject friendRequest = new ParseObject("FriendRequest");
+            friendRequest.put("sender", CURRENTUSER); //after search made, sender will be CURRENTUSER
+            friendRequest.put("recipient", searchedUser); //after search made, recipient will be searched user
 
-                ParseObject friendRequest = new ParseObject("FriendRequest");
-                friendRequest.put("sender", CURRENTUSER); //after search made, sender will be CURRENTUSER
-                friendRequest.put("recipient", searchedUser); //after search made, recipient will be searched user
+            Toast toast = new Toast(getApplicationContext());
+            toast.makeText(this, "Friend Request Sent!", toast.LENGTH_LONG).show();
 
-                Toast toast = new Toast(getApplicationContext());
-                toast.makeText(this, "Friend Request Sent!", toast.LENGTH_LONG).show();
-
-                friendRequest.saveInBackground();
-            }
+            friendRequest.saveInBackground();
         }
 
     }

@@ -11,6 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -42,6 +43,27 @@ public class NotificationAdapter extends ArrayAdapter<Notif>{
             holder = (ViewHolder) view.getTag();
 
         holder.name.setText(notifList.get(position).data);
+
+       /* holder.accept.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+                Log.i("Add Button Clicked", "It works");
+                Toast.makeText(context, "Add button Clicked",
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
+        holder.delete.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+                Log.i("Delete Button Clicked", "**********");
+                Toast.makeText(context, "Delete Button Clicked",
+                        Toast.LENGTH_SHORT).show();
+            }
+        });*/
 
         return view;
     }
