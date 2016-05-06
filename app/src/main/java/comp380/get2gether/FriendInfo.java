@@ -20,7 +20,7 @@ public class FriendInfo extends AppCompatActivity {
     private RelativeLayout mRelativeFriendsInfo;
     private ListView eventListView;
     private EventAdapter eventAdapter;
-    private List<Event> eventList;
+    private ArrayList<Event> eventList;
     private TextView mFriendName;
     private TextView mDescriptionText;
     private ImageView mFriendPhoto;

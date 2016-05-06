@@ -242,7 +242,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
          TODO  My goal here was to create a loop to gather
          TODO everything from the parse server, but I don't think it is right.
          */
-        Intent intent = getIntent();
+        Intent intent = null;
 
         if (intent != null) {
             filter = true;
