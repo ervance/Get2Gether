@@ -95,13 +95,13 @@ public class QRGenerator extends AppCompatActivity {
                                           }
 
         );
-        final Button cancelButton = (Button) findViewById(R.id.cancelbutton);
-        cancelButton.setVisibility(View.INVISIBLE);
-        cancelButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                timer.cancel();
-            }
-        });
+//        final Button cancelButton = (Button) findViewById(R.id.cancelbutton);
+//        cancelButton.setVisibility(View.INVISIBLE);
+//        cancelButton.setOnClickListener(new View.OnClickListener() {
+//            public void onClick(View v) {
+//                timer.cancel();
+//            }
+//        });
 
         // scan button:
         Button scanButton = (Button) findViewById(R.id.scanqrbutton);
@@ -112,19 +112,20 @@ public class QRGenerator extends AppCompatActivity {
                     if (v.getId() == R.id.scanqrbutton) {
 
                         scanIntegrator.initiateScan();
-                        timer = new CountDownTimer(10000, 1000){
-                            //add a new field of text: "If you dont want to add this contact press cancel"
 
-                          public void onTick(long millisUntilFinished) {
-//                                mTextField.setText(millisUntilFinished / 1000);
-                              //display text:
-                              cancelButton.setVisibility(View.VISIBLE);
-                           }
-
-                            public void onFinish() {
-                                insertNewContact();
-                            }
-                        }.start();
+//                        timer = new CountDownTimer(10000, 10000){
+//                            //add a new field of text: "If you dont want to add this contact press cancel"
+//
+//                          public void onTick(long millisUntilFinished) {
+////                                mTextField.setText(millisUntilFinished / 1000);
+//                              //display text:
+//                            cancelButton.setVisibility(View.VISIBLE);
+//                           }
+//
+//                            public void onFinish() {
+//
+//                            }
+//                        }.start();
 
 
                     }
@@ -145,7 +146,8 @@ public class QRGenerator extends AppCompatActivity {
             scannedText = scanningResult.getContents();
             stringDecoder(scannedText);
             contentTxt = (TextView) findViewById(R.id.scan_content);
-            contentTxt.setText("Name: " + newContactName + "\nPhone: " + newContactPhone + "\nEmail: " + newContactEmail);
+            contentTxt.setText("You added:"+"\nName: " + newContactName + "\nPhone: " + newContactPhone + "\nEmail: " + newContactEmail);
+            insertNewContact();
         } else {
             Toast toast = Toast.makeText(getApplicationContext(),
                     "No scan data received!", Toast.LENGTH_SHORT);

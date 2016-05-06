@@ -28,35 +28,28 @@
             android:layout_height="wrap_content"
             android:text="Generate QR"
             android:layout_gravity="center_horizontal"
-            android:layout_alignParentTop="true"
-            android:layout_alignStart="@+id/scan_content" />
+            android:layout_marginBottom="57dp"
+            android:layout_alignParentBottom="true"
+            android:layout_toStartOf="@+id/scanqrbutton"
+            android:layout_marginEnd="39dp" />
         <Button
             android:id="@+id/scanqrbutton"
             android:layout_width="130dp"
             android:layout_height="wrap_content"
             android:text="Scan QR"
             android:layout_gravity="center_horizontal"
-            android:layout_alignParentTop="true"
-            android:layout_alignStart="@+id/cancelbutton" />
+            android:layout_alignBottom="@+id/generateqrbutton"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="42dp" />
         <TextView
             android:id="@+id/scan_content"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:textIsSelectable="true"
 
-            android:layout_marginStart="35dp"
-            android:layout_alignParentStart="true"
-            android:layout_alignBottom="@+id/cancelbutton" />
-        <Button
-            android:id="@+id/cancelbutton"
-            android:layout_width="130dp"
-            android:layout_height="wrap_content"
-            android:text="Cancel"
-            android:layout_gravity="center_horizontal"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="36dp"
-            android:layout_marginBottom="55dp" />
+            android:layout_below="@+id/scanqrbutton"
+            android:layout_alignStart="@+id/scanqrbutton"
+            android:layout_alignEnd="@+id/scanqrbutton" />
     </RelativeLayout>
 
 
