@@ -295,50 +295,6 @@ public class CreateActivity extends FragmentActivity implements GoogleApiClient.
                             eEndTime, eType, eDescription, eventLocation, privateEvent);
 
                     event.saveEvent();
-                    //the marker on the map.
-//                    ParseObject event = new ParseObject("Event");
-//                    event.put("uniqueEventID", uniqueEventID);
-//                    event.put("eName", eName);
-//                    event.put("eType", eType);
-//                    event.put("eStartTime", eStartTime);
-//                    event.put("eEndTime", eEndTime);
-//                    event.put("eLocation", eventLocation);
-//                    event.put("eDescription", eDescription);
-//                    event.put("private", privateEvent);
-
-
-//                    ArrayList<Event> eventList = new ArrayList<Event>();
-//                    JSONArray eventList = new JSONArray();//need to change to JSON array i think
-//                    if(CURRENTUSER.has("myEvents")){
-//                        //a created event list already exists
-//                        eventList = (ArrayList<Event>)CURRENTUSER.get("myEvents");
-//                        eventList.add(event); //this stores
-//                        CURRENTUSER.put("myEvents", eventList);
-//                    }
-//                    else{
-//                        //current user has no created event list
-//                        eventList.add(event);
-//                        CURRENTUSER.put("myEvents", eventList);
-//                    }
-//
-//                    CURRENTUSER.saveInBackground(new SaveCallback() {
-//                        @Override
-//                        public void done(ParseException e) {
-//                            if(e != null){
-//                                Log.d("createActivity", "error saving to current user");
-//                                e.printStackTrace();
-//                            }
-//                        }
-//                    });
-                    //Built Arraylist to store variables from Form
-                    //this is for the local user
-//                    formVariables.add(eName);
-//                    formVariables.add(eType);
-//                    formVariables.add(eStartTime);
-//                    formVariables.add(eEndTime);
-//                    formVariables.add(eLat);
-//                    formVariables.add(eLng);
-
                     //----------------------------------------------------------------------------------------
 
                     //Create an Intent in order to pass info to "MapsAcitivity"
@@ -533,11 +489,6 @@ public class CreateActivity extends FragmentActivity implements GoogleApiClient.
             double lng = location.getLongitude();
             //latLongString = "Lat:" + lat + "\nLong:" + lng;
         }
-
-        //THIS MAY NOT NEED TO BE HERE
-        //ORIGNIAL CODE HAD REDUNCANCY
-        //CHECK TO MAKE SURE
-
     }
 
 

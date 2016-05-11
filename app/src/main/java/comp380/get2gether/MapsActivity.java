@@ -215,28 +215,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             currentLocale = new LatLng(latitude,longitude);
             gotoLocation(latitude,longitude, 10); //center camera on current location
         }//end if
-//        else
-//        {
-//            //try to get a location because none was found previously
-//            updateWithNewLocation(location);
-//        }
-
-        //wrapper around a view of a map to automatically handle the necessary life cycle needs
-        //Sets a callback object which will be triggered when the GoogleMap instance is ready to be used.
-        //May or may not need to use the OnMapReadyCallback here
-        //Turns out it was causing a problem so I took it out
-
-
-            /****This Arraylist Holds the FormActivity Variables****/
-            //final ArrayList<String> forms = (ArrayList<String>) getIntent().getSerializableExtra("formVar");
-            //currently forms.get(0) is Event Name
-            //currently forms.get(1) is Event Type
-            //currently forms.get(2) is Event Start time
-            //currently forms.get(3) is Event End time
-            //currently forms.get(4) is Event lat
-            //currently forms.get(5) is Event lng
-
-
 
         /*TODO ERIC****** Here is where I left off.-----------------------------------------------------
          TODO  My goal here was to create a loop to gather
@@ -259,7 +237,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mapMarkers = createMarkerAttList(events, events.size(),0);
         makeCustomInfoWindow(mapMarkers);
 
-        //placeMarker();
 //TODO THIS IS THE END OF WHAT I ADDED -----------------------------------------------------------------
         mMap.setOnInfoWindowClickListener(this);
 
@@ -305,10 +282,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             double lng = location.getLongitude();
             //latLongString = "Lat:" + lat + "\nLong:" + lng;
         }
-
-            //THIS MAY NOT NEED TO BE HERE
-            //ORIGNIAL CODE HAD REDUNCANCY
-            //CHECK TO MAKE SURE
 
     }
 
@@ -464,10 +437,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private void placeMarker(MarkerAttributes mAtt){
         //If forms == null that means we have not returned from FormActivity
 
-        //here is were we are going to convert the lat and lng back into a LatLng variable
-//            ParseGeoPoint location = (ParseGeoPoint)event.get("eLocation");
-//            double lat = location.getLatitude();
-//            double lng = location.getLongitude();
         LatLng newLL = new LatLng(mAtt.markerLat,mAtt.markerLong);
 //            currentLocale = newLL;
 
@@ -476,14 +445,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .draggable(false)       //we don't want the marker to move once event is set
                 .position(newLL)
                 .snippet(mAtt.arrayPos);
-
-//            if(currentLocale!=null) {
-//                //add marker and move camera to current location
-//                mMap.addMarker(marker);
-//                gotoLocation(currentLocale.latitude, currentLocale.longitude,10);
-//            }else{
-//                Toast.makeText(MapsActivity.this, "No Current Location.", Toast.LENGTH_SHORT).show();
-//            }
         Marker floatMarker = mMap.addMarker(marker);
         dropPinEffect(floatMarker);
 
@@ -553,20 +514,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     //correct location
                     LatLng ll = marker.getPosition();
 
-                    //Make a parse query to get the data
-//                    ParseQuery<ParseObject> query = ParseQuery.getQuery("InputForm");
-//
-//                    query.whereEqualTo("name", forms.get(0));
-//                    query.findInBackground(new FindCallback<ParseObject>() {
-//                        @Override
-//                        public void done(List<ParseObject> formData, ParseException e) {
-//                            if (e==null)
-//                                for(int i = 0; i< formData.size(); i++)
-//                                    Log.e("name", "Retrieved" + formData.get(i) + " formData");
-//                            else
-//                                Log.e("name", "Error: " + e.getMessage());
-//                        }
-//                    });
 
                     //If form is not null then populate the info window
                     tvEname.setText(currentMarker.eventName);
@@ -594,17 +541,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         catch (ParseException e){
             Log.d(LOGID, "query failed for Event");
         }
-//        InBackground(new FindCallback<ParseObject>() {
-//            @Override
-//            public void done(List<ParseObject> newPublicEvents, ParseException e) {
-//                if(e == null){
-//                    Log.d(LOGID, "query succesful for PublicEvent");
-//                    publicEvents = newPublicEvents;
-//                }
-//                else
-//                    Log.d(LOGID, "query failed for PublicEvent");
-//            }
-//        });
 
     }
 
@@ -642,7 +578,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             //adds m to an array list of marker objects
             mapMarkers.add(m);
             placeMarker(m);
-
+            gotoLocation(location.getLatitude(),location.getLongitude(), 10);
         }
         return mapMarkers;//CHANGIN THIS TO RETURN INSTEAD OF CHANGE THE GLOBAL COULD RUIN IT...
     }
@@ -668,12 +604,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             if (intent.hasExtra("eventType")) {
                 query.whereEqualTo("eType", intent.getStringExtra("eventType"));
             }
-            //this needs to be added to our create event before I can query it
-//                if(intent.hasExtra("privateEventOnly"))
-//                    if(intent.getBooleanExtra("privateEventOnly", false))
-//                        query.whereEqualTo("privateEvent", true);
-//                    else
-//                        query.whereEqualTo("privateEvent", false);
+
 
             query.whereWithinMiles("eLocation", location, distance);
             try{
