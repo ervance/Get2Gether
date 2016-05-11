@@ -25,9 +25,9 @@
         android:layout_marginTop="20dp"
         android:layout_marginBottom="20dp"
         android:layout_height="wrap_content"
-        android:textColor="@color/white"
+        android:textColor="@color/brownlogo"
         android:textSize="26sp"
-        android:textColorHint="#222121"
+        android:textColorHint="@color/brownlogo"
         android:textStyle="bold" />
 
 </LinearLayout>

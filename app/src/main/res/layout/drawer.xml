@@ -17,7 +17,7 @@
     <RelativeLayout
         android:layout_width="300dp"
         android:layout_height="match_parent"
-        android:background="@color/colorAccent"
+        android:background="@color/white"
         android:id="@+id/relative_drawer"
         android:layout_gravity="start"
         android:clickable="true"
@@ -27,7 +27,7 @@
             android:id="@+id/drawer_list"
             android:layout_width="fill_parent"
             android:layout_height="match_parent"
-            android:backgroundTint="#303030"
+            android:backgroundTint="@color/brownlogo"
             android:importantForAccessibility="yes">
         </ListView>
 
