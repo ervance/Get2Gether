@@ -68,16 +68,23 @@ public class NotificationActivity extends AppCompatActivity {
     private List<ParseObject> getFriendRequests(){
 
         List<ParseObject> queryList = null;
-        ParseQuery<ParseObject> query = ParseQuery.getQuery("FriendRequest");
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("FriendRQ");
         //queries all friend requests of current User
-        query.whereEqualTo("recipient", CURRENTUSER.getUsername().toString());
+        Log.d("username", CURRENTUSER.getUsername().toString());//CURRENTUSER.getUsername().toString()
+        String user = CURRENTUSER.getUsername().toString();
+        query.whereEqualTo("recipient", "eric");
 
         try{
+            Log.d("queryList", "searching....");
             queryList = query.find();
         }
         catch (ParseException e){
             Log.d("queryFriendRequests", "problem with FriendRequest Query");
             e.printStackTrace();
+        }
+        Log.d("queryList", ""+ queryList.size());
+        for(int i = 0; i < queryList.size(); i++){
+            Log.d("queryList", "" + (String) queryList.get(i).getString("recipient"));
         }
         return queryList;
     }

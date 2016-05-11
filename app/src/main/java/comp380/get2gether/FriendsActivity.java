@@ -89,24 +89,24 @@ public class FriendsActivity extends AppCompatActivity {
 
         ParseUser searchParse = searchList.get(0);*/
 
-        List<ParseObject> queryList = null;
-        ParseQuery<ParseObject> query = ParseQuery.getQuery("FriendRequest");
-        //checks if request already exist
-        query.whereEqualTo("sender", CURRENTUSER.getUsername().toString());
-        query.whereEqualTo("recipient", searchedUser);
-        try{
-            queryList = query.find();
-        }
-        catch (ParseException e){
-            Log.d("queryFriendRequests", "problem with FriendRequest Query");
-            e.printStackTrace();
-        }
-        Log.d("queryFriendRequests", "checking query size "+queryList.size());
-        if(queryList.size() < 1) { //run only if request object doesn't exist in db
+//        List<ParseObject> queryList = null;
+//        ParseQuery<ParseObject> query = ParseQuery.getQuery("FriendRequest");
+//        //checks if request already exist
+//        query.whereEqualTo("sender", CURRENTUSER.getUsername().toString());
+//        query.whereEqualTo("recipient", searchedUser);
+//        try{
+//            queryList = query.find();
+//        }
+//        catch (ParseException e){
+//            Log.d("queryFriendRequests", "problem with FriendRequest Query");
+//            e.printStackTrace();
+//        }
+        //Log.d("queryFriendRequests", "checking query size "+queryList.size());
+        if(true) { //run only if request object doesn't exist in db queryList.size() < 1
 
             Log.d("queryFriendRequests", "creating new friend request");
-            ParseObject friendRequest = new ParseObject("FriendRequest");
-            friendRequest.put("sender", CURRENTUSER.getUsername().toString()); //after search made, sender will be CURRENTUSER
+            ParseObject friendRequest = new ParseObject("FriendRQ");
+            friendRequest.put("sender", ParseUser.getCurrentUser().getUsername().toString()); //after search made, sender will be CURRENTUSER
             friendRequest.put("recipient", searchedUser); //after search made, recipient will be searched user
 
             Toast toast = new Toast(getApplicationContext());
@@ -118,6 +118,9 @@ public class FriendsActivity extends AppCompatActivity {
                     if(e!=null){
                         Log.d("queryFriendRequests", "error saving");
                         e.printStackTrace();
+                    }
+                    else {
+                        Log.d("queryFriendRequests", "save successful");
                     }
                 }
             });
