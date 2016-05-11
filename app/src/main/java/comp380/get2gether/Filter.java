@@ -54,13 +54,13 @@ public class Filter extends AppCompatActivity {
             }
         });
 
-        final Switch mySwitch = (Switch) findViewById(R.id.show_private_only_switch);
+        //final Switch mySwitch = (Switch) findViewById(R.id.show_private_only_switch);
 
         final Button filterbutton = (Button) findViewById(R.id.filter_button);
         filterbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                filterAndStart(mySwitch, distanceChoiceSpinner, eventTypeSpinner);
+                filterAndStart(distanceChoiceSpinner, eventTypeSpinner);
             }
         });
 
@@ -75,10 +75,10 @@ public class Filter extends AppCompatActivity {
 
     }
 
-    private void filterAndStart(Switch mySwitch, Spinner distanceChoiceSpinner, Spinner
+    private void filterAndStart(Spinner distanceChoiceSpinner, Spinner
             eventTypeSpinner){
         //attach choices and start the event
-        boolean privateEventsOnly = mySwitch.isChecked();
+        //boolean privateEventsOnly = mySwitch.isChecked();
         int distance;
         //convert choice into an int to pass back to the query
         String distanceChoiceString = distanceChoiceSpinner.getSelectedItem().toString();
@@ -91,7 +91,7 @@ public class Filter extends AppCompatActivity {
         //convert even type
         String eventType = eventTypeSpinner.getSelectedItem().toString();
         Intent intent = new Intent(Filter.this, MapsActivity.class);
-        intent.putExtra("privateEventOnly", privateEventsOnly);
+        //intent.putExtra("privateEventOnly", privateEventsOnly);
 
         intent.putExtra("distance", distance);
         intent.putExtra("eventType", eventType);

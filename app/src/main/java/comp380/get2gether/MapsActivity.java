@@ -86,8 +86,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private ListView listView;
     private DrawerAdapter adapter;
     private List<NavigationIcon> drawerString;
-    final private String[] NAVIGATION = {"Create Event","My Events", "Filter", "Friends", "QR Code", "Settings"};
-    final private int[] IMG = {R.drawable.holderpic,R.drawable.holderpic,R.drawable.holderpic,R.drawable.holderpic,R.drawable.holderpic,R.drawable.holderpic};
+    final private String[] NAVIGATION = {"Create Event","My Events", "Filter", "QR Code", "Settings"};
+    final private int[] IMG = {R.drawable.holderpic,R.drawable.holderpic,R.drawable.holderpic,R.drawable.holderpic,R.drawable.holderpic};
     /***End Drawer***/
 
     //for notifications
@@ -104,13 +104,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.drawer);//this was activity_maps
-
-
-
-        //get username
-        ParseUser currentUser = ParseUser.getCurrentUser();
-        Toast toast = new Toast(getApplicationContext());
-        toast.makeText(this, currentUser.getUsername().toString(), toast.LENGTH_LONG).show();
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -320,7 +313,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private Intent switchActivity(int activity){
-        //0: create 1: my event 2: filter 3: friends 4: QR 5: settings
+        //0: create 1: my event 2: filter 3: QR 4: settings
         //defualts to back to map activity for now until figure out a better
         //solution
         Intent intent;
@@ -332,17 +325,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 intent = new Intent(MapsActivity.this, MyEventsActivity.class);
                 break;
             case 2:
-                //Todo: change to filter
                 intent = new Intent(MapsActivity.this, Filter.class);
                 break;
             case 3:
-                intent = new Intent(MapsActivity.this, FriendsActivity.class);
-                break;
-            case 4:
-                //ToDo: add QR here
                 intent = new Intent(MapsActivity.this, QRGenerator.class);
                 break;
-            case 5:
+            case 4:
                 intent = new Intent(MapsActivity.this, SettingsActivity.class);
                 break;
             default:
