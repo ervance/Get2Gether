@@ -86,12 +86,12 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        //create user
+        //go to create user page
         newUserButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                logo.startAnimation(rotation);
-                attemptCreateUser();
+                Intent intent = new Intent(LoginActivity.this, CreateUserActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -135,43 +135,6 @@ public class LoginActivity extends AppCompatActivity {
                         sucessLoggingIn(userLogin);
                     } else {
                         Log.d("Login", "error loggin in");
-                        errorLoggingIn();
-                    }
-                }
-            });
-        }
-    }
-
-    private void attemptCreateUser() {
-        boolean cancelLogin = false;
-        View focusView = null;
-
-        final String password = mPasswordView.getText().toString();
-        final String userLogin = mUserView.getText().toString();
-
-        // Check for a valid username.
-        if (TextUtils.isEmpty(userLogin)) {
-            mUserView.setError(getString(R.string.error_field_required));
-            focusView = mUserView;
-            cancelLogin = true;
-        } else if (!isUserNameValid(userLogin)) {
-            mUserView.setError(getString(R.string.error_invalid_user));
-            focusView = mUserView;
-            cancelLogin = true;
-        }
-
-        if(cancelLogin){
-                focusView.requestFocus();
-        }
-        else {
-            user.setUsername(userLogin);
-            user.setPassword(password);
-            user.signUpInBackground(new SignUpCallback() {
-                @Override
-                public void done(ParseException e) {
-                    if (e == null) {
-                       sucessLoggingIn(userLogin);
-                    } else {
                         errorLoggingIn();
                     }
                 }

@@ -11,15 +11,12 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.SystemClock;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
-import android.view.animation.BounceInterpolator;
-import android.view.animation.Interpolator;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.Button;
@@ -77,8 +74,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     /*Parse Query Items*/
     private List<ParseObject> events;
     private ArrayList<MarkerAttributes> mapMarkers;
-    private List<ParseObject> personalEvents;
     boolean filter;
+    private final ParseUser CURRENTUSER = ParseUser.getCurrentUser();
 
     /****Drawer*****/
     private DrawerLayout drawerLayout;
@@ -94,7 +91,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     Timer timer;
     TimerTask timerTask;
     final Handler handler = new Handler();
-    int oldSize = 5; //will use database to find old size of
+    int oldSize = getSize(); //will use database to find old size of friend requests
 
     //LogID
     private final String LOGID = "mapsActivity";
@@ -105,7 +102,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         super.onCreate(savedInstanceState);
         setContentView(R.layout.drawer);//this was activity_maps
 
-
+        if (CURRENTUSER == null){
+            Intent intent = new Intent(MapsActivity.this, LoginActivity.class);
+            startActivity(intent);
+        }
 
         //get username
         ParseUser currentUser = ParseUser.getCurrentUser();
@@ -215,17 +215,38 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             currentLocale = new LatLng(latitude,longitude);
             gotoLocation(latitude,longitude, 10); //center camera on current location
         }//end if
+//        else
+//        {
+//            //try to get a location because none was found previously
+//            updateWithNewLocation(location);
+//        }
+
+        //wrapper around a view of a map to automatically handle the necessary life cycle needs
+        //Sets a callback object which will be triggered when the GoogleMap instance is ready to be used.
+        //May or may not need to use the OnMapReadyCallback here
+        //Turns out it was causing a problem so I took it out
+
+
+            /****This Arraylist Holds the FormActivity Variables****/
+            //final ArrayList<String> forms = (ArrayList<String>) getIntent().getSerializableExtra("formVar");
+            //currently forms.get(0) is Event Name
+            //currently forms.get(1) is Event Type
+            //currently forms.get(2) is Event Start time
+            //currently forms.get(3) is Event End time
+            //currently forms.get(4) is Event lat
+            //currently forms.get(5) is Event lng
+
+
 
         /*TODO ERIC****** Here is where I left off.-----------------------------------------------------
          TODO  My goal here was to create a loop to gather
          TODO everything from the parse server, but I don't think it is right.
          */
-        Intent intent = getIntent();
+        Intent intent = null;
 
-        Log.d("filter", "" + intent.toString() + " has filter " + intent.hasCategory("filter"));
-        if (intent != null && intent.hasExtra("filter")) {
-                filter = true;//only becomes true if filter is put onto the intent
-                events = filterQuery(intent);
+        if (intent != null) {
+            filter = true;
+            events = filterQuery(intent);
         }
         else {
             filter = false;
@@ -234,9 +255,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if (events == null)//just in case the filterQuery fails
             queryEvents();
         //array list to hold marker attributes
-        mapMarkers = createMarkerAttList(events, events.size(),0);
+        mapMarkers = new ArrayList<MarkerAttributes>();
+        createMarkerAttList(events, mapMarkers, events.size(),0);
         makeCustomInfoWindow(mapMarkers);
 
+        //placeMarker();
 //TODO THIS IS THE END OF WHAT I ADDED -----------------------------------------------------------------
         mMap.setOnInfoWindowClickListener(this);
 
@@ -283,29 +306,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             //latLongString = "Lat:" + lat + "\nLong:" + lng;
         }
 
+            //THIS MAY NOT NEED TO BE HERE
+            //ORIGNIAL CODE HAD REDUNCANCY
+            //CHECK TO MAKE SURE
+
     }
 
 
     //Listener to start the view the event
     @Override
     public void onInfoWindowClick(Marker marker) {
-
-        //ToDo: add the identifier of the event in order to query the data in the ViewEvent
-        int pos = Integer.parseInt(marker.getSnippet());
-        MarkerAttributes currentMarker = mapMarkers.get(pos);
-        Intent intent = createEventInfoIntent(currentMarker);
-
-        startActivity(intent);
-    }
-
-    private Intent createEventInfoIntent(MarkerAttributes currentMarker){
         Intent intent = new Intent(MapsActivity.this, ViewEvent.class);
-        intent.putExtra("eName", currentMarker.eventName);
-        intent.putExtra("eDescription", currentMarker.eventDescription);
-        intent.putExtra("eType", currentMarker.eventType);
-
-        return intent;
-
+        //ToDo: add the identifier of the event in order to query the data in the ViewEvent
+        startActivity(intent);
     }
 
     @Override
@@ -363,6 +376,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void notif(View view) {
         Button button = (Button) findViewById(R.id.notifs);
         button.getBackground().setColorFilter(Color.LTGRAY, PorterDuff.Mode.MULTIPLY);
+        //set new size to old size
         Intent intent = new Intent(MapsActivity.this, NotificationActivity.class);
         startActivity(intent);
         //update oldSize with new size of current notification object in database
@@ -386,7 +400,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 handler.post(new Runnable() {
                     public void run() {
                         //comparing static number with random number between 1 and 10
-                        int newSize = (int )(Math.random() * 10 + 1);
+                        int newSize = getSize();
                         //here we have the saved size of the old notification object of the database
                         //and we compare with the size of the new notification object that we just queried
                         //if the new size is bigger, we will display a toast and change the button color
@@ -394,7 +408,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         //users will still get a toast message and the button will be a different color when they return
                         //to maps
                         if(oldSize < newSize) {
-                            final String msg = "Kickit Notification!";
+                            final String msg = "New Friend Request!";
                             //show the toast
                             int duration = Toast.LENGTH_SHORT;
                             Toast toast = Toast.makeText(getApplicationContext(), msg, duration);
@@ -402,6 +416,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             //change button color
                             Button button = (Button) findViewById(R.id.notifs);
                             button.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY);
+                            //set old size to new size
+                            oldSize = newSize;
+
                         }
                         Log.d("filter", "" + filter);
                         if (!filter) {//if a filter is not in place
@@ -422,7 +439,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                     else
                                         range = (oldSize - currSize);
                                     events = newQueryList;
-                                    mapMarkers = createMarkerAttList(events, range, oldSize - 1);
+                                    mapMarkers = new ArrayList<MarkerAttributes>();
+                                    createMarkerAttList(events, mapMarkers, range,
+                                            oldSize - 1);
                                 }
 
                             }
@@ -437,44 +456,27 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private void placeMarker(MarkerAttributes mAtt){
         //If forms == null that means we have not returned from FormActivity
 
-        LatLng newLL = new LatLng(mAtt.markerLat,mAtt.markerLong);
+            //here is were we are going to convert the lat and lng back into a LatLng variable
+//            ParseGeoPoint location = (ParseGeoPoint)event.get("eLocation");
+//            double lat = location.getLatitude();
+//            double lng = location.getLongitude();
+            LatLng newLL = new LatLng(mAtt.markerLat,mAtt.markerLong);
 //            currentLocale = newLL;
 
-        //This is the marker that is being used to store the data from the form
-        MarkerOptions marker = new MarkerOptions()
-                .draggable(false)       //we don't want the marker to move once event is set
-                .position(newLL)
-                .snippet(mAtt.arrayPos);
-        Marker floatMarker = mMap.addMarker(marker);
-        dropPinEffect(floatMarker);
+            //This is the marker that is being used to store the data from the form
+            MarkerOptions marker = new MarkerOptions()
+                    .draggable(false)       //we don't want the marker to move once event is set
+                    .position(newLL)
+                    .snippet(mAtt.arrayPos);
 
-    }
-
-    private void dropPinEffect(final Marker marker) {
-        final Handler handler = new Handler();
-        final long start = SystemClock.uptimeMillis();
-        final long duration = 1500;
-
-        final Interpolator interpolator = new BounceInterpolator();
-
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                long elapsed = SystemClock.uptimeMillis() - start;
-                float t = Math.max(
-                        1 - interpolator.getInterpolation((float) elapsed
-                                / duration), 0);
-                marker.setAnchor(0.5f, 1.0f + 14 * t);
-
-                if (t > 0.0) {
-                    // Post again 15ms later.
-                    handler.postDelayed(this, 15);
-                } else {
-                    marker.showInfoWindow();
-
-                }
-            }
-        });
+//            if(currentLocale!=null) {
+//                //add marker and move camera to current location
+//                mMap.addMarker(marker);
+//                gotoLocation(currentLocale.latitude, currentLocale.longitude,10);
+//            }else{
+//                Toast.makeText(MapsActivity.this, "No Current Location.", Toast.LENGTH_SHORT).show();
+//            }
+            mMap.addMarker(marker);
     }
 
     //This method is for making each custom info window.
@@ -514,6 +516,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     //correct location
                     LatLng ll = marker.getPosition();
 
+                    //Make a parse query to get the data
+//                    ParseQuery<ParseObject> query = ParseQuery.getQuery("InputForm");
+//
+//                    query.whereEqualTo("name", forms.get(0));
+//                    query.findInBackground(new FindCallback<ParseObject>() {
+//                        @Override
+//                        public void done(List<ParseObject> formData, ParseException e) {
+//                            if (e==null)
+//                                for(int i = 0; i< formData.size(); i++)
+//                                    Log.e("name", "Retrieved" + formData.get(i) + " formData");
+//                            else
+//                                Log.e("name", "Error: " + e.getMessage());
+//                        }
+//                    });
 
                     //If form is not null then populate the info window
                     tvEname.setText(currentMarker.eventName);
@@ -541,6 +557,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         catch (ParseException e){
             Log.d(LOGID, "query failed for Event");
         }
+//        InBackground(new FindCallback<ParseObject>() {
+//            @Override
+//            public void done(List<ParseObject> newPublicEvents, ParseException e) {
+//                if(e == null){
+//                    Log.d(LOGID, "query succesful for PublicEvent");
+//                    publicEvents = newPublicEvents;
+//                }
+//                else
+//                    Log.d(LOGID, "query failed for PublicEvent");
+//            }
+//        });
 
     }
 
@@ -559,11 +586,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         return queryList;
     }
 
-    private ArrayList<MarkerAttributes> createMarkerAttList(List<ParseObject> eventList,
+    private void createMarkerAttList(List<ParseObject> eventList,
+                                     ArrayList<MarkerAttributes> mapMarkers,
                                      int range, int start){
         //parse object to obtain marker info.
-
-        ArrayList<MarkerAttributes> mapMarkers = new ArrayList<MarkerAttributes>();
         for(int i = start; i < range; i++) {
             MarkerAttributes m = new MarkerAttributes();
             m.eventName = eventList.get(i).getString("eName");
@@ -578,9 +604,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             //adds m to an array list of marker objects
             mapMarkers.add(m);
             placeMarker(m);
-            gotoLocation(location.getLatitude(),location.getLongitude(), 10);
         }
-        return mapMarkers;//CHANGIN THIS TO RETURN INSTEAD OF CHANGE THE GLOBAL COULD RUIN IT...
+
     }
 
     private List<ParseObject> filterQuery(Intent intent){
@@ -604,7 +629,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             if (intent.hasExtra("eventType")) {
                 query.whereEqualTo("eType", intent.getStringExtra("eventType"));
             }
-
+            //this needs to be added to our create event before I can query it
+//                if(intent.hasExtra("privateEventOnly"))
+//                    if(intent.getBooleanExtra("privateEventOnly", false))
+//                        query.whereEqualTo("privateEvent", true);
+//                    else
+//                        query.whereEqualTo("privateEvent", false);
 
             query.whereWithinMiles("eLocation", location, distance);
             try{
@@ -617,6 +647,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
         return queryList;
     }
+    public int getSize(){
 
+        List<ParseObject> queryList = null;
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("FriendRequest");
+        //queries all friend requests of current User
+        query.whereEqualTo("recipient", CURRENTUSER);
+        try{
+            queryList = query.find();
+        }
+        catch (ParseException e){
+            Log.d("queryFriendRequests", "problem with FriendRequest Query");
+            e.printStackTrace();
+        }
+        return queryList.size();
+    }
 }//end class
 

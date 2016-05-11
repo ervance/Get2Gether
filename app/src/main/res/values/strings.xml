@@ -15,6 +15,7 @@
     <string name="new_user">Create User</string>
     <string name="user_not_found">User Not Found. Please create an account with the Create User Button.</string>
     <string name="user_creation_error">Error Creating User</string>
+    <string name="birthday_hint">Birthdate</string>
     <!-- end Login-->
 
     <!--Scanner-->

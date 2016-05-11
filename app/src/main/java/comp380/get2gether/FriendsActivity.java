@@ -9,9 +9,17 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
+
+import com.google.android.gms.drive.metadata.internal.ParentDriveIdSet;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,12 +31,15 @@ public class FriendsActivity extends AppCompatActivity {
     private ListView listView;
     private FriendAdapter fAdapter;
     private List<Friend> friendList;
+    private String friendUsernames;
+    private ParseUser CURRENTUSER = ParseUser.getCurrentUser();
+    private EditText friendSearch;
 
     /*TEST DATA FOR FRIENDS!!!!! REMOVE ONCE YOU GET DATABASE HOOKED TO IT*/
-    final private String[] FRIENDFIRSTNAMES = {"Dino", "Keith", "Olga", "Maroof", "TestFirst1", "TestFirst2", "TestFirst3", "TestFirst4","TestFirst5"};
-    final private String[] FRIENDLASTTNAMES = {"Biel", "Johnson", "Kup", "....", "TestLast1", "TestLast2", "TestLast3", "TestLast4", "TestLast5"};
-    final private int[] IMG = {R.drawable.holderpic, R.drawable.holderpic, R.drawable.holderpic, R.drawable.holderpic,
-            R.drawable.holderpic, R.drawable.holderpic, R.drawable.holderpic, R.drawable.holderpic, R.drawable.holderpic};
+  //  final private String[] FRIENDFIRSTNAMES = {"Dino", "Keith", "Olga", "Maroof", "TestFirst1", "TestFirst2", "TestFirst3", "TestFirst4","TestFirst5"};
+ //   final private String[] FRIENDLASTTNAMES = {"Biel", "Johnson", "Kup", "Haque", "TestLast1", "TestLast2", "TestLast3", "TestLast4", "TestLast5"};
+   // final private int[] IMG = {R.drawable.holderpic, R.drawable.holderpic, R.drawable.holderpic, R.drawable.holderpic,
+   //         R.drawable.holderpic, R.drawable.holderpic, R.drawable.holderpic, R.drawable.holderpic, R.drawable.holderpic};
 
 
     @Override
@@ -40,25 +51,84 @@ public class FriendsActivity extends AppCompatActivity {
 
         friendList = new ArrayList<>();
 
-        for(int i = 0; i < FRIENDFIRSTNAMES.length; i++){
-            Friend friend = new Friend();
-            friend.firstName = FRIENDFIRSTNAMES[i];
-            friend.lastName = FRIENDLASTTNAMES[i];
-            friend.photo = IMG[i];
-            friendList.add(friend);
+        friendUsernames = CURRENTUSER.getString("friends");
+
+        if(friendUsernames!=null) {
+            String[] usernames = friendUsernames.split(" ");
+
+            for (int i = 0; i < usernames.length; i++) {
+                Friend friend = new Friend();
+                friend.username = usernames[i];
+                friendList.add(friend);
+            }
+
+            listView = (ListView) mFriends.findViewById(R.id.friend_list_view);
+
+            fAdapter = new FriendAdapter(FriendsActivity.this, friendList);
+            listView.setAdapter(fAdapter);
         }
 
-        listView = (ListView) mFriends.findViewById(R.id.friend_list_view);
-        listView.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.d("FriendClick", "FriendClickWorked Correctly on " +FRIENDFIRSTNAMES[position]);
-                Intent intent = new Intent(FriendsActivity.this, FriendInfo.class);
-                startActivity(intent);
-            }
-        });
-        fAdapter = new FriendAdapter(FriendsActivity.this, friendList);
-        listView.setAdapter(fAdapter);
+        friendSearch = (EditText)findViewById(R.id.search_friends);
+    }
+
+    //TODO not properly saving friend requests
+    //handles friendrequests from search feature
+    public void sendFriendRequest(View view){
+        //get username from search field
+        String searchedUser = friendSearch.getText().toString();
+        /*ParseQuery queryFriends = ParseUser.getQuery();
+        queryFriends.whereEqualTo("username", searchedUser);
+        List<ParseUser> searchList = null;
+        try{
+            searchList = queryFriends.find();
+        }
+        catch (ParseException e){
+            Log.d("queryFriendRequests", "problem with Friends Search Query");
+            e.printStackTrace();
+        }
+
+        ParseUser searchParse = searchList.get(0);*/
+
+//        List<ParseObject> queryList = null;
+//        ParseQuery<ParseObject> query = ParseQuery.getQuery("FriendRequest");
+//        //checks if request already exist
+//        query.whereEqualTo("sender", CURRENTUSER.getUsername().toString());
+//        query.whereEqualTo("recipient", searchedUser);
+//        try{
+//            queryList = query.find();
+//        }
+//        catch (ParseException e){
+//            Log.d("queryFriendRequests", "problem with FriendRequest Query");
+//            e.printStackTrace();
+//        }
+        //Log.d("queryFriendRequests", "checking query size "+queryList.size());
+        if(true) { //run only if request object doesn't exist in db queryList.size() < 1
+
+            Log.d("queryFriendRequests", "creating new friend request");
+            ParseObject friendRequest = new ParseObject("FriendRQ");
+            friendRequest.put("sender", ParseUser.getCurrentUser().getUsername().toString()); //after search made, sender will be CURRENTUSER
+            friendRequest.put("recipient", searchedUser); //after search made, recipient will be searched user
+
+            Toast toast = new Toast(getApplicationContext());
+            toast.makeText(this, "Friend Request Sent!", toast.LENGTH_LONG).show();
+
+            friendRequest.saveInBackground(new SaveCallback() {
+                @Override
+                public void done(ParseException e) {
+                    if(e!=null){
+                        Log.d("queryFriendRequests", "error saving");
+                        e.printStackTrace();
+                    }
+                    else {
+                        Log.d("queryFriendRequests", "save successful");
+                    }
+                }
+            });
+        }
+        else {
+            Log.d("queryFriendRequests", "query > 0");
+        }
+
     }
 
 }

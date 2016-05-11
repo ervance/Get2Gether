@@ -4,8 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="comp380.get2gether.NotificationActivity"
-    android:id="@+id/notif_relative_layout"
-    android:clickable="true">
+    android:id="@+id/notif_relative_layout">
 
     <ListView
         android:layout_width="match_parent"
