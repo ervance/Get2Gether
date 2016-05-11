@@ -79,14 +79,20 @@ public class Filter extends AppCompatActivity {
             eventTypeSpinner){
         //attach choices and start the event
         boolean privateEventsOnly = mySwitch.isChecked();
+        int distance;
         //convert choice into an int to pass back to the query
         String distanceChoiceString = distanceChoiceSpinner.getSelectedItem().toString();
-        String[] distanceChoiceArray = distanceChoiceString.split(" ");
-        int distance = Integer.parseInt(distanceChoiceArray[0]);
+        if(distanceChoiceString.equals("Choose a Distance"))
+            distance = 100;
+        else {
+            String[] distanceChoiceArray = distanceChoiceString.split(" ");
+            distance = Integer.parseInt(distanceChoiceArray[0]);
+        }
         //convert even type
         String eventType = eventTypeSpinner.getSelectedItem().toString();
         Intent intent = new Intent(Filter.this, MapsActivity.class);
         intent.putExtra("privateEventOnly", privateEventsOnly);
+
         intent.putExtra("distance", distance);
         intent.putExtra("eventType", eventType);
         intent.putExtra("filter", true);
