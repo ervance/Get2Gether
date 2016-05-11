@@ -18,7 +18,7 @@ public class SplashActivity extends Activity {
         setContentView(R.layout.splash_screen_layout);
 
         final ImageView logo = (ImageView) findViewById(R.id.imageLogo);
-        Animation rotation = AnimationUtils.loadAnimation(getBaseContext(), R.anim.rotate);
+        Animation rotation = AnimationUtils.loadAnimation(getBaseContext(), R.anim.fadein);
         final Animation fade = AnimationUtils.loadAnimation(getBaseContext(),R.anim.abc_fade_out);
 
         logo.startAnimation(rotation);
