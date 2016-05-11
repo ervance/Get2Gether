@@ -90,9 +90,6 @@
             android:name=".MyEventsActivity"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".FriendsActivity"
-            android:screenOrientation="portrait"/>
-        <activity
             android:name=".QRGenerator"
             android:screenOrientation="portrait"/>
         <activity

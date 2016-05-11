@@ -83,15 +83,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private ListView listView;
     private DrawerAdapter adapter;
     private List<NavigationIcon> drawerString;
-    final private String[] NAVIGATION = {"Create Event","My Events", "Filter", "Friends", "QR Code", "Settings"};
-    final private int[] IMG = {R.drawable.holderpic,R.drawable.holderpic,R.drawable.holderpic,R.drawable.holderpic,R.drawable.holderpic,R.drawable.holderpic};
+    final private String[] NAVIGATION = {"Create Event","My Events", "Filter", "QR Code", "Settings"};
+    final private int[] IMG = {R.drawable.holderpic,R.drawable.holderpic,R.drawable.holderpic,R.drawable.holderpic,R.drawable.holderpic};
     /***End Drawer***/
 
     //for notifications
     Timer timer;
     TimerTask timerTask;
     final Handler handler = new Handler();
-    int oldSize = getSize(); //will use database to find old size of friend requests
 
     //LogID
     private final String LOGID = "mapsActivity";
@@ -349,13 +348,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 intent = new Intent(MapsActivity.this, Filter.class);
                 break;
             case 3:
-                intent = new Intent(MapsActivity.this, FriendsActivity.class);
-                break;
-            case 4:
                 //ToDo: add QR here
                 intent = new Intent(MapsActivity.this, QRGenerator.class);
                 break;
-            case 5:
+            case 4:
                 intent = new Intent(MapsActivity.this, SettingsActivity.class);
                 break;
             default:
@@ -373,15 +369,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         CameraUpdate update = CameraUpdateFactory.newLatLngZoom(latLng, zoom);
         mMap.moveCamera(update);
     }
-    public void notif(View view) {
-        Button button = (Button) findViewById(R.id.notifs);
-        button.getBackground().setColorFilter(Color.LTGRAY, PorterDuff.Mode.MULTIPLY);
-        //set new size to old size
-        Intent intent = new Intent(MapsActivity.this, NotificationActivity.class);
-        startActivity(intent);
-        //update oldSize with new size of current notification object in database
-    }
-
 
     //TODO: find way to save old values db
     //running notifications service in background->currently every 5 secs
@@ -399,27 +386,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 //use a handler to run a toast that shows when new item added for user in database for notification
                 handler.post(new Runnable() {
                     public void run() {
-                        //comparing static number with random number between 1 and 10
-                        int newSize = getSize();
-                        //here we have the saved size of the old notification object of the database
-                        //and we compare with the size of the new notification object that we just queried
-                        //if the new size is bigger, we will display a toast and change the button color
-                        //the timer feature will run in the background, so even in another android activity,
-                        //users will still get a toast message and the button will be a different color when they return
-                        //to maps
-                        if(oldSize < newSize) {
-                            final String msg = "New Friend Request!";
-                            //show the toast
-                            int duration = Toast.LENGTH_SHORT;
-                            Toast toast = Toast.makeText(getApplicationContext(), msg, duration);
-                            toast.show();
-                            //change button color
-                            Button button = (Button) findViewById(R.id.notifs);
-                            button.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY);
-                            //set old size to new size
-                            oldSize = newSize;
-
-                        }
                         Log.d("filter", "" + filter);
                         if (!filter) {//if a filter is not in place
                             List<ParseObject> newQueryList = queryEventInBackground();
