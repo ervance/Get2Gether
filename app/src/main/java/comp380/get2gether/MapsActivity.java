@@ -94,7 +94,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     Timer timer;
     TimerTask timerTask;
     final Handler handler = new Handler();
-    int oldSize = 5; //will use database to find old size of
+    //int oldSize = 5; //will use database to find old size of
 
     //LogID
     private final String LOGID = "mapsActivity";
@@ -360,13 +360,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         CameraUpdate update = CameraUpdateFactory.newLatLngZoom(latLng, zoom);
         mMap.moveCamera(update);
     }
-    public void notif(View view) {
+  /*  public void notif(View view) {
         Button button = (Button) findViewById(R.id.notifs);
         button.getBackground().setColorFilter(Color.LTGRAY, PorterDuff.Mode.MULTIPLY);
         Intent intent = new Intent(MapsActivity.this, NotificationActivity.class);
         startActivity(intent);
         //update oldSize with new size of current notification object in database
-    }
+    }*/
 
 
     //TODO: find way to save old values db
@@ -385,7 +385,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 //use a handler to run a toast that shows when new item added for user in database for notification
                 handler.post(new Runnable() {
                     public void run() {
-                        //comparing static number with random number between 1 and 10
+                     /*   //comparing static number with random number between 1 and 10
                         int newSize = (int )(Math.random() * 10 + 1);
                         //here we have the saved size of the old notification object of the database
                         //and we compare with the size of the new notification object that we just queried
@@ -402,7 +402,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             //change button color
                             Button button = (Button) findViewById(R.id.notifs);
                             button.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY);
-                        }
+                        } */
                         Log.d("filter", "" + filter);
                         if (!filter) {//if a filter is not in place
                             List<ParseObject> newQueryList = queryEventInBackground();
