@@ -70,6 +70,11 @@ public class CreateActivity extends FragmentActivity implements GoogleApiClient.
     String eStartTime;
     String eEndTime;
     String eDescription;
+    boolean emptyEventName = false;
+    boolean emptyEventType = false;
+    boolean emptyEventStart = false;
+    boolean emptyEventEnd = false;
+    boolean emptyEventDescription = false;
     /******FORM FIELDS********/
 
     /******Map fields******/
@@ -93,7 +98,6 @@ public class CreateActivity extends FragmentActivity implements GoogleApiClient.
             Intent intent = new Intent(CreateActivity.this, LoginActivity.class);
             startActivity(intent);
         }
-
         setContentView(R.layout.activity_form);
 
         //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -280,6 +284,34 @@ public class CreateActivity extends FragmentActivity implements GoogleApiClient.
                     eventDescrip = (EditText) findViewById(R.id.eventDescription);
                     eDescription = eventDescrip.getText().toString();
 
+                    //check values to see if invalid
+                    if(chosenEventName.getText().toString().equals("")){
+                        emptyEventName=true;
+                    }else{
+                        emptyEventName=false;
+                    }
+                    if(eType.equals("Select Event Type")){
+                        emptyEventType=true;
+                    }else{
+                        emptyEventType=false;
+                    }
+                    if(eStartTime.equals("Select a Start Time")){
+                        emptyEventStart=true;
+                    }else{
+                        emptyEventStart=false;
+                    }
+                    if(eEndTime.equals("Select an End Time")){
+                        emptyEventEnd=true;
+                    }else{
+                        emptyEventEnd=false;
+                    }
+                    if(eDescription.equals("")){
+                        emptyEventDescription=true;
+                    }else{
+                        emptyEventDescription=false;
+                    }
+                    //---------------------------------
+
                     //create unique id for event
                     String uniqueEventID = eName + CURRENTUSER.getObjectId().toString();
 
@@ -291,25 +323,30 @@ public class CreateActivity extends FragmentActivity implements GoogleApiClient.
                     //holder for now
                     boolean privateEvent = false;
                     String host = CURRENTUSER.getUsername().toString();
-                    Event event = new Event(CURRENTUSER,host ,uniqueEventID, eName, eStartTime,
+                    Event event = new Event(CURRENTUSER, host, uniqueEventID, eName, eStartTime,
                             eEndTime, eType, eDescription, eventLocation, privateEvent);
 
                     event.saveEvent();
                     //----------------------------------------------------------------------------------------
+                    if (emptyEventDescription==false && emptyEventName==false && emptyEventEnd==false && emptyEventStart ==false && emptyEventType==false ){
+                        //Create an Intent in order to pass info to "MapsAcitivity"
+                        Intent intent = new Intent(CreateActivity.this, MapsActivity.class);
 
-                    //Create an Intent in order to pass info to "MapsAcitivity"
-                    Intent intent = new Intent(CreateActivity.this, MapsActivity.class);
 
+                         //Create Identifier for variable types in this .java file
+                         //Make an arraylist instead of putExtra
+                         //Testing parse so I am commenting this out.
+                         //intent.putExtra("formVar", formVariables);
 
-                    //Create Identifier for variable types in this .java file
-                    //Make an arraylist instead of putExtra
-                    //Testing parse so I am commenting this out.
-                        //intent.putExtra("formVar", formVariables);
-
-                    //Start other Activity (MapsActivity) with pin
-                    startActivity(intent);
+                        //Start other Activity (MapsActivity) with pin
+                        startActivity(intent);
+                    }else{//not all choices are full, make the user re enter items
+                        Toast.makeText(CreateActivity.this, "Make sure all Choices are filled in!", Toast.LENGTH_SHORT).show();
+                    }
                 }
+
             });
+
         }
 
 
