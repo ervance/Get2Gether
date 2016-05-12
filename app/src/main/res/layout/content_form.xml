@@ -67,7 +67,9 @@
             android:text="Search"
             android:id="@+id/searchButton"
             android:layout_below="@+id/eventDescription"
-            android:layout_alignParentEnd="true" />
+            android:layout_alignParentEnd="true"
+            android:background="#5a4a42"
+            android:textColor="#ffffff" />
 
 
         <EditText

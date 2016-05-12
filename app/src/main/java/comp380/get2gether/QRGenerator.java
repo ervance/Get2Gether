@@ -23,15 +23,21 @@ import com.google.zxing.client.android.Contents;
 import com.google.zxing.client.android.Intents;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+import com.parse.ParseUser;
 
 public class QRGenerator extends AppCompatActivity {
 
     private String LOG_TAG = "GenerateQRCode";
     // this is for testing need to get this data from db of the user (who's data being encoded in QR CODE
-    private String uName  = "COMP";
-    private String uPhone = "380";
-    private String uEmail = "email@gmail.com";
+
+    private final ParseUser CURRENTUSER =ParseUser.getCurrentUser();
+    private String uName = CURRENTUSER.getUsername().toString();
+    private String uPhone = "";
+    private String uEmail = "";
     private String contact;
+
+
+
 
     //this is for data that will be decoded from the QR THIS NEED TO BE ADDED
     private String newContactName;
@@ -47,6 +53,14 @@ public class QRGenerator extends AppCompatActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
+
+        if (CURRENTUSER.has("email"))
+            uEmail = CURRENTUSER.getString("email");//email
+        if (CURRENTUSER.has("phone"))
+            uPhone = CURRENTUSER.getString("phone");//"8181234567"
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.qr_layout);
 

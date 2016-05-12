@@ -76,6 +76,8 @@
         android:layout_alignParentBottom="true"
         android:layout_alignEnd="@+id/eventTypeLarge"
         android:layout_toEndOf="@+id/checkBox"
-        android:layout_below="@+id/eventDescription" />
+        android:layout_below="@+id/eventDescription"
+        android:textColor="#ffffff"
+        android:background="#5a4a42" />
 
 </RelativeLayout>
