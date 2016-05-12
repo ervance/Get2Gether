@@ -8,6 +8,7 @@ import java.util.List;
 public class Friend {
 
     //what type of attributes should it have?
+    public String username;
     public String firstName;
     public String lastName;
     public List<String> hostingEvents;
@@ -25,6 +26,10 @@ public class Friend {
     public String getFirstLast() {
         String firstLast = firstName + " " + lastName;
         return firstLast;
+    }
+
+    public  String getUsername(){
+        return username;
     }
 
     public int getPhoto(){
