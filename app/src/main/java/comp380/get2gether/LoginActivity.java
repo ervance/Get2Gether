@@ -16,7 +16,6 @@ import android.widget.TextView;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;
-import com.parse.SignUpCallback;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -45,7 +44,7 @@ public class LoginActivity extends AppCompatActivity {
         mTextView.setVisibility(View.INVISIBLE);
         //deal with logo spinning
         logo = (ImageView) findViewById(R.id.loginLogo);
-        rotation = AnimationUtils.loadAnimation(getBaseContext(), R.anim.fadein);
+        rotation = AnimationUtils.loadAnimation(getBaseContext(), R.anim.rotate);
         fade = AnimationUtils.loadAnimation(getBaseContext(), R.anim.abc_fade_out);
 
         //user to login/create

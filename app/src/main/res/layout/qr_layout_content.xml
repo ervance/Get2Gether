@@ -1,22 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--Added as QR LAyout-->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent" android:layout_height="fill_parent"
     android:orientation="vertical"
-    android:background="#fbfaf9">
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="250dp"
-        android:layout_gravity="top">
-
-        <ImageView
-            android:id="@+id/imageViewqr"
-            android:layout_gravity="center"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-    </RelativeLayout>
+    android:background="@color/white">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -28,31 +15,48 @@
             android:layout_height="wrap_content"
             android:text="Generate QR"
             android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="57dp"
-            android:layout_alignParentBottom="true"
-            android:layout_toStartOf="@+id/scanqrbutton"
-            android:layout_marginEnd="39dp" />
+            android:layout_marginTop="50dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="45dp"
+            android:background="#5a4a42"
+            android:textColor="#ffffff" />
+
+        <ImageView
+            android:id="@+id/imageViewqr"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"/>
+
         <Button
             android:id="@+id/scanqrbutton"
             android:layout_width="130dp"
             android:layout_height="wrap_content"
             android:text="Scan QR"
             android:layout_gravity="center_horizontal"
-            android:layout_alignBottom="@+id/generateqrbutton"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="42dp" />
-        <TextView
-            android:id="@+id/scan_content"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:textIsSelectable="true"
+            android:layout_marginBottom="75dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignStart="@+id/generateqrbutton"
+            android:background="#5a4a42"
+            android:textColor="#ffffff" />
+        <RelativeLayout
+            android:layout_width="180dp"
+            android:layout_height="120dp"
+            android:layout_alignTop="@+id/scanqrbutton"
+            android:layout_alignStart="@+id/imageViewqr">
+            <TextView
+                android:id="@+id/scan_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textIsSelectable="true"
+                android:layout_alignParentStart="true"
+                android:textColor="@color/brownlogo" />
+        </RelativeLayout>
 
-            android:layout_below="@+id/scanqrbutton"
-            android:layout_alignStart="@+id/scanqrbutton"
-            android:layout_alignEnd="@+id/scanqrbutton" />
     </RelativeLayout>
 
 
 
 
-</LinearLayout>
+</RelativeLayout>
